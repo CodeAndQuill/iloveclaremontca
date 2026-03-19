@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="500" viewBox="0 0 2400 500">
+  <!-- Transparent background — with tagline, for posters/bags -->
+
+  <!-- "I L" -->
+  <text x="600" y="250" text-anchor="end" font-size="160" font-weight="700" fill="#3d2e1e" font-family="Georgia, 'DM Serif Display', serif" letter-spacing="4">I L</text>
+
+  <!-- Heart replacing "o" -->
+  <path d="M 17 33 C 17 33, 1 21, 1 12 C 1 5, 5 1, 11 1 C 15 1, 17 4, 17 7 C 17 4, 19 1, 23 1 C 29 1, 33 5, 33 12 C 33 21, 17 33, 17 33 Z" fill="#7B5EA7" transform="translate(608, 182) scale(2.10)"/>
+
+  <!-- "ve Claremont" -->
+  <text x="680" y="250" text-anchor="start" font-size="160" font-weight="700" fill="#3d2e1e" font-family="Georgia, 'DM Serif Display', serif" letter-spacing="4">ve Claremont</text>
+
+  <!-- Divider line -->
+  <rect x="1040" y="290" width="320" height="2.5" rx="1" fill="#7B5EA7" opacity="0.4"/>
+
+  <!-- Tagline -->
+  <text x="1200" y="340" text-anchor="middle" font-size="28" fill="#7a6650" font-family="Arial, sans-serif" letter-spacing="6">THE CITY OF TREES AND PhDs</text>
+
+  <!-- URL -->
+  <text x="1200" y="385" text-anchor="middle" font-size="18" fill="rgba(61,46,30,0.4)" font-family="Arial, sans-serif" letter-spacing="2">iloveclaremontca.com</text>
+</svg>

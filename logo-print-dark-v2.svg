@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="400" viewBox="0 0 2400 400">
+  <!-- Transparent background — print-ready (v2: heart scale 2.05) -->
+
+  <!-- "I L" -->
+  <text x="600" y="260" text-anchor="end" font-size="160" font-weight="700" fill="#3d2e1e" font-family="Georgia, 'DM Serif Display', serif" letter-spacing="4">I L</text>
+
+  <!-- Heart replacing "o" — matched to lowercase o size -->
+  <path d="M 17 33 C 17 33, 1 21, 1 12 C 1 5, 5 1, 11 1 C 15 1, 17 4, 17 7 C 17 4, 19 1, 23 1 C 29 1, 33 5, 33 12 C 33 21, 17 33, 17 33 Z" fill="#7B5EA7" transform="translate(608, 192) scale(2.05)"/>
+
+  <!-- "ve Claremont" -->
+  <text x="680" y="260" text-anchor="start" font-size="160" font-weight="700" fill="#3d2e1e" font-family="Georgia, 'DM Serif Display', serif" letter-spacing="4">ve Claremont</text>
+</svg>

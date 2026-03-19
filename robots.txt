@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /old-design/
+Disallow: /index-old.html
+Disallow: /index2.html
+Disallow: /index3.html
+Disallow: /teaser.html
+Disallow: /Guides/dining-guide.html
+
+Sitemap: https://iloveclaremontca.com/sitemap.xml

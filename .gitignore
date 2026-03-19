@@ -1,0 +1,30 @@
+# Uncompressed source photos (underscore naming convention)
+photos/*_*
+photos/PXL_*
+photos/Marston_*
+photos/20180329_*
+photos/jacaranda-hero.jpg
+photos/jacaranda_Tree.jpg
+photos/potato-mountain.jpg
+photos/California Botanic Garden2.jpg
+photos/Ahmad_Shariff_Art Gallery.jpg
+
+# Videos — only keep jacaranda_video_web.mp4 (used on hero)
+Videos/*
+!Videos/jacaranda_video_web.mp4
+
+# Old design files
+old-design/
+
+# Old index versions
+index-old.html
+index2.html
+index3.html
+
+# OG image source SVGs
+og-image-v*.svg
+og-image.svg
+
+# OS files
+.DS_Store
+Thumbs.db
