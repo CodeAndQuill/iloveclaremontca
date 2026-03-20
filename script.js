@@ -107,59 +107,6 @@ if (copyLink) {
   });
 }
 
-// --- Scroll-triggered fade-in animations (IntersectionObserver) ---
-(function() {
-  // Selectors for elements to animate
-  var targets = document.querySelectorAll(
-    '.card, .feature-card, .college-card, .event-card, .guide-card, .rental-card, ' +
-    '.family-item, .stat-card, .section-header, .section-photo, .info-banner, ' +
-    '.welcome-text, .welcome-stats, .shop-card, .pro-tip'
-  );
-
-  if (!targets.length || !('IntersectionObserver' in window)) return;
-
-  // Check reduced motion
-  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (prefersReduced) return;
-
-  // Apply initial classes
-  targets.forEach(function(el, i) {
-    // Section photos get fade-in-left, headers get fade-in, everything else fade-in-up
-    if (el.classList.contains('section-photo')) {
-      el.classList.add('fade-in-left');
-    } else if (el.classList.contains('section-header')) {
-      el.classList.add('fade-in');
-    } else {
-      el.classList.add('fade-in-up');
-    }
-
-    // Stagger cards within grid parents
-    var parent = el.parentElement;
-    if (parent && (parent.classList.contains('card-grid') ||
-        parent.classList.contains('college-grid') ||
-        parent.classList.contains('events-grid') ||
-        parent.classList.contains('guides-grid') ||
-        parent.classList.contains('feature-grid') ||
-        parent.classList.contains('family-grid') ||
-        parent.classList.contains('rentals-grid') ||
-        parent.classList.contains('welcome-stats'))) {
-      var siblings = Array.from(parent.children);
-      var idx = siblings.indexOf(el);
-      el.style.transitionDelay = (idx * 0.08) + 's';
-    }
-  });
-
-  var observer = new IntersectionObserver(function(entries) {
-    entries.forEach(function(entry) {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-
-  targets.forEach(function(el) { observer.observe(el); });
-})();
 
 // --- Email/Phone Signup Modal ---
 var modalTriggered = false;
@@ -211,21 +158,3 @@ if (modalOverlay) {
   }
 }
 
-// --- Image lazy-load fade-in ---
-(function() {
-  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (prefersReduced) return;
-
-  var images = document.querySelectorAll('.section-photo img, .article-body img');
-  images.forEach(function(img) {
-    if (img.complete && img.naturalHeight > 0) {
-      // Already loaded (cached)
-      return;
-    }
-    img.classList.add('img-lazy');
-    img.addEventListener('load', function() {
-      img.classList.remove('img-lazy');
-      img.classList.add('img-loaded');
-    });
-  });
-})();
