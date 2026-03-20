@@ -136,6 +136,16 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://iloveclaremontca.com/Spotlights/native-plant-festival-2026.html</loc>
+    <image:image>
+      <image:loc>https://iloveclaremontca.com/photos/calbg-trail-compressed.jpg</image:loc>
+      <image:caption>Woodland trail with yellow wildflowers at California Botanic Garden in Claremont</image:caption>
+    </image:image>
+    <lastmod>2026-03-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://iloveclaremontca.com/Guides/free-guide.html</loc>
     <image:image>
       <image:loc>https://iloveclaremontca.com/photos/depot-blossoms.jpg</image:loc>

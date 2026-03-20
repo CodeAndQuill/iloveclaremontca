@@ -1389,3 +1389,70 @@ a.guide-card:hover {
     gap: 20px;
   }
 }
+
+/* --- Spotlight: Featured Banner --- */
+.spotlight-banner {
+  background: #f0f5f1;
+  border-left: 4px solid #6B8F71;
+  border-radius: 8px;
+  padding: 14px 20px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  color: #3d2e1e;
+  flex-wrap: wrap;
+}
+.spotlight-banner a {
+  color: #3d2e1e;
+  font-weight: 600;
+  text-decoration: none;
+}
+.spotlight-banner a:hover {
+  color: #6B8F71;
+}
+
+.spotlight-new-badge {
+  display: inline-block;
+  background: #6B8F71;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.spotlight-new-badge::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: shimmer 2.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  50% { left: 150%; }
+  100% { left: 150%; }
+}
+
+/* --- Spotlight Guide Card --- */
+.guide-card-spotlight {
+  border-left-color: #6B8F71;
+}
+.guide-tag-spotlight {
+  color: #6B8F71;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spotlight-new-badge::after {
+    animation: none;
+  }
+}
