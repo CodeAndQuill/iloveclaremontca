@@ -151,6 +151,9 @@ img {
   line-height: 1;
   display: inline-block;
   transform: translateY(0.05em);
+  font-family: 'Times New Roman', Times, Georgia, serif;
+  text-rendering: auto;
+  -webkit-text-stroke: 0;
 }
 .heart-o-hero {
   color: #7B5EA7;
