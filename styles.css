@@ -1508,18 +1508,22 @@ a.guide-card:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 3px;
     background: rgba(255,255,255,0.15);
     backdrop-filter: blur(6px);
     border: 1px solid rgba(255,255,255,0.25);
     border-radius: 12px;
-    padding: 10px 12px;
-    min-width: 72px;
+    padding: 10px 8px;
+    width: 64px;
+    height: 64px;
     color: #fff;
     text-decoration: none;
-    font-size: 0.72rem;
+    font-size: 0.65rem;
     font-weight: 600;
     transition: transform 0.2s, background 0.2s;
+    text-align: center;
+    line-height: 1.1;
   }
   .quick-pick:hover,
   .quick-pick:active {
@@ -1528,7 +1532,8 @@ a.guide-card:hover {
     color: #fff;
   }
   .quick-pick-icon {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
+    line-height: 1;
   }
 }
 
