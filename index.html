@@ -2,13 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-F4KWZZEM1Q"></script>
+  <!-- Google tag (gtag.js) — deferred for performance -->
   <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-F4KWZZEM1Q');
+    window.addEventListener('load', function() {
+      var s = document.createElement('script');
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-F4KWZZEM1Q';
+      s.async = true;
+      document.head.appendChild(s);
+      s.onload = function() {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-F4KWZZEM1Q');
+      };
+    });
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Things to do in Claremont, California — a local's guide to Village dining, hiking trails, the Claremont Colleges, coffee shops, boutiques, and events.">
@@ -212,9 +219,9 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Playfair+Display:wght@400;700;800&family=Inter:wght@400;500;600;700&display=swap">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Playfair+Display:wght@400;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260321">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Playfair+Display:wght@400;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Playfair+Display:wght@400;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="styles.css?v=20260321b">
 </head>
 <body>
 
@@ -243,8 +250,9 @@
 
   <!-- Hero Section -->
   <header class="hero">
-    <video class="hero-bg" autoplay muted loop playsinline poster="photos/hero-poster.jpg">
-      <source src="Videos/jacaranda_video_web.mp4" type="video/mp4">
+    <video class="hero-bg" autoplay muted loop playsinline poster="photos/hero-poster.jpg" width="1280" height="720">
+      <source src="Videos/jacaranda_hero_mobile.mp4" type="video/mp4" media="(max-width: 768px)">
+      <source src="Videos/jacaranda_hero.mp4" type="video/mp4">
     </video>
     <div class="hero-overlay"></div>
 

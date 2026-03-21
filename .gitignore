@@ -9,9 +9,10 @@ photos/potato-mountain.jpg
 photos/California Botanic Garden2.jpg
 photos/Ahmad_Shariff_Art Gallery.jpg
 
-# Videos — only keep jacaranda_video_web.mp4 (used on hero)
+# Videos — only keep compressed hero videos
 Videos/*
-!Videos/jacaranda_video_web.mp4
+!Videos/jacaranda_hero.mp4
+!Videos/jacaranda_hero_mobile.mp4
 
 # Old design files
 old-design/
