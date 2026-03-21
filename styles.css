@@ -1225,11 +1225,17 @@ a.guide-card:hover {
   }
 
   .hero-badges {
-    gap: 8px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 0 8px;
   }
   .badge {
     font-size: 0.8rem;
-    padding: 8px 14px;
+    padding: 10px 8px;
+    justify-content: center;
+    display: flex;
+    align-items: center;
   }
   .section-photo img {
     height: 200px;
@@ -1331,11 +1337,17 @@ a.guide-card:hover {
   }
 
   .hero-badges {
-    gap: 6px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 0 4px;
   }
   .badge {
     font-size: 0.72rem;
-    padding: 6px 12px;
+    padding: 8px 6px;
+    justify-content: center;
+    display: flex;
+    align-items: center;
   }
 
   .section {
@@ -1488,60 +1500,6 @@ a.guide-card:hover {
 @keyframes bounce-down {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(10px); }
-}
-
-/* --- Quick-Pick Buttons (mobile only) --- */
-.quick-picks {
-  display: none;
-}
-@media (max-width: 768px) {
-  .quick-picks {
-    display: flex;
-    gap: 10px;
-    padding: 20px 0 24px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    position: relative;
-    z-index: 2;
-    width: 100vw;
-    margin-left: calc(-50vw + 50%);
-    padding-left: 20px;
-    padding-right: 40%;
-    box-sizing: border-box;
-  }
-  .quick-picks::-webkit-scrollbar {
-    display: none;
-  }
-  .quick-pick {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(255,255,255,0.22);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255,255,255,0.35);
-    border-radius: 50px;
-    padding: 9px 16px;
-    color: #fff;
-    text-decoration: none;
-    font-size: 0.8rem;
-    font-weight: 600;
-    white-space: nowrap;
-    flex-shrink: 0;
-    transition: transform 0.2s, background 0.2s;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  }
-  .quick-pick:hover,
-  .quick-pick:active {
-    transform: scale(1.05);
-    background: rgba(255,255,255,0.35);
-    color: #fff;
-  }
-  .quick-pick-icon {
-    font-size: 1rem;
-    line-height: 1;
-    flex-shrink: 0;
-  }
 }
 
 /* --- Clickable Stat Cards --- */
