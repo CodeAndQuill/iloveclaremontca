@@ -219,9 +219,30 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Playfair+Display:wght@400;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-  <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Playfair+Display:wght@400;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
-  <link rel="stylesheet" href="styles.css?v=20260321j">
+  <link rel="preload" as="image" href="photos/hero-poster.jpg" fetchpriority="high">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Playfair+Display:wght@700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Playfair+Display:wght@700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"></noscript>
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; scroll-padding-top:70px; }
+    body { font-family:'Inter',Arial,sans-serif; color:#2c2416; background:#fff; line-height:1.7; font-size:17px; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+    .navbar { position:fixed; top:0; left:0; right:0; z-index:1000; background:rgba(255,255,255,0.97); backdrop-filter:blur(12px); padding:0 24px; border-bottom:1px solid rgba(0,0,0,0.06); }
+    .nav-container { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; height:64px; }
+    .nav-logo { font-size:1.3rem; font-weight:800; color:#2c2416; font-family:'DM Serif Display',Georgia,serif; letter-spacing:0.5px; text-decoration:none; }
+    .nav-links { list-style:none; display:flex; gap:6px; }
+    .nav-links a { color:#605848; font-size:0.85rem; font-weight:600; padding:8px 14px; border-radius:6px; text-decoration:none; }
+    .nav-toggle { display:none; }
+    .hero { position:relative; min-height:100vh; display:flex; align-items:center; justify-content:center; text-align:center; background:#372446; overflow:clip; overflow-x:visible; }
+    .hero-bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 40%; z-index:0; background:#372446; }
+    .hero-content { position:relative; z-index:2; padding:120px 24px 160px; max-width:800px; }
+    .hero h1 { font-family:'DM Serif Display',Georgia,serif; font-size:clamp(3rem,7.5vw,5.2rem); font-weight:400; color:#fff; line-height:1.1; margin-bottom:20px; text-shadow:0 3px 12px rgba(0,0,0,0.7); }
+    .hero-tagline { font-size:0.95rem; font-weight:600; color:rgba(255,255,255,0.8); text-transform:uppercase; letter-spacing:3px; margin-bottom:16px; text-shadow:0 2px 8px rgba(0,0,0,0.6); }
+    .hero-sub { font-size:1.2rem; color:rgba(255,255,255,0.9); margin-bottom:32px; font-style:italic; text-shadow:0 2px 8px rgba(0,0,0,0.6); }
+    .heart-o { color:#7B5EA7; font-size:0.85em; line-height:1; display:inline-block; transform:translateY(0.05em); font-family:'Times New Roman',Times,Georgia,serif; }
+    .heart-o-hero { font-size:0.75em; transform:translateY(-0.02em); }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+  </style>
+  <link rel="stylesheet" href="styles.css?v=20260321k">
 </head>
 <body>
 
@@ -250,7 +271,7 @@
 
   <!-- Hero Section -->
   <header class="hero">
-    <video class="hero-bg" autoplay muted loop playsinline poster="photos/hero-poster.jpg" width="1920" height="1080">
+    <video class="hero-bg" autoplay muted loop playsinline poster="photos/hero-poster.jpg" width="1920" height="1080" fetchpriority="high">
       <source src="Videos/jacaranda_hero.mp4" type="video/mp4">
     </video>
     <div class="hero-overlay"></div>
