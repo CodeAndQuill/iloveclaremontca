@@ -998,15 +998,19 @@ a.guide-card:hover {
 }
 .modal-close {
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: 10px;
+  right: 10px;
   background: none;
   border: none;
   font-size: 1.5rem;
   color: #888070;
   cursor: pointer;
   line-height: 1;
-  padding: 4px 8px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 6px;
   transition: background 0.2s;
 }
@@ -1225,8 +1229,8 @@ a.guide-card:hover {
   .back-to-top {
     bottom: 20px;
     right: 20px;
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
   }
 
   .modal-card {

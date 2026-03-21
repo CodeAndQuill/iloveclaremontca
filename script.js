@@ -9,6 +9,14 @@ const heroBg = document.querySelector('.hero-bg');
 const readingProgress = document.getElementById('readingProgress');
 const stickyCta = document.querySelector('.sticky-cta');
 
+// Hero video: slow on mobile + crossfade loop
+if (heroBg) {
+  if (window.innerWidth <= 768) {
+    heroBg.playbackRate = 0.6;
+  }
+
+}
+
 // Detect guide pages (have reading progress bar)
 const isGuidePage = !!readingProgress;
 
@@ -64,8 +72,8 @@ function onScroll() {
     }
   }
 
-  // Modal trigger: 40% scroll
-  if (!modalTriggered && docHeight > 0 && (scrollY / docHeight) >= 0.4) {
+  // Modal trigger: 60% scroll
+  if (!modalTriggered && docHeight > 0 && (scrollY / docHeight) >= 0.6) {
     showModal();
   }
 }
@@ -154,7 +162,7 @@ if (modalOverlay) {
 
   // Timer trigger: 10 seconds
   if (shouldShowModal()) {
-    setTimeout(function() { showModal(); }, 10000);
+    setTimeout(function() { showModal(); }, 30000);
   }
 }
 
