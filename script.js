@@ -12,7 +12,7 @@ const stickyCta = document.querySelector('.sticky-cta');
 // Hero video: slow on mobile + crossfade loop
 if (heroBg) {
   if (window.innerWidth <= 768) {
-    heroBg.playbackRate = 0.65;
+    heroBg.playbackRate = 0.75;
   }
 
 }
