@@ -1495,39 +1495,47 @@ a.guide-card:hover {
 }
 @media (max-width: 768px) {
   .quick-picks {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    padding: 0 20px 8px;
+    display: flex;
+    gap: 10px;
+    padding: 0 20px 12px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
     position: relative;
     z-index: 2;
     margin-top: -8px;
+    mask-image: linear-gradient(to right, black 85%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
+  }
+  .quick-picks::-webkit-scrollbar {
+    display: none;
   }
   .quick-pick {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 5px;
-    background: rgba(255,255,255,0.15);
-    backdrop-filter: blur(6px);
-    border: 1px solid rgba(255,255,255,0.25);
+    gap: 6px;
+    background: rgba(255,255,255,0.22);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.35);
     border-radius: 50px;
-    padding: 10px 6px;
+    padding: 9px 16px;
     color: #fff;
     text-decoration: none;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 600;
-    transition: transform 0.2s, background 0.2s;
     white-space: nowrap;
+    flex-shrink: 0;
+    transition: transform 0.2s, background 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   }
   .quick-pick:hover,
   .quick-pick:active {
     transform: scale(1.05);
-    background: rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.35);
     color: #fff;
   }
   .quick-pick-icon {
-    font-size: 0.95rem;
+    font-size: 1rem;
     line-height: 1;
     flex-shrink: 0;
   }
