@@ -1478,11 +1478,124 @@ a.guide-card:hover {
   color: #4e6e50;
 }
 
+/* --- Scroll Indicator --- */
+.scroll-indicator {
+  margin-top: 18px;
+  animation: bounce-down 2s ease-in-out infinite;
+  opacity: 0.8;
+}
+@keyframes bounce-down {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(10px); }
+}
+
+/* --- Quick-Pick Buttons (mobile only) --- */
+.quick-picks {
+  display: none;
+}
+@media (max-width: 768px) {
+  .quick-picks {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 0 16px 8px;
+    position: relative;
+    z-index: 2;
+    margin-top: -8px;
+  }
+  .quick-pick {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 12px;
+    padding: 10px 12px;
+    min-width: 72px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.72rem;
+    font-weight: 600;
+    transition: transform 0.2s, background 0.2s;
+  }
+  .quick-pick:hover,
+  .quick-pick:active {
+    transform: scale(1.05);
+    background: rgba(255,255,255,0.25);
+    color: #fff;
+  }
+  .quick-pick-icon {
+    font-size: 1.4rem;
+  }
+}
+
+/* --- Clickable Stat Cards --- */
+.stat-card-link {
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+.stat-card-link:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(123,94,167,0.18);
+  color: inherit;
+}
+
+/* --- Section CTA Buttons --- */
+.section-cta {
+  text-align: center;
+  margin-top: 32px;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.btn-section {
+  display: inline-block;
+  padding: 14px 32px;
+  background: #7B5EA7;
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.2s;
+}
+.btn-section:hover {
+  background: #5a4080;
+  transform: translateY(-2px);
+  color: #fff;
+}
+.btn-section-alt {
+  display: inline-block;
+  padding: 14px 32px;
+  background: transparent;
+  color: #7B5EA7;
+  border: 2px solid #7B5EA7;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.2s, color 0.2s;
+}
+.btn-section-alt:hover {
+  background: #7B5EA7;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .spotlight-new-badge::after {
     animation: none;
   }
   .spotlight-banner {
+    animation: none;
+  }
+  .scroll-indicator {
     animation: none;
   }
 }
