@@ -1497,14 +1497,14 @@ a.guide-card:hover {
   .quick-picks {
     display: flex;
     gap: 10px;
-    padding: 12px 20px;
+    padding: 14px 20px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     position: relative;
-    z-index: 2;
-    margin-top: -50px;
-    background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.08));
+    z-index: 5;
+    background: #372446;
+    margin-top: -2px;
   }
   .quick-picks::-webkit-scrollbar {
     display: none;
