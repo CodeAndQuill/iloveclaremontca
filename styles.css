@@ -286,12 +286,20 @@ img {
 .badge {
   background: rgba(255,255,255,0.12);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.25);
   color: #fff;
   padding: 10px 20px;
   border-radius: 50px;
   font-size: 0.85rem;
   font-weight: 600;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+.badge:hover {
+  transform: translateY(-3px);
+  background: rgba(255,255,255,0.2);
+  border-color: rgba(183,148,214,0.7);
+  box-shadow: 0 6px 20px rgba(123,94,167,0.35);
 }
 
 .badge-icon {
