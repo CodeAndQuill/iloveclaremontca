@@ -219,7 +219,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="image" href="photos/hero-poster.jpg" fetchpriority="high">
+  <link rel="preload" as="image" href="photos/hero-poster.webp" type="image/webp" fetchpriority="high">
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Playfair+Display:wght@700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Playfair+Display:wght@700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"></noscript>
   <style>
@@ -242,7 +242,7 @@
     .heart-o-hero { font-size:0.75em; transform:translateY(-0.02em); }
     .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
   </style>
-  <link rel="stylesheet" href="styles.css?v=20260321n">
+  <link rel="stylesheet" href="styles.css?v=20260321o">
 </head>
 <body>
 
@@ -271,7 +271,7 @@
 
   <!-- Hero Section -->
   <header class="hero">
-    <video class="hero-bg" autoplay muted loop playsinline poster="photos/hero-poster.jpg" width="1920" height="1080" fetchpriority="high">
+    <video class="hero-bg" autoplay muted loop playsinline poster="photos/hero-poster.webp" width="1920" height="1080" fetchpriority="high">
       <source src="Videos/jacaranda_hero.mp4" type="video/mp4">
       <track kind="captions" src="data:text/vtt,WEBVTT" label="No dialogue" default>
     </video>
@@ -340,7 +340,10 @@
   <section class="section section-cream" id="village">
     <div class="container">
       <div class="section-photo">
-        <img src="photos/claremont-village-sign.jpg" alt="Claremont Village wooden welcome sign with gold lettering on a green lawn — the gateway to Claremont's walkable downtown" loading="lazy" width="1200" height="900" style="object-position: center 35%;">
+        <picture>
+          <source srcset="photos/claremont-village-sign.webp" type="image/webp">
+          <img src="photos/claremont-village-sign.jpg" alt="Claremont Village wooden welcome sign with gold lettering on a green lawn — the gateway to Claremont's walkable downtown" loading="lazy" width="800" height="619" style="object-position: center 35%;">
+        </picture>
       </div>
       <div class="section-header">
         <h2>Claremont Village</h2>
