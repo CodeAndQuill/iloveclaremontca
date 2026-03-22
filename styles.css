@@ -42,8 +42,10 @@ h1, h2, h3 {
 }
 
 a {
-  color: #7B5EA7;
-  text-decoration: none;
+  color: #6B4E94;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
   transition: color 0.2s;
 }
 a:hover {
@@ -70,11 +72,11 @@ img {
 }
 
 .btn-primary {
-  background: #C67A4B;
+  background: #b06a3e;
   color: #fff;
 }
 .btn-primary:hover {
-  background: #b06a3e;
+  background: #9a5c35;
   color: #fff;
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(198,122,75,0.3);
@@ -355,14 +357,14 @@ img {
 }
 .section-header p {
   font-size: 1.1rem;
-  color: #888070;
+  color: #6b6157;
   font-style: italic;
 }
 .section-header-light h2 {
   color: #fff;
 }
 .section-header-light p {
-  color: rgba(255,255,255,0.75);
+  color: rgba(255,255,255,0.85);
 }
 
 /* --- Welcome --- */
@@ -415,7 +417,7 @@ img {
 
 .stat-label {
   font-size: 0.9rem;
-  color: #888070;
+  color: #6b6157;
   font-weight: 600;
 }
 
@@ -500,7 +502,7 @@ a.feature-card:hover {
   color: #fff;
 }
 .feature-highlight p {
-  color: rgba(255,255,255,0.9);
+  color: rgba(255,255,255,0.95);
 }
 
 .feature-card h3 {
@@ -572,7 +574,7 @@ a.college-card:hover {
 
 .event-month {
   display: inline-block;
-  background: #C67A4B;
+  background: #a5643b;
   color: #fff;
   font-size: 0.75rem;
   font-weight: 700;
@@ -781,7 +783,7 @@ a.guide-card:hover {
 /* --- Footer --- */
 .footer {
   background: #2c2416;
-  color: rgba(255,255,255,0.7);
+  color: rgba(255,255,255,0.85);
   padding: 60px 0 24px;
 }
 
@@ -908,7 +910,7 @@ a.guide-card:hover {
 }
 
 .guide-tag-live {
-  color: #C67A4B;
+  color: #9a5c35;
 }
 
 /* --- Coming Soon Guide Tags --- */
@@ -917,7 +919,7 @@ a.guide-card:hover {
 }
 
 .guide-tag-soon {
-  color: #C67A4B;
+  color: #9a5c35;
 }
 
 /* --- Hero Entrance Animation (CSS-only) --- */
@@ -1436,8 +1438,8 @@ a.guide-card:hover {
 }
 
 @keyframes bannerPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(107,143,113,0); }
-  50% { box-shadow: 0 0 18px 4px rgba(107,143,113,0.45); }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
 }
 .spotlight-banner a {
   color: #fff;
@@ -1466,17 +1468,18 @@ a.guide-card:hover {
   content: '';
   position: absolute;
   top: 0;
-  left: -100%;
+  left: 0;
   width: 60%;
+  will-change: transform;
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
   animation: shimmer 2.5s ease-in-out infinite;
 }
 
 @keyframes shimmer {
-  0% { left: -100%; }
-  50% { left: 150%; }
-  100% { left: 150%; }
+  0% { transform: translateX(0); }
+  50% { transform: translateX(400%); }
+  100% { transform: translateX(400%); }
 }
 
 /* --- Spotlight Guide Card --- */
