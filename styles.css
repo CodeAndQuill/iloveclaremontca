@@ -1438,20 +1438,21 @@ a.guide-card:hover {
 .spotlight-banner {
   background: #6B8F71;
   border-radius: 8px;
-  padding: 14px 20px;
+  padding: 16px 24px;
   margin-bottom: 24px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 0.95rem;
+  gap: 12px;
+  font-size: 1.05rem;
   color: #fff;
   flex-wrap: wrap;
-  animation: bannerPulse 3s ease-in-out infinite;
+  animation: bannerPulse 2.5s ease-in-out infinite;
+  box-shadow: 0 2px 12px rgba(107,143,113,0.3);
 }
 
 @keyframes bannerPulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.85; }
+  0%, 100% { box-shadow: 0 2px 12px rgba(107,143,113,0.3); }
+  50% { box-shadow: 0 4px 24px rgba(107,143,113,0.6); }
 }
 .spotlight-banner a {
   color: #fff;
@@ -1467,11 +1468,11 @@ a.guide-card:hover {
   display: inline-block;
   background: #fff;
   color: #6B8F71;
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  padding: 3px 10px;
+  padding: 4px 12px;
   border-radius: 20px;
   position: relative;
   overflow: hidden;
