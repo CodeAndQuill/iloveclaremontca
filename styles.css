@@ -325,6 +325,8 @@ img {
 
 .badge-icon {
   margin-right: 6px;
+  vertical-align: -2px;
+  flex-shrink: 0;
 }
 
 .hero-wave {
