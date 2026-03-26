@@ -1511,9 +1511,10 @@ a.guide-card:hover {
 }
 
 /* --- New Spotlight Guide Card --- */
-.guide-card-new-spotlight {
+.guide-card.guide-card-new-spotlight {
   border-left-color: #7B5EA7;
   background: #f5f0fa;
+  border-left: 4px solid #7B5EA7;
   position: relative;
   overflow: hidden;
   animation: newSpotlightPulse 2.5s ease-in-out infinite;
