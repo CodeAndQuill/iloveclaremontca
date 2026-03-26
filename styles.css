@@ -1536,14 +1536,15 @@ a.guide-card:hover {
   display: inline-block;
   background: #7B5EA7;
   color: #fff;
-  font-size: 0.6rem;
+  font-size: 0.65rem;
   font-weight: 800;
-  padding: 2px 8px;
+  padding: 3px 8px;
   border-radius: 10px;
-  margin-right: 4px;
+  margin-right: 5px;
   position: relative;
   overflow: hidden;
-  vertical-align: middle;
+  vertical-align: baseline;
+  transform: translateY(-0.5px);
 }
 .new-shimmer-badge::after {
   content: '';
