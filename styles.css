@@ -1510,6 +1510,51 @@ a.guide-card:hover {
   color: #4e6e50;
 }
 
+/* --- New Spotlight Guide Card --- */
+.guide-card-new-spotlight {
+  border-left-color: #D4A843;
+  background: #fdf8ee;
+  position: relative;
+  overflow: hidden;
+  animation: newSpotlightPulse 2.5s ease-in-out infinite;
+}
+@keyframes newSpotlightPulse {
+  0%, 100% { box-shadow: 0 2px 12px rgba(212,168,67,0.15); }
+  50% { box-shadow: 0 6px 28px rgba(212,168,67,0.35); }
+}
+.guide-tag-new-spotlight {
+  color: #D4A843;
+}
+.guide-card-new-spotlight h3 {
+  color: #6b5a2e;
+}
+.guide-card-new-spotlight p {
+  color: #7a6b4a;
+}
+.new-shimmer-badge {
+  display: inline-block;
+  background: #D4A843;
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-right: 4px;
+  position: relative;
+  overflow: hidden;
+  vertical-align: 1px;
+}
+.new-shimmer-badge::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: shimmer 2.5s ease-in-out infinite;
+}
+
 /* --- Scroll Indicator --- */
 .scroll-indicator {
   margin-top: 18px;
