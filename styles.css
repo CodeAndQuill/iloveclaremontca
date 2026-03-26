@@ -1313,6 +1313,11 @@ a.guide-card:hover {
     padding: 24px 22px;
   }
 
+  .guide-card.guide-card-new-spotlight {
+    border-left: 4px solid #7B5EA7;
+    background: #f5f0fa;
+  }
+
   .share-content h2 {
     font-size: 1.6rem;
   }
@@ -1407,6 +1412,11 @@ a.guide-card:hover {
 
   .guide-card {
     padding: 22px 18px;
+  }
+
+  .guide-card.guide-card-new-spotlight {
+    border-left: 4px solid #7B5EA7;
+    background: #f5f0fa;
   }
 
   .rental-card {
