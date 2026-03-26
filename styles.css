@@ -1543,7 +1543,7 @@ a.guide-card:hover {
   margin-right: 4px;
   position: relative;
   overflow: hidden;
-  vertical-align: 1px;
+  vertical-align: middle;
 }
 .new-shimmer-badge::after {
   content: '';
