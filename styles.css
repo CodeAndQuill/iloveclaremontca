@@ -1512,28 +1512,28 @@ a.guide-card:hover {
 
 /* --- New Spotlight Guide Card --- */
 .guide-card-new-spotlight {
-  border-left-color: #D4A843;
-  background: #fdf8ee;
+  border-left-color: #7B5EA7;
+  background: #f5f0fa;
   position: relative;
   overflow: hidden;
   animation: newSpotlightPulse 2.5s ease-in-out infinite;
 }
 @keyframes newSpotlightPulse {
-  0%, 100% { box-shadow: 0 2px 12px rgba(212,168,67,0.15); }
-  50% { box-shadow: 0 6px 28px rgba(212,168,67,0.35); }
+  0%, 100% { box-shadow: 0 2px 12px rgba(123,94,167,0.15); }
+  50% { box-shadow: 0 6px 28px rgba(123,94,167,0.35); }
 }
 .guide-tag-new-spotlight {
-  color: #D4A843;
+  color: #7B5EA7;
 }
 .guide-card-new-spotlight h3 {
-  color: #6b5a2e;
+  color: #4a3668;
 }
 .guide-card-new-spotlight p {
-  color: #7a6b4a;
+  color: #6b5a80;
 }
 .new-shimmer-badge {
   display: inline-block;
-  background: #D4A843;
+  background: #7B5EA7;
   color: #fff;
   font-size: 0.6rem;
   font-weight: 800;
