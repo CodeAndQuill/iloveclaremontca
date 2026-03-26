@@ -1533,18 +1533,16 @@ a.guide-card:hover {
   color: #6b5a80;
 }
 .new-shimmer-badge {
-  display: inline-block;
+  display: inline;
   background: #7B5EA7;
   color: #fff;
-  font-size: 0.65rem;
+  font-size: inherit;
   font-weight: 800;
-  padding: 3px 8px;
+  padding: 2px 8px;
   border-radius: 10px;
-  margin-right: 5px;
+  margin-right: 4px;
   position: relative;
   overflow: hidden;
-  vertical-align: baseline;
-  transform: translateY(-0.5px);
 }
 .new-shimmer-badge::after {
   content: '';
