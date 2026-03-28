@@ -1505,6 +1505,22 @@ a.guide-card:hover {
   100% { transform: translateX(400%); }
 }
 
+/* --- Spotlight Banner: Purple (Egg Hunt) --- */
+.spotlight-banner.spotlight-banner-purple {
+  background: #7B5EA7;
+  box-shadow: 0 2px 12px rgba(123,94,167,0.3);
+  animation: bannerPulsePurple 2.5s ease-in-out infinite;
+}
+@keyframes bannerPulsePurple {
+  0%, 100% { box-shadow: 0 2px 12px rgba(123,94,167,0.3); }
+  50% { box-shadow: 0 4px 24px rgba(123,94,167,0.6); }
+}
+.spotlight-banner-purple a { color: #fff; }
+.spotlight-banner-purple a:hover { color: #e8ddf0; }
+.spotlight-new-badge.spotlight-new-badge-purple {
+  color: #7B5EA7;
+}
+
 /* --- Spotlight Guide Card --- */
 .guide-card-spotlight {
   border-left-color: #6B8F71;
