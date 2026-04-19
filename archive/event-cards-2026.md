@@ -79,3 +79,45 @@ These cards were removed from `events.html` after their 2026 date passed. Update
   <p>A Claremont tradition for families — egg hunts, games, and springtime fun. Hosted by the city at one of the local parks. Free and open to all ages.</p>
 </div>
 ```
+
+---
+
+## Taste of Claremont — Rotary Club Fundraiser (April)
+
+Note: This was the 25th Anniversary in 2026. Update the anniversary language for 2027 (26th annual). The event is held by the Rotary Club of Claremont at TCCS — a dedicated spotlight page also exists at `Spotlights/taste-of-claremont-2026.html` if you want to reuse/update that too.
+
+### JSON-LD Schema
+
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "Event",
+  "name": "Taste of Claremont — 25th Anniversary",
+  "description": "The Rotary Club of Claremont's 25th annual Taste of Claremont — a ticketed 21+ fundraiser featuring local restaurants, wineries, and breweries. Proceeds benefit local nonprofits.",
+  "image": "https://iloveclaremontca.com/photos/claremont-village-sign.jpg",
+  "startDate": "2026-04-18",
+  "endDate": "2026-04-18",
+  "eventStatus": "https://schema.org/EventScheduled",
+  "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+  "location": {
+    "@type": "Place",
+    "name": "The Claremont Colleges Services (TCCS)",
+    "address": { "@type": "PostalAddress", "streetAddress": "101 South Mills Avenue", "addressLocality": "Claremont", "addressRegion": "CA", "postalCode": "91711", "addressCountry": "US" }
+  },
+  "organizer": { "@type": "Organization", "name": "Rotary Club of Claremont", "url": "https://tasteofclaremont.com" },
+  "performer": { "@type": "Organization", "name": "Rotary Club of Claremont" },
+  "isAccessibleForFree": false,
+  "typicalAgeRange": "21+",
+  "offers": { "@type": "Offer", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "validFrom": "2026-01-01", "url": "https://tasteofclaremont.com" }
+}
+```
+
+### HTML Card
+
+```html
+<div class="event-card">
+  <div class="event-month">April 18</div>
+  <h3><a href="https://tasteofclaremont.com" target="_blank" rel="noopener noreferrer">Taste of Claremont — 25th Anniversary</a></h3>
+  <p>The Rotary Club of Claremont's biggest night of the year — a 21+ ticketed fundraiser with local restaurants, wineries, and breweries at TCCS (101 S. Mills Ave). Proceeds benefit local nonprofits. Saturday, April 18, 2026.</p>
+</div>
+```
