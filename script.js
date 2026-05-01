@@ -122,7 +122,6 @@ var modalOverlay = document.getElementById('signupModal');
 
 function shouldShowModal() {
   if (!modalOverlay) return false;
-  if (localStorage.getItem('ilc_modal_dismissed')) return false;
   if (sessionStorage.getItem('ilc_modal_shown')) return false;
   return true;
 }
@@ -134,10 +133,25 @@ function showModal() {
   modalOverlay.classList.add('active');
 }
 
+// Force-open modal from explicit user clicks (sticky CTA, footer form, etc.) — bypasses dismiss flags
+function openModalForce() {
+  if (!modalOverlay) return;
+  modalTriggered = true;
+  modalOverlay.classList.add('active');
+}
+
+document.addEventListener('click', function(e) {
+  var trigger = e.target.closest('.js-subscribe-trigger');
+  if (trigger) {
+    e.preventDefault();
+    openModalForce();
+  }
+});
+
 function hideModal() {
   if (!modalOverlay) return;
   modalOverlay.classList.remove('active');
-  localStorage.setItem('ilc_modal_dismissed', '1');
+  sessionStorage.setItem('ilc_modal_shown', '1');
 }
 
 // Modal event listeners
