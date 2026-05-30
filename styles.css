@@ -72,14 +72,14 @@ img {
 }
 
 .btn-primary {
-  background: #b06a3e;
+  background: #9a5c35;
   color: #fff;
 }
 .btn-primary:hover {
-  background: #9a5c35;
+  background: #864e2c;
   color: #fff;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(198,122,75,0.3);
+  box-shadow: 0 6px 20px rgba(154,92,53,0.35);
 }
 
 .btn-outline {
@@ -119,11 +119,11 @@ img {
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.97);
+  background: rgba(245, 239, 224, 0.97);
   backdrop-filter: blur(12px);
   padding: 0 24px;
   transition: box-shadow 0.3s;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
+  border-bottom: 1px solid rgba(90, 61, 120, 0.08);
 }
 .navbar.scrolled {
   box-shadow: 0 2px 20px rgba(0,0,0,0.15);
@@ -156,6 +156,11 @@ img {
   font-family: 'Times New Roman', Times, Georgia, serif;
   text-rendering: auto;
   -webkit-text-stroke: 0;
+  text-shadow:
+    -1.5px -1.5px 0 #fff, 1.5px -1.5px 0 #fff,
+    -1.5px  1.5px 0 #fff, 1.5px  1.5px 0 #fff,
+    -1.5px  0    0 #fff, 1.5px  0    0 #fff,
+     0   -1.5px 0 #fff, 0     1.5px 0 #fff;
 }
 .heart-o-hero {
   color: #7B5EA7;
@@ -183,17 +188,22 @@ img {
 }
 
 .nav-links a {
-  color: #605848;
+  color: #5a3d78;
   font-size: 0.85rem;
   font-weight: 600;
   padding: 8px 14px;
   border-radius: 6px;
-  transition: all 0.2s;
+  text-decoration: none;
+  transition: color 0.2s, text-decoration-color 0.2s;
 }
 .nav-links a:hover,
 .nav-links a.active {
-  color: #2c2416;
-  background: rgba(0,0,0,0.04);
+  color: #5a3d78;
+  background: transparent;
+  text-decoration: underline;
+  text-decoration-color: #7B5EA7;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
 }
 
 .nav-toggle {
@@ -280,12 +290,15 @@ img {
 
 .hero-badges-tagline {
   font-size: 1rem;
-  color: rgba(255,255,255,0.88);
-  font-weight: 500;
+  color: #fff;
+  font-weight: 600;
   letter-spacing: 2px;
   text-transform: uppercase;
   margin-bottom: 16px;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+  text-shadow:
+    0 1px 2px rgba(0,0,0,0.95),
+    0 2px 8px rgba(0,0,0,0.75),
+    0 4px 18px rgba(0,0,0,0.55);
 }
 
 .hero-badges {
@@ -293,18 +306,20 @@ img {
   gap: 16px;
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 40px;
+  margin-bottom: 56px;
 }
 
 .badge {
-  background: rgba(255,255,255,0.28);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1.5px solid rgba(255,255,255,0.5);
-  color: #fff;
+  background: rgba(245, 239, 224, 0.92);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 1.5px solid rgba(245, 239, 224, 1);
+  color: #5a3d78;
   padding: 10px 20px;
   border-radius: 50px;
   font-size: 0.85rem;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   font-weight: 600;
   transition: all 0.25s ease;
   cursor: pointer;
@@ -313,8 +328,9 @@ img {
 }
 .badge:hover {
   transform: translateY(-3px);
-  background: rgba(255,255,255,0.4);
-  border-color: rgba(183,148,214,0.7);
+  background: #FAF5EA;
+  border-color: #7B5EA7;
+  color: #4a3163;
   box-shadow: 0 6px 20px rgba(123,94,167,0.35);
 }
 
