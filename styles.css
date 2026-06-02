@@ -156,16 +156,16 @@ img {
   font-family: 'Times New Roman', Times, Georgia, serif;
   text-rendering: auto;
   -webkit-text-stroke: 0;
-  text-shadow:
-    -1.5px -1.5px 0 #fff, 1.5px -1.5px 0 #fff,
-    -1.5px  1.5px 0 #fff, 1.5px  1.5px 0 #fff,
-    -1.5px  0    0 #fff, 1.5px  0    0 #fff,
-     0   -1.5px 0 #fff, 0     1.5px 0 #fff;
 }
 .heart-o-hero {
   color: #7B5EA7;
   font-size: 0.75em;
   transform: translateY(-0.02em);
+  text-shadow:
+    -1.5px -1.5px 0 #fff, 1.5px -1.5px 0 #fff,
+    -1.5px  1.5px 0 #fff, 1.5px  1.5px 0 #fff,
+    -1.5px  0    0 #fff, 1.5px  0    0 #fff,
+     0   -1.5px 0 #fff, 0     1.5px 0 #fff;
 }
 .heart-o-share {
   color: #7B5EA7;
