@@ -299,6 +299,14 @@
   <div class="article-body">
     <p class="intro">Claremont's coffee scene is as diverse as the residents who call this town home. Whether you are a student at the 5Cs facing a deadline, a professional needing a "third office," or a parent juggling a busy morning in the Village, the local shops offer more than just a caffeine kick — they offer a specific lifestyle for every hour of the day.</p>
 
+    <aside class="subscribe-inline">
+      <p class="subscribe-inline-pitch">New coffee shop openings, before Instagram catches on &mdash; one email, only when there's something worth showing up for.</p>
+      <form class="subscribe-inline-form" action="https://buttondown.com/api/emails/embed-subscribe/iloveclaremontca" method="POST" target="_blank">
+        <input type="email" name="email" placeholder="Your email" required aria-label="Email address">
+        <button type="submit" class="btn">Subscribe</button>
+      </form>
+    </aside>
+
     <h2>The "Deep Work" & Study Havens</h2>
     <p class="category-intro">When you have a serious deadline or a manuscript to finish, these spots provide the right mix of connectivity, atmosphere, and high-quality fuel.</p>
 
@@ -339,16 +347,6 @@
       <p class="the-move"><strong>The Move:</strong> A latte and the avocado tartine at the long communal table. Bring a book or a long-overdue catch-up friend — you'll end up staying two hours.</p>
     </div>
 
-    <div class="inline-subscribe">
-      <h3>Get the next Claremont guide in your inbox</h3>
-      <p>New spots, seasonal tips, and what's worth showing up for.</p>
-      <form class="inline-subscribe-form" action="https://buttondown.com/api/emails/embed-subscribe/iloveclaremontca" method="POST" target="_blank">
-        <input type="email" name="email" placeholder="Your email" required aria-label="Email address">
-        <button type="submit" class="btn btn-primary">Subscribe</button>
-      </form>
-      <p class="inline-subscribe-note">We only send when there's something real to share.</p>
-    </div>
-
     <h2>The "Grab-n-Go" Coffee Fix</h2>
     <p class="category-intro">When you don't have time for a "pastry break" and just need to get in and out with a quality cup, these are your Village go-tos.</p>
 
@@ -380,11 +378,24 @@
     </div>
   </div>
 
-  <!-- Next Guide -->
-  <div class="article-footer">
-    <p style="color:#605848; margin-bottom:16px; font-size:0.9rem;">Next Guide</p>
-    <a href="neighborhood-guide.html">Claremont Neighborhoods &rarr;</a>
-  </div>
+  <!-- Related Guides -->
+  <aside class="related-guides">
+    <h2>You might also like</h2>
+    <div class="related-guides-grid">
+      <a class="related-guide-card" href="restaurant-guide.html">
+        <h3>Best Restaurants</h3>
+        <p>The Claremont dining hierarchy &mdash; splurge to speed, plus where locals actually go.</p>
+      </a>
+      <a class="related-guide-card" href="free-guide.html">
+        <h3>Free Things to Do</h3>
+        <p>Museums, gardens, trails, and concerts &mdash; the best of Claremont, no wallet required.</p>
+      </a>
+      <a class="related-guide-card" href="shopping-guide.html">
+        <h3>Best Shopping</h3>
+        <p>Boutiques and indie shops worth a slow stroll through the Village.</p>
+      </a>
+    </div>
+  </aside>
 
   <!-- All Guides -->
   <div class="article-footer" style="border-top:none; padding-top:0;">
@@ -437,8 +448,8 @@
 
   <!-- Sticky CTA -->
   <div class="sticky-cta">
-    <p>Like this guide?</p>
-    <button type="button" class="btn btn-primary js-subscribe-trigger">Get new guides by email &rarr;</button>
+    <p>New coffee shop openings, before Instagram catches on.</p>
+    <button type="button" class="btn btn-primary js-subscribe-trigger">Get the alerts &rarr;</button>
   </div>
 
   <!-- Signup Modal -->
