@@ -300,6 +300,15 @@
   <div class="article-body">
     <p class="intro">Claremont is a town designed for the leisurely stroll. When the parents visit, the pace shifts from campus coffee runs to indulgent multi-course meals — best enjoyed knowing the Village's walkable layout lets you wander off every decadent calorie under a canopy of trees.</p>
 
+    <aside class="subscribe-inline">
+      <p class="subscribe-inline-pitch">Restaurant news for your next Claremont visit &mdash; one email, only when there's something worth showing up for.</p>
+      <form class="subscribe-inline-form" action="https://buttondown.com/api/emails/embed-subscribe/iloveclaremontca" method="POST" target="_blank">
+        <input type="email" name="email" placeholder="Your email" required aria-label="Email address">
+        <input type="hidden" name="tag" value="inline-dining">
+        <button type="submit" class="btn">Subscribe</button>
+      </form>
+    </aside>
+
     <h2>Phase 1: The "Splurge" Dinner Staples</h2>
     <p class="category-intro">These are the restaurants where the atmosphere is as refined as the wine list. Clustered in the heart of the Village, they're just a short, scenic walk from the college gates.</p>
 
@@ -390,11 +399,24 @@
     </div>
   </div>
 
-  <!-- Next Guide -->
-  <div class="article-footer">
-    <p style="color:#605848; margin-bottom:16px; font-size:0.9rem;">Next Guide</p>
-    <a href="restaurant-guide.html">The Claremont Dining Guide &rarr;</a>
-  </div>
+  <!-- Related Guides -->
+  <aside class="related-guides">
+    <h2>You might also like</h2>
+    <div class="related-guides-grid">
+      <a class="related-guide-card" href="restaurant-guide.html">
+        <h3>Best Restaurants</h3>
+        <p>The Claremont dining hierarchy &mdash; splurge to speed, plus where locals actually go.</p>
+      </a>
+      <a class="related-guide-card" href="shopping-guide.html">
+        <h3>Best Shopping</h3>
+        <p>Boutiques and indie shops worth a slow stroll through the Village.</p>
+      </a>
+      <a class="related-guide-card" href="coffee-guide.html">
+        <h3>Best Coffee Shops</h3>
+        <p>Where Claremont actually goes for coffee &mdash; and the local order.</p>
+      </a>
+    </div>
+  </aside>
 
   <!-- All Guides -->
   <div class="article-footer" style="border-top:none; padding-top:0;">
@@ -447,8 +469,8 @@
 
   <!-- Sticky CTA -->
   <div class="sticky-cta">
-    <p>Like this guide?</p>
-    <button type="button" class="btn btn-primary js-subscribe-trigger">Get new guides by email &rarr;</button>
+    <p>Restaurant news for your next Claremont visit.</p>
+    <button type="button" class="btn btn-primary js-subscribe-trigger">Get the alerts &rarr;</button>
   </div>
 
   <!-- Signup Modal -->
