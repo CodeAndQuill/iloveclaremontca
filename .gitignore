@@ -26,6 +26,9 @@ index3.html
 og-image-v*.svg
 og-image.svg
 
+# Analytics exports — contains subscriber PII (email_events.csv), never publish
+Analytics Reports/
+
 # OS files
 .DS_Store
 Thumbs.db
