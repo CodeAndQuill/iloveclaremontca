@@ -144,8 +144,9 @@ img {
   color: #2c2416;
   font-family: 'DM Serif Display', Georgia, serif;
   letter-spacing: 0.5px;
+  text-decoration: none;
 }
-.nav-logo:hover { color: #2c2416; }
+.nav-logo:hover { color: #2c2416; text-decoration: none; }
 
 .heart-o {
   color: #7B5EA7;
