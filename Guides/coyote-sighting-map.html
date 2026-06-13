@@ -24,9 +24,9 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Playfair+Display:wght@400;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../styles.css">
 
-  <!-- Leaflet -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Leaflet (cdnjs is more consistently reachable than unpkg) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
   <!-- Cloudflare Turnstile -->
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
@@ -332,9 +332,15 @@
       setTimeout(() => t.classList.remove('show'), 3200);
     }
 
-    function initMap() {
+    function initMap(attempts) {
+      attempts = attempts || 0;
       if (typeof L === 'undefined') {
-        setStatus('Map library failed to load. Refresh to try again.', true);
+        if (attempts < 30) {
+          setStatus('Loading map…');
+          setTimeout(() => initMap(attempts + 1), 200);
+          return;
+        }
+        setStatus('Map library failed to load after several attempts. Check your network and refresh.', true);
         return;
       }
       map = L.map('coyote-map', {
@@ -585,9 +591,10 @@
       });
     });
 
-    // Leaflet loads via defer; init once it's ready
+    // Kick off map init as soon as DOM is interactive — initMap retries
+    // internally if Leaflet is still loading
     if (document.readyState === 'loading') {
-      window.addEventListener('load', initMap);
+      document.addEventListener('DOMContentLoaded', () => initMap());
     } else {
       initMap();
     }
