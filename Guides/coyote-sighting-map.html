@@ -47,8 +47,48 @@
     .map-disclaimer p:last-child { margin-bottom: 0; }
     .map-disclaimer strong { color: #2c2416; }
 
+    .map-wrap { position: relative; }
     #coyote-map { width: 100%; height: 520px; border-radius: 12px; border: 1px solid #e8ddd0; cursor: crosshair; }
     @media (max-width: 768px) { #coyote-map { height: 420px; } }
+
+    .map-fab {
+      position: absolute; top: 12px; right: 12px; z-index: 500;
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #fff; color: #3d2e1e; border: 1px solid #d4c8b8;
+      border-radius: 999px; padding: 9px 16px;
+      font-family: inherit; font-size: 0.92rem; font-weight: 600;
+      box-shadow: 0 4px 14px rgba(44,36,22,0.18);
+      cursor: pointer; transition: background 0.15s, transform 0.1s;
+    }
+    .map-fab:hover { background: #faf5f0; }
+    .map-fab:active { transform: scale(0.97); }
+    .map-fab:disabled { opacity: 0.6; cursor: wait; }
+    .map-fab .fab-icon { font-size: 1.05rem; }
+    @media (max-width: 480px) {
+      .map-fab { padding: 9px 14px; font-size: 0.88rem; }
+      .map-fab .fab-label { display: none; }
+      .map-fab .fab-icon { font-size: 1.2rem; }
+    }
+
+    .map-hint {
+      margin: 14px 0 12px; padding: 10px 14px;
+      background: #fff7ef; border: 1px dashed #e8c9a7; border-radius: 8px;
+      font-size: 0.92rem; color: #3d2e1e; line-height: 1.5;
+    }
+    .map-hint strong { color: #2c2416; }
+
+    /* Distinctive draft pin (orange, pulsing) */
+    .draft-pin-icon {
+      width: 18px; height: 18px;
+      background: #C67A4B; border: 3px solid #fff; border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(198,122,75,0.55);
+      animation: draftPinPulse 1.6s ease-out infinite;
+    }
+    @keyframes draftPinPulse {
+      0%   { box-shadow: 0 0 0 0 rgba(198,122,75,0.55); }
+      70%  { box-shadow: 0 0 0 14px rgba(198,122,75,0); }
+      100% { box-shadow: 0 0 0 0 rgba(198,122,75,0); }
+    }
 
     .map-toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 16px; }
     .map-toolbar .legend { display: flex; flex-wrap: wrap; gap: 14px; flex: 1; font-size: 0.88rem; color: #605848; }
@@ -144,7 +184,14 @@
       <p>Pins are shown at <strong>block level</strong> to protect submitter privacy &mdash; the exact location is never stored.</p>
     </div>
 
-    <div id="coyote-map" role="region" aria-label="Map of recent coyote sightings in Claremont"></div>
+    <p class="map-hint"><strong>Saw a coyote?</strong> Tap the map where you saw it, or use the <span aria-hidden="true">📍</span> button to pin your current spot.</p>
+
+    <div class="map-wrap">
+      <div id="coyote-map" role="region" aria-label="Map of recent coyote sightings in Claremont"></div>
+      <button type="button" class="map-fab" id="mapUseLocationBtn" aria-label="Use my location to drop a pin">
+        <span class="fab-icon" aria-hidden="true">📍</span><span class="fab-label">Use my location</span>
+      </button>
+    </div>
 
     <div class="map-toolbar">
       <div class="legend" aria-label="Map legend">
@@ -169,7 +216,7 @@
     <div class="report-card" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
       <button class="report-close" id="reportClose" aria-label="Close">&times;</button>
       <h2 id="reportTitle">Report a sighting</h2>
-      <p class="subtitle">Tap the map to set a location, or use your phone's GPS.</p>
+      <p class="subtitle">Your pin is set — drag it to adjust, or tap the map again. Add details below.</p>
 
       <form id="reportForm" novalidate>
         <div class="field">
@@ -354,6 +401,21 @@
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(map);
 
+      L.rectangle(
+        [
+          [CLAREMONT_BOUNDS.latMin, CLAREMONT_BOUNDS.lngMin],
+          [CLAREMONT_BOUNDS.latMax, CLAREMONT_BOUNDS.lngMax]
+        ],
+        {
+          color: '#C67A4B',
+          weight: 2,
+          opacity: 0.6,
+          dashArray: '6, 6',
+          fill: false,
+          interactive: false
+        }
+      ).addTo(map);
+
       sightingsLayer = L.layerGroup().addTo(map);
       map.on('click', onMapClick);
       loadSightings();
@@ -367,7 +429,15 @@
         return;
       }
       setDraftPin(lat, lng);
+      if (!$('reportOverlay').classList.contains('open')) openReportModal();
     }
+
+    const DRAFT_ICON = L.divIcon({
+      className: '',
+      html: '<div class="draft-pin-icon" title="Your pin — drag to adjust"></div>',
+      iconSize: [18, 18],
+      iconAnchor: [9, 9]
+    });
 
     function setDraftPin(lat, lng) {
       selectedLatLng = { lat, lng };
@@ -376,7 +446,9 @@
       } else {
         draftMarker = L.marker([lat, lng], {
           draggable: true,
-          title: 'Your pin (drag to adjust)'
+          icon: DRAFT_ICON,
+          title: 'Your pin (drag to adjust)',
+          zIndexOffset: 1000
         }).addTo(map);
         draftMarker.on('dragend', () => {
           const p = draftMarker.getLatLng();
@@ -465,13 +537,23 @@
         return;
       }
       const btn = $('useLocationBtn');
+      const fab = $('mapUseLocationBtn');
+      const fabLabel = fab ? fab.querySelector('.fab-label') : null;
       const original = btn.textContent;
+      const fabOriginal = fabLabel ? fabLabel.textContent : null;
       btn.textContent = 'Locating…';
       btn.disabled = true;
+      if (fab) fab.disabled = true;
+      if (fabLabel) fabLabel.textContent = 'Locating…';
+      const restoreButtons = () => {
+        btn.textContent = original;
+        btn.disabled = false;
+        if (fab) fab.disabled = false;
+        if (fabLabel) fabLabel.textContent = fabOriginal;
+      };
       navigator.geolocation.getCurrentPosition(
         (pos) => {
-          btn.textContent = original;
-          btn.disabled = false;
+          restoreButtons();
           const lat = pos.coords.latitude, lng = pos.coords.longitude;
           if (lat < CLAREMONT_BOUNDS.latMin || lat > CLAREMONT_BOUNDS.latMax ||
               lng < CLAREMONT_BOUNDS.lngMin || lng > CLAREMONT_BOUNDS.lngMax) {
@@ -480,10 +562,10 @@
           }
           setDraftPin(lat, lng);
           map.setView([lat, lng], 16);
+          if (!$('reportOverlay').classList.contains('open')) openReportModal();
         },
         (err) => {
-          btn.textContent = original;
-          btn.disabled = false;
+          restoreButtons();
           showToast('Could not get your location: ' + err.message);
         },
         { enableHighAccuracy: true, timeout: 10000 }
@@ -584,6 +666,7 @@
         if (e.target.id === 'reportOverlay') closeReportModal();
       });
       $('useLocationBtn').addEventListener('click', useGeolocation);
+      $('mapUseLocationBtn').addEventListener('click', useGeolocation);
       $('reportForm').addEventListener('submit', submitSighting);
       $('description').addEventListener('input', () => {
         const len = $('description').value.length;
