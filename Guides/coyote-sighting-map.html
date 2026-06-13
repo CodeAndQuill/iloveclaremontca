@@ -392,11 +392,17 @@
     async function loadSightings() {
       setStatus('Loading recent sightings…');
       try {
-        const url = SUPABASE_URL + '/rest/v1/sightings?select=id,lat,lng,description,animal_condition,reported_at&order=reported_at.desc';
-        const res = await fetch(url, {
-          headers: { apikey: SUPABASE_ANON, Authorization: 'Bearer ' + SUPABASE_ANON }
-        });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
+        // apikey passed as query param avoids a CORS preflight that some
+        // networks were dropping; PostgREST accepts apikey via either.
+        const url = SUPABASE_URL + '/rest/v1/sightings'
+          + '?apikey=' + encodeURIComponent(SUPABASE_ANON)
+          + '&select=id,lat,lng,description,animal_condition,reported_at'
+          + '&order=reported_at.desc';
+        const res = await fetch(url);
+        if (!res.ok) {
+          const body = await res.text().catch(() => '');
+          throw new Error('HTTP ' + res.status + (body ? ' — ' + body.slice(0, 120) : ''));
+        }
         const rows = await res.json();
         renderSightings(rows);
         if (rows.length === 0) {
