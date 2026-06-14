@@ -62,35 +62,13 @@
     .map-disclaimer p:last-child { margin-bottom: 0; }
     .map-disclaimer strong { color: #2c2416; }
 
-    .map-wrap { position: relative; }
-    #coyote-map { width: 100%; height: 520px; border-radius: 12px; border: 1px solid #e8ddd0; cursor: crosshair; }
+    #coyote-map { width: 100%; height: 520px; border-radius: 12px; border: 1px solid #e8ddd0; }
     @media (max-width: 768px) { #coyote-map { height: 420px; } }
 
-    .map-fab {
-      position: absolute; top: 12px; right: 12px; z-index: 500;
-      display: inline-flex; align-items: center; gap: 6px;
-      background: #fff; color: #3d2e1e; border: 1px solid #d4c8b8;
-      border-radius: 999px; padding: 9px 16px;
-      font-family: inherit; font-size: 0.92rem; font-weight: 600;
-      box-shadow: 0 4px 14px rgba(44,36,22,0.18);
-      cursor: pointer; transition: background 0.15s, transform 0.1s;
-    }
-    .map-fab:hover { background: #faf5f0; }
-    .map-fab:active { transform: scale(0.97); }
-    .map-fab:disabled { opacity: 0.6; cursor: wait; }
-    .map-fab .fab-icon { font-size: 1.05rem; }
-    @media (max-width: 480px) {
-      .map-fab { padding: 9px 14px; font-size: 0.88rem; }
-      .map-fab .fab-label { display: none; }
-      .map-fab .fab-icon { font-size: 1.2rem; }
-    }
-
-    .map-hint {
-      margin: 14px 0 12px; padding: 10px 14px;
-      background: #fff7ef; border: 1px dashed #e8c9a7; border-radius: 8px;
-      font-size: 0.92rem; color: #3d2e1e; line-height: 1.5;
-    }
-    .map-hint strong { color: #2c2416; }
+    /* In-modal mini map for pin placement */
+    #report-map { width: 100%; height: 240px; border-radius: 10px; border: 1px solid #e8ddd0; margin-bottom: 6px; cursor: crosshair; }
+    #report-map .leaflet-control-attribution { font-size: 9px; }
+    @media (max-width: 480px) { #report-map { height: 220px; } }
 
     /* Distinctive draft pin (orange, pulsing) */
     .draft-pin-icon {
@@ -203,14 +181,7 @@
       <p>Sightings fade after 72 hours. Pins are shown at <strong>block level</strong> to protect submitter privacy &mdash; the exact location is never stored.</p>
     </div>
 
-    <p class="map-hint"><strong>Saw a coyote?</strong> Tap the map where you saw it, or use the <span aria-hidden="true">📍</span> button to pin your current spot.</p>
-
-    <div class="map-wrap">
-      <div id="coyote-map" role="region" aria-label="Map of recent coyote sightings in Claremont"></div>
-      <button type="button" class="map-fab" id="mapUseLocationBtn" aria-label="Use my location to drop a pin">
-        <span class="fab-icon" aria-hidden="true">📍</span><span class="fab-label">Use my location</span>
-      </button>
-    </div>
+    <div id="coyote-map" role="region" aria-label="Map of recent coyote sightings in Claremont"></div>
 
     <div class="map-toolbar">
       <div class="legend" aria-label="Map legend">
@@ -235,16 +206,17 @@
     <div class="report-card" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
       <button class="report-close" id="reportClose" aria-label="Close">&times;</button>
       <h2 id="reportTitle">Report a sighting</h2>
-      <p class="subtitle">Your pin is set — drag it to adjust, or tap the map again. Add details below.</p>
+      <p class="subtitle">Drag the orange pin to where you saw the coyote, or tap the map.</p>
 
       <form id="reportForm" novalidate>
         <div class="field">
-          <label>Location</label>
+          <label>Where did you see it?</label>
+          <div id="report-map" role="region" aria-label="Mini map for pinning your sighting location"></div>
           <div class="location-row">
-            <input type="text" id="latlngDisplay" readonly placeholder="Tap the map to pin a spot" aria-label="Selected latitude and longitude">
+            <input type="text" id="latlngDisplay" readonly placeholder="Use the map above to pin a spot" aria-label="Selected latitude and longitude">
             <button type="button" id="useLocationBtn">&#x1F4CD; Use my location</button>
           </div>
-          <p class="hint">Saved to nearest block. Exact coordinates are never stored.</p>
+          <p class="hint">Pin is saved to the nearest block — your exact spot is never stored.</p>
         </div>
 
         <div class="field">
@@ -364,7 +336,12 @@
       unknown:         'Unknown'
     };
 
-    let map, sightingsLayer, draftMarker, selectedLatLng = null, turnstileToken = null;
+    let map, sightingsLayer;
+    let reportMap, reportSightingsLayer, draftMarker;
+    let selectedLatLng = null, turnstileToken = null;
+    let reportMapInitialized = false;
+    let geolocationAsked = false;
+    let lastSightingRows = [];
 
     function $(id) { return document.getElementById(id); }
 
@@ -409,9 +386,10 @@
         setStatus('Map library failed to load after several attempts. Check your network and refresh.', true);
         return;
       }
+      // Main map: browse view, fits the whole Claremont bounding box so users
+      // see all of the city + every recent sighting at once. Read-only for
+      // reporting — the actual pin-drop happens inside the modal.
       map = L.map('coyote-map', {
-        center: CLAREMONT_CENTER,
-        zoom: 13,
         scrollWheelZoom: true,
         tap: true
       });
@@ -420,35 +398,24 @@
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(map);
 
-      L.rectangle(
-        [
-          [CLAREMONT_BOUNDS.latMin, CLAREMONT_BOUNDS.lngMin],
-          [CLAREMONT_BOUNDS.latMax, CLAREMONT_BOUNDS.lngMax]
-        ],
-        {
-          color: '#C67A4B',
-          weight: 2,
-          opacity: 0.6,
-          dashArray: '6, 6',
-          fill: false,
-          interactive: false
-        }
-      ).addTo(map);
+      const claremontLatLngBounds = [
+        [CLAREMONT_BOUNDS.latMin, CLAREMONT_BOUNDS.lngMin],
+        [CLAREMONT_BOUNDS.latMax, CLAREMONT_BOUNDS.lngMax]
+      ];
+
+      L.rectangle(claremontLatLngBounds, {
+        color: '#C67A4B',
+        weight: 2,
+        opacity: 0.6,
+        dashArray: '6, 6',
+        fill: false,
+        interactive: false
+      }).addTo(map);
+
+      map.fitBounds(claremontLatLngBounds, { padding: [20, 20] });
 
       sightingsLayer = L.layerGroup().addTo(map);
-      map.on('click', onMapClick);
       loadSightings();
-    }
-
-    function onMapClick(e) {
-      const { lat, lng } = e.latlng;
-      if (lat < CLAREMONT_BOUNDS.latMin || lat > CLAREMONT_BOUNDS.latMax ||
-          lng < CLAREMONT_BOUNDS.lngMin || lng > CLAREMONT_BOUNDS.lngMax) {
-        showToast('Pin must be inside Claremont.');
-        return;
-      }
-      setDraftPin(lat, lng);
-      if (!$('reportOverlay').classList.contains('open')) openReportModal();
     }
 
     const DRAFT_ICON = L.divIcon({
@@ -458,7 +425,59 @@
       iconAnchor: [9, 9]
     });
 
+    function inClaremont(lat, lng) {
+      return lat >= CLAREMONT_BOUNDS.latMin && lat <= CLAREMONT_BOUNDS.latMax
+          && lng >= CLAREMONT_BOUNDS.lngMin && lng <= CLAREMONT_BOUNDS.lngMax;
+    }
+
+    // Initialize the mini-map inside the report modal. Lazy: only runs the
+    // first time the modal opens (Leaflet requires the container to have a
+    // measurable size).
+    function initReportMap() {
+      if (reportMapInitialized) return;
+      reportMap = L.map('report-map', {
+        center: CLAREMONT_CENTER,
+        zoom: 13,
+        scrollWheelZoom: true,
+        tap: true
+      });
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OSM'
+      }).addTo(reportMap);
+
+      L.rectangle(
+        [
+          [CLAREMONT_BOUNDS.latMin, CLAREMONT_BOUNDS.lngMin],
+          [CLAREMONT_BOUNDS.latMax, CLAREMONT_BOUNDS.lngMax]
+        ],
+        {
+          color: '#C67A4B',
+          weight: 2,
+          opacity: 0.5,
+          dashArray: '5, 5',
+          fill: false,
+          interactive: false
+        }
+      ).addTo(reportMap);
+
+      reportSightingsLayer = L.layerGroup().addTo(reportMap);
+      mirrorSightingsToReportMap(lastSightingRows);
+
+      reportMap.on('click', (e) => {
+        const { lat, lng } = e.latlng;
+        if (!inClaremont(lat, lng)) {
+          showToast('Pin must be inside Claremont.');
+          return;
+        }
+        setDraftPin(lat, lng);
+      });
+
+      reportMapInitialized = true;
+    }
+
     function setDraftPin(lat, lng) {
+      if (!reportMap) return;
       selectedLatLng = { lat, lng };
       if (draftMarker) {
         draftMarker.setLatLng([lat, lng]);
@@ -468,9 +487,14 @@
           icon: DRAFT_ICON,
           title: 'Your pin (drag to adjust)',
           zIndexOffset: 1000
-        }).addTo(map);
+        }).addTo(reportMap);
         draftMarker.on('dragend', () => {
           const p = draftMarker.getLatLng();
+          if (!inClaremont(p.lat, p.lng)) {
+            showToast('Pin must be inside Claremont.');
+            draftMarker.setLatLng([selectedLatLng.lat, selectedLatLng.lng]);
+            return;
+          }
           selectedLatLng = { lat: p.lat, lng: p.lng };
           $('latlngDisplay').value = p.lat.toFixed(5) + ', ' + p.lng.toFixed(5);
           updateSubmitState();
@@ -478,6 +502,25 @@
       }
       $('latlngDisplay').value = lat.toFixed(5) + ', ' + lng.toFixed(5);
       updateSubmitState();
+    }
+
+    // Mirror recent community sightings inside the mini-map so the user can
+    // see if they're about to report next to an existing pin.
+    function mirrorSightingsToReportMap(rows) {
+      if (!reportSightingsLayer) return;
+      reportSightingsLayer.clearLayers();
+      rows.forEach(row => {
+        const color = CONDITION_COLORS[row.animal_condition] || CONDITION_COLORS.unknown;
+        L.circleMarker([row.lat, row.lng], {
+          radius: 6,
+          fillColor: color,
+          color: '#fff',
+          weight: 1.5,
+          opacity: 1,
+          fillOpacity: 0.7,
+          interactive: false
+        }).addTo(reportSightingsLayer);
+      });
     }
 
     async function loadSightings() {
@@ -495,7 +538,9 @@
           throw new Error('HTTP ' + res.status + (body ? ' — ' + body.slice(0, 120) : ''));
         }
         const rows = await res.json();
+        lastSightingRows = rows;
         renderSightings(rows);
+        mirrorSightingsToReportMap(rows);
         if (rows.length === 0) {
           setStatus('No sightings in the last 72 hours. Be the first to report one.');
         } else {
@@ -538,6 +583,24 @@
       now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
       $('reportedAt').value = now.toISOString().slice(0, 16);
       updateSubmitState();
+
+      // Initialize the mini-map the first time, then ensure it picks up the
+      // modal's now-visible dimensions. Leaflet maps in display:none containers
+      // come up sized 0×0 — invalidateSize fixes that once the overlay flips
+      // to display:flex.
+      requestAnimationFrame(() => {
+        initReportMap();
+        reportMap.invalidateSize();
+        // If we already had a draft pin from a prior open, recenter on it.
+        if (selectedLatLng) {
+          reportMap.setView([selectedLatLng.lat, selectedLatLng.lng], 16);
+        } else if (!geolocationAsked) {
+          // First time the user opens the modal: try to drop them at their
+          // current location for a quick, accurate report.
+          geolocationAsked = true;
+          useGeolocation({ silentFailure: true });
+        }
+      });
     }
     function closeReportModal() {
       $('reportOverlay').classList.remove('open');
@@ -550,42 +613,35 @@
       $('submitBtn').disabled = !ready;
     }
 
-    function useGeolocation() {
+    function useGeolocation(opts) {
+      const silentFailure = opts && opts.silentFailure;
       if (!navigator.geolocation) {
-        showToast('Your browser does not support geolocation.');
+        if (!silentFailure) showToast('Your browser does not support geolocation.');
         return;
       }
       const btn = $('useLocationBtn');
-      const fab = $('mapUseLocationBtn');
-      const fabLabel = fab ? fab.querySelector('.fab-label') : null;
       const original = btn.textContent;
-      const fabOriginal = fabLabel ? fabLabel.textContent : null;
       btn.textContent = 'Locating…';
       btn.disabled = true;
-      if (fab) fab.disabled = true;
-      if (fabLabel) fabLabel.textContent = 'Locating…';
-      const restoreButtons = () => {
+      const restoreButton = () => {
         btn.textContent = original;
         btn.disabled = false;
-        if (fab) fab.disabled = false;
-        if (fabLabel) fabLabel.textContent = fabOriginal;
       };
       navigator.geolocation.getCurrentPosition(
         (pos) => {
-          restoreButtons();
+          restoreButton();
           const lat = pos.coords.latitude, lng = pos.coords.longitude;
-          if (lat < CLAREMONT_BOUNDS.latMin || lat > CLAREMONT_BOUNDS.latMax ||
-              lng < CLAREMONT_BOUNDS.lngMin || lng > CLAREMONT_BOUNDS.lngMax) {
-            showToast('You appear to be outside Claremont. Tap the map instead.');
+          if (!inClaremont(lat, lng)) {
+            if (!silentFailure) showToast('You appear to be outside Claremont. Tap the mini-map to pin instead.');
             return;
           }
+          initReportMap();
           setDraftPin(lat, lng);
-          map.setView([lat, lng], 16);
-          if (!$('reportOverlay').classList.contains('open')) openReportModal();
+          reportMap.setView([lat, lng], 17);
         },
         (err) => {
-          restoreButtons();
-          showToast('Could not get your location: ' + err.message);
+          restoreButton();
+          if (!silentFailure) showToast('Could not get your location: ' + err.message);
         },
         { enableHighAccuracy: true, timeout: 10000 }
       );
@@ -656,7 +712,7 @@
       $('description').value = '';
       $('charCounter').textContent = '0 / 280';
       $('latlngDisplay').value = '';
-      if (draftMarker) { map.removeLayer(draftMarker); draftMarker = null; }
+      if (draftMarker && reportMap) { reportMap.removeLayer(draftMarker); draftMarker = null; }
       selectedLatLng = null;
       document.querySelector('input[name="animal_condition"][value="healthy_passing"]').checked = true;
       if (typeof turnstile !== 'undefined') turnstile.reset();
@@ -684,8 +740,7 @@
       $('reportOverlay').addEventListener('click', (e) => {
         if (e.target.id === 'reportOverlay') closeReportModal();
       });
-      $('useLocationBtn').addEventListener('click', useGeolocation);
-      $('mapUseLocationBtn').addEventListener('click', useGeolocation);
+      $('useLocationBtn').addEventListener('click', () => useGeolocation());
       $('reportForm').addEventListener('submit', submitSighting);
       $('description').addEventListener('input', () => {
         const len = $('description').value.length;
