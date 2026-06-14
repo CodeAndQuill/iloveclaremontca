@@ -66,21 +66,31 @@
     @media (max-width: 768px) { #coyote-map { height: 420px; } }
 
     /* In-modal mini map for pin placement */
-    #report-map { width: 100%; height: 240px; border-radius: 10px; border: 1px solid #e8ddd0; margin-bottom: 6px; cursor: crosshair; }
+    .report-map-wrap { position: relative; margin-bottom: 6px; }
+    #report-map { width: 100%; height: 240px; border-radius: 10px; border: 1px solid #e8ddd0; cursor: grab; }
+    #report-map.leaflet-grab { cursor: grab; }
+    #report-map.leaflet-dragging { cursor: grabbing; }
     #report-map .leaflet-control-attribution { font-size: 9px; }
     @media (max-width: 480px) { #report-map { height: 220px; } }
 
-    /* Distinctive draft pin (orange, pulsing) */
-    .draft-pin-icon {
-      width: 18px; height: 18px;
-      background: #C67A4B; border: 3px solid #fff; border-radius: 50%;
-      box-shadow: 0 0 0 0 rgba(198,122,75,0.55);
-      animation: draftPinPulse 1.6s ease-out infinite;
+    /* Screen-anchored teardrop pin — sits at the center of the mini-map at
+       all times. Map pans underneath, pin stays put visually. */
+    .report-map-pin {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 32px;
+      height: 44px;
+      pointer-events: none;
+      z-index: 500;
+      transform: translate(-50%, -100%);
+      filter: drop-shadow(0 3px 4px rgba(0,0,0,0.35));
+      animation: pinBob 1.6s ease-in-out infinite;
     }
-    @keyframes draftPinPulse {
-      0%   { box-shadow: 0 0 0 0 rgba(198,122,75,0.55); }
-      70%  { box-shadow: 0 0 0 14px rgba(198,122,75,0); }
-      100% { box-shadow: 0 0 0 0 rgba(198,122,75,0); }
+    .report-map-pin svg { display: block; width: 100%; height: 100%; }
+    @keyframes pinBob {
+      0%, 100% { transform: translate(-50%, -100%); }
+      50%      { transform: translate(-50%, calc(-100% - 4px)); }
     }
 
     .map-toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 16px; }
@@ -207,18 +217,26 @@
     <div class="report-card" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
       <button class="report-close" id="reportClose" aria-label="Close">&times;</button>
       <h2 id="reportTitle">Report a sighting</h2>
-      <p class="subtitle">Drag the orange pin to where you saw the coyote, or tap the map.</p>
+      <p class="subtitle">Drag the map so the pin lands where you saw the coyote.</p>
 
       <form id="reportForm" novalidate>
         <div class="field">
           <label>Where did you see it?</label>
-          <div id="report-map" role="region" aria-label="Mini map for pinning your sighting location"></div>
+          <div class="report-map-wrap">
+            <div id="report-map" role="region" aria-label="Mini map for pinning your sighting location"></div>
+            <div class="report-map-pin" aria-hidden="true">
+              <svg viewBox="0 0 32 44" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16 2 C8 2 3 8 3 15 C3 23 13 36 16 44 C19 36 29 23 29 15 C29 8 24 2 16 2 Z"
+                      fill="#C67A4B" stroke="#fff" stroke-width="2"/>
+                <circle cx="16" cy="15" r="5" fill="#fff"/>
+              </svg>
+            </div>
+          </div>
           <div class="location-row">
-            <input type="text" id="latlngDisplay" readonly placeholder="Use the map above to pin a spot" aria-label="Selected latitude and longitude">
-            <button type="button" id="placePinBtn" aria-label="Place a pin at the current center of the map">&#x1F4CC; Place pin here</button>
+            <input type="text" id="latlngDisplay" readonly placeholder="Drag the map to pin a spot" aria-label="Selected latitude and longitude">
             <button type="button" id="useLocationBtn">&#x1F4CD; Use my location</button>
           </div>
-          <p class="hint">Drag the pin to fine-tune, or tap the map. Saved to the nearest block — your exact spot is never stored.</p>
+          <p class="hint">Saved to the nearest block — your exact spot is never stored.</p>
         </div>
 
         <div class="field">
@@ -339,7 +357,7 @@
     };
 
     let map, sightingsLayer;
-    let reportMap, reportSightingsLayer, draftMarker;
+    let reportMap, reportSightingsLayer;
     let selectedLatLng = null, turnstileToken = null;
     let reportMapInitialized = false;
     let geolocationAsked = false;
@@ -420,13 +438,6 @@
       loadSightings();
     }
 
-    const DRAFT_ICON = L.divIcon({
-      className: '',
-      html: '<div class="draft-pin-icon" title="Your pin — drag to adjust"></div>',
-      iconSize: [18, 18],
-      iconAnchor: [9, 9]
-    });
-
     function inClaremont(lat, lng) {
       return lat >= CLAREMONT_BOUNDS.latMin && lat <= CLAREMONT_BOUNDS.latMax
           && lng >= CLAREMONT_BOUNDS.lngMin && lng <= CLAREMONT_BOUNDS.lngMax;
@@ -466,43 +477,27 @@
       reportSightingsLayer = L.layerGroup().addTo(reportMap);
       mirrorSightingsToReportMap(lastSightingRows);
 
-      reportMap.on('click', (e) => {
-        const { lat, lng } = e.latlng;
-        if (!inClaremont(lat, lng)) {
-          showToast('Pin must be inside Claremont.');
-          return;
-        }
-        setDraftPin(lat, lng);
-      });
+      // The pin is a fixed overlay at the map's visual center (.report-map-pin).
+      // As the user pans, the underlying lat/lng changes — read it on moveend.
+      reportMap.on('moveend', syncSelectedToCenter);
 
       reportMapInitialized = true;
     }
 
-    function setDraftPin(lat, lng) {
+    // Read the current map center, validate it's inside Claremont, and update
+    // selectedLatLng + the lat/lng readout. Disables submit if out of bounds.
+    function syncSelectedToCenter() {
       if (!reportMap) return;
-      selectedLatLng = { lat, lng };
-      if (draftMarker) {
-        draftMarker.setLatLng([lat, lng]);
-      } else {
-        draftMarker = L.marker([lat, lng], {
-          draggable: true,
-          icon: DRAFT_ICON,
-          title: 'Your pin (drag to adjust)',
-          zIndexOffset: 1000
-        }).addTo(reportMap);
-        draftMarker.on('dragend', () => {
-          const p = draftMarker.getLatLng();
-          if (!inClaremont(p.lat, p.lng)) {
-            showToast('Pin must be inside Claremont.');
-            draftMarker.setLatLng([selectedLatLng.lat, selectedLatLng.lng]);
-            return;
-          }
-          selectedLatLng = { lat: p.lat, lng: p.lng };
-          $('latlngDisplay').value = p.lat.toFixed(5) + ', ' + p.lng.toFixed(5);
-          updateSubmitState();
-        });
+      const c = reportMap.getCenter();
+      if (!inClaremont(c.lat, c.lng)) {
+        selectedLatLng = null;
+        $('latlngDisplay').value = '';
+        $('latlngDisplay').placeholder = 'Pan into Claremont';
+        updateSubmitState();
+        return;
       }
-      $('latlngDisplay').value = lat.toFixed(5) + ', ' + lng.toFixed(5);
+      selectedLatLng = { lat: c.lat, lng: c.lng };
+      $('latlngDisplay').value = c.lat.toFixed(5) + ', ' + c.lng.toFixed(5);
       updateSubmitState();
     }
 
@@ -593,15 +588,15 @@
       requestAnimationFrame(() => {
         initReportMap();
         reportMap.invalidateSize();
-        // If we already had a draft pin from a prior open, recenter on it.
-        if (selectedLatLng) {
-          reportMap.setView([selectedLatLng.lat, selectedLatLng.lng], 16);
-        } else if (!geolocationAsked) {
-          // First time the user opens the modal: try to drop them at their
-          // current location for a quick, accurate report.
+        if (!geolocationAsked) {
+          // First time the user opens the modal: jump to their current
+          // location so the pin lands somewhere accurate by default.
           geolocationAsked = true;
           useGeolocation({ silentFailure: true });
         }
+        // Read the now-correct map center into the lat/lng readout. Catches
+        // both the fresh-init case and the reopened-modal case.
+        syncSelectedToCenter();
       });
     }
     function closeReportModal() {
@@ -613,16 +608,6 @@
       const desc = $('description').value.trim();
       const ready = selectedLatLng && desc.length > 0 && turnstileToken;
       $('submitBtn').disabled = !ready;
-    }
-
-    function placePinAtCenter() {
-      if (!reportMap) return;
-      const c = reportMap.getCenter();
-      if (!inClaremont(c.lat, c.lng)) {
-        showToast('Pan the map into Claremont first.');
-        return;
-      }
-      setDraftPin(c.lat, c.lng);
     }
 
     function useGeolocation(opts) {
@@ -644,11 +629,11 @@
           restoreButton();
           const lat = pos.coords.latitude, lng = pos.coords.longitude;
           if (!inClaremont(lat, lng)) {
-            if (!silentFailure) showToast('You appear to be outside Claremont. Tap the mini-map to pin instead.');
+            if (!silentFailure) showToast('You appear to be outside Claremont. Drag the map to pin instead.');
             return;
           }
           initReportMap();
-          setDraftPin(lat, lng);
+          // setView fires moveend → syncSelectedToCenter picks up the new center.
           reportMap.setView([lat, lng], 17);
         },
         (err) => {
@@ -724,7 +709,6 @@
       $('description').value = '';
       $('charCounter').textContent = '0 / 280';
       $('latlngDisplay').value = '';
-      if (draftMarker && reportMap) { reportMap.removeLayer(draftMarker); draftMarker = null; }
       selectedLatLng = null;
       document.querySelector('input[name="animal_condition"][value="healthy_passing"]').checked = true;
       if (typeof turnstile !== 'undefined') turnstile.reset();
@@ -753,7 +737,6 @@
         if (e.target.id === 'reportOverlay') closeReportModal();
       });
       $('useLocationBtn').addEventListener('click', () => useGeolocation());
-      $('placePinBtn').addEventListener('click', placePinAtCenter);
       $('reportForm').addEventListener('submit', submitSighting);
       $('description').addEventListener('input', () => {
         const len = $('description').value.length;
