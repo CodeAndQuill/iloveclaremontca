@@ -189,7 +189,7 @@
 
     <div class="map-disclaimer">
       <p><strong>Community-reported. Not verified.</strong> For urgent reports, call IVHS at <a href="tel:+19096239777">(909) 623-9777</a> or 911 if there's an immediate threat.</p>
-      <p>Sightings fade after 72 hours. Pins are shown at <strong>block level</strong> to protect submitter privacy &mdash; the exact location is never stored.</p>
+      <p>Sightings auto-archive after 72 hours. Pins are shown at <strong>block level</strong> to protect submitter privacy &mdash; the exact location is never stored. Some reports may be briefly held for review before going live.</p>
     </div>
 
     <div id="coyote-map" role="region" aria-label="Map of recent coyote sightings in Claremont"></div>
@@ -240,6 +240,12 @@
         </div>
 
         <div class="field">
+          <label for="crossStreet">Nearest cross-street or landmark</label>
+          <input type="text" id="crossStreet" maxlength="80" required placeholder="e.g., Mountain & Eleventh, or near Sycamore Elementary">
+          <p class="hint">A real local can name a corner — bots can't. Helps neighbors place the pin.</p>
+        </div>
+
+        <div class="field">
           <label for="reportedAt">When did you see it?</label>
           <input type="datetime-local" id="reportedAt">
           <p class="hint">Defaults to right now. Can be backdated up to 7 days.</p>
@@ -258,6 +264,12 @@
             <label><input type="radio" name="animal_condition" value="sick_injured"> Sick or injured</label>
             <label><input type="radio" name="animal_condition" value="unknown"> Unknown</label>
           </div>
+        </div>
+
+        <div class="field">
+          <label for="submitterEmail">Your email <span style="font-weight:400;color:#777;">(optional)</span></label>
+          <input type="email" id="submitterEmail" maxlength="200" placeholder="you@example.com" autocomplete="email">
+          <p class="hint">Private. Never published. Only used if we need to follow up.</p>
         </div>
 
         <input type="text" class="honeypot" name="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
@@ -527,7 +539,7 @@
         // networks were dropping; PostgREST accepts apikey via either.
         const url = SUPABASE_URL + '/rest/v1/sightings'
           + '?apikey=' + encodeURIComponent(SUPABASE_ANON)
-          + '&select=id,lat,lng,description,animal_condition,reported_at'
+          + '&select=id,lat,lng,description,animal_condition,reported_at,cross_street'
           + '&order=reported_at.desc';
         const res = await fetch(url);
         if (!res.ok) {
@@ -561,9 +573,13 @@
           opacity: 1,
           fillOpacity: 0.85
         });
+        const nearLine = row.cross_street
+          ? '<div style="font-size:0.82rem;color:#605848;margin-bottom:4px;"><strong>Near:</strong> ' + escapeHtml(row.cross_street) + '</div>'
+          : '';
         const popupHtml =
           '<div style="font-family:Inter,system-ui,sans-serif;max-width:240px;">' +
             '<div style="font-weight:700;color:#2c2416;margin-bottom:4px;">' + CONDITION_LABELS[row.animal_condition] + '</div>' +
+            nearLine +
             '<div style="font-size:0.9rem;color:#3d2e1e;line-height:1.5;margin-bottom:6px;">' + escapeHtml(row.description) + '</div>' +
             '<div style="font-size:0.78rem;color:#888;">' + relativeTime(row.reported_at) + '</div>' +
           '</div>';
@@ -606,7 +622,8 @@
 
     function updateSubmitState() {
       const desc = $('description').value.trim();
-      const ready = selectedLatLng && desc.length > 0 && turnstileToken;
+      const cross = $('crossStreet').value.trim();
+      const ready = selectedLatLng && desc.length > 0 && cross.length >= 3 && turnstileToken;
       $('submitBtn').disabled = !ready;
     }
 
@@ -651,6 +668,9 @@
       if (!turnstileToken) { showError('Please complete the verification widget.'); return; }
       const desc = $('description').value.trim();
       if (desc.length === 0) { showError('Please describe what you saw.'); return; }
+      const cross = $('crossStreet').value.trim();
+      if (cross.length < 3) { showError('Please add a nearest cross-street or landmark.'); return; }
+      const emailVal = $('submitterEmail').value.trim();
       const condition = document.querySelector('input[name="animal_condition"]:checked').value;
       const reportedAtRaw = $('reportedAt').value;
       let reportedAtIso = new Date().toISOString();
@@ -660,11 +680,13 @@
         lat: selectedLatLng.lat,
         lng: selectedLatLng.lng,
         description: desc,
+        cross_street: cross,
         animal_condition: condition,
         reported_at: reportedAtIso,
         turnstile_token: turnstileToken,
         honeypot: ''
       };
+      if (emailVal.length > 0) body.submitter_email = emailVal;
 
       const btn = $('submitBtn');
       btn.disabled = true;
@@ -707,6 +729,8 @@
 
     function resetForm() {
       $('description').value = '';
+      $('crossStreet').value = '';
+      $('submitterEmail').value = '';
       $('charCounter').textContent = '0 / 280';
       $('latlngDisplay').value = '';
       selectedLatLng = null;
@@ -745,6 +769,7 @@
         counter.classList.toggle('over', len > 280);
         updateSubmitState();
       });
+      $('crossStreet').addEventListener('input', updateSubmitState);
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && $('reportOverlay').classList.contains('open')) closeReportModal();
       });

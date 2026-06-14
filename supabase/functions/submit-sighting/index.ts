@@ -75,7 +75,17 @@ serve(async (req) => {
     return jsonResp(400, { error: "invalid JSON" });
   }
 
-  const { lat, lng, description, animal_condition, reported_at, turnstile_token, honeypot } = payload as {
+  const {
+    lat,
+    lng,
+    description,
+    animal_condition,
+    reported_at,
+    turnstile_token,
+    honeypot,
+    cross_street,
+    submitter_email,
+  } = payload as {
     lat?: unknown;
     lng?: unknown;
     description?: unknown;
@@ -83,6 +93,8 @@ serve(async (req) => {
     reported_at?: unknown;
     turnstile_token?: unknown;
     honeypot?: unknown;
+    cross_street?: unknown;
+    submitter_email?: unknown;
   };
 
   if (typeof honeypot === "string" && honeypot.length > 0) {
@@ -99,6 +111,23 @@ serve(async (req) => {
     turnstile_token.length === 0
   ) {
     return jsonResp(400, { error: "missing or invalid fields" });
+  }
+
+  const cleanCrossStreet =
+    typeof cross_street === "string"
+      ? cross_street.replace(/<[^>]*>/g, "").trim().slice(0, 80)
+      : "";
+  if (cleanCrossStreet.length < 3) {
+    return jsonResp(400, { error: "cross_street required (3-80 chars)" });
+  }
+
+  let cleanEmail: string | null = null;
+  if (typeof submitter_email === "string" && submitter_email.trim().length > 0) {
+    const e = submitter_email.trim().slice(0, 200);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) {
+      return jsonResp(400, { error: "invalid email format" });
+    }
+    cleanEmail = e;
   }
 
   if (
@@ -180,8 +209,10 @@ serve(async (req) => {
       animal_condition: condition,
       reported_at: reportedAt,
       submitter_ip_hash: ipHash,
+      cross_street: cleanCrossStreet,
+      submitter_email: cleanEmail,
     })
-    .select("id, lat, lng, reported_at, animal_condition, description")
+    .select("id, lat, lng, reported_at, animal_condition, description, cross_street")
     .single();
 
   if (error) {
