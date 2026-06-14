@@ -116,10 +116,11 @@
     .field .hint { font-size: 0.82rem; color: #888; margin-top: 4px; }
     .field .char-counter { float: right; font-size: 0.82rem; color: #888; }
     .field .char-counter.over { color: #b03a2e; }
-    .location-row { display: flex; gap: 8px; align-items: stretch; }
-    .location-row input { flex: 1; font-family: monospace; font-size: 0.85rem; }
-    .location-row button { background: #faf5f0; border: 1px solid #d4c8b8; color: #3d2e1e; padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; white-space: nowrap; }
+    .location-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: stretch; }
+    .location-row input { flex: 1 1 100%; font-family: monospace; font-size: 0.85rem; }
+    .location-row button { flex: 1 1 0; background: #faf5f0; border: 1px solid #d4c8b8; color: #3d2e1e; padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; white-space: nowrap; }
     .location-row button:hover { background: #f0e6da; }
+    .location-row button:disabled { opacity: 0.6; cursor: wait; }
     .radio-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .radio-group label { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid #d4c8b8; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 500; background: #faf5f0; }
     .radio-group label:has(input:checked) { background: #fff; border-color: #C67A4B; box-shadow: 0 0 0 2px rgba(198,122,75,0.25); }
@@ -214,9 +215,10 @@
           <div id="report-map" role="region" aria-label="Mini map for pinning your sighting location"></div>
           <div class="location-row">
             <input type="text" id="latlngDisplay" readonly placeholder="Use the map above to pin a spot" aria-label="Selected latitude and longitude">
+            <button type="button" id="placePinBtn" aria-label="Place a pin at the current center of the map">&#x1F4CC; Place pin here</button>
             <button type="button" id="useLocationBtn">&#x1F4CD; Use my location</button>
           </div>
-          <p class="hint">Pin is saved to the nearest block — your exact spot is never stored.</p>
+          <p class="hint">Drag the pin to fine-tune, or tap the map. Saved to the nearest block — your exact spot is never stored.</p>
         </div>
 
         <div class="field">
@@ -613,6 +615,16 @@
       $('submitBtn').disabled = !ready;
     }
 
+    function placePinAtCenter() {
+      if (!reportMap) return;
+      const c = reportMap.getCenter();
+      if (!inClaremont(c.lat, c.lng)) {
+        showToast('Pan the map into Claremont first.');
+        return;
+      }
+      setDraftPin(c.lat, c.lng);
+    }
+
     function useGeolocation(opts) {
       const silentFailure = opts && opts.silentFailure;
       if (!navigator.geolocation) {
@@ -741,6 +753,7 @@
         if (e.target.id === 'reportOverlay') closeReportModal();
       });
       $('useLocationBtn').addEventListener('click', () => useGeolocation());
+      $('placePinBtn').addEventListener('click', placePinAtCenter);
       $('reportForm').addEventListener('submit', submitSighting);
       $('description').addEventListener('input', () => {
         const len = $('description').value.length;
