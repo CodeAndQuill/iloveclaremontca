@@ -1,9 +1,11 @@
 // Coyote sighting submission endpoint.
 // Verifies Turnstile, validates Claremont bounds, snaps lat/lng to block grid for privacy,
 // hashes submitter IP for rate limiting, inserts via service_role bypassing anon RLS.
+// Phase 2: hybrid auto-hold heuristics. Suspicious pins are inserted with status='held'
+// and trigger a moderator email containing signed Approve/Remove links.
 
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
+import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 
 const TURNSTILE_VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 const RATE_LIMIT_WINDOW_HOURS = 1;
@@ -20,6 +22,19 @@ const CLAREMONT_BOUNDS = {
 const VALID_CONDITIONS = ["healthy_passing", "bold_aggressive", "sick_injured", "unknown"];
 
 const ALLOWED_ORIGIN = "https://iloveclaremontca.com";
+
+const MODERATE_LINK_BASE =
+  "https://mfsovchlmxzyqrehvdik.supabase.co/functions/v1/moderate-sighting";
+const MODERATE_LINK_TTL_HOURS = 24;
+
+// Intentionally small, dumb wordlist — designed to catch obvious slurs/spam patterns,
+// not to be exhaustive. Repeat offenders escalate via the repeat_held_ip heuristic.
+const PROFANITY_WORDS = [
+  "fuck", "shit", "bitch", "cunt", "dick", "cock", "pussy", "asshole",
+  "bastard", "whore", "slut", "nigg", "fagg", "retard", "kike", "spic",
+  "chink", "tranny", "viagra", "casino", "bitcoin", "crypto", "porn",
+  "xxx", "onlyfans", "telegram", "whatsapp", "click here",
+];
 
 function corsHeaders() {
   return {
@@ -47,6 +62,130 @@ async function hashIp(ip: string, salt: string): Promise<string> {
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("")
     .slice(0, 32);
+}
+
+async function hmacHex(message: string, secret: string): Promise<string> {
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(message));
+  return Array.from(new Uint8Array(sig))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+async function buildModerationLink(
+  sightingId: string,
+  action: "approve" | "remove",
+  secret: string,
+): Promise<string> {
+  const expiry = Math.floor(Date.now() / 1000) + MODERATE_LINK_TTL_HOURS * 3600;
+  const sig = await hmacHex(`${sightingId}.${expiry}.${action}`, secret);
+  const token = `${sightingId}.${expiry}.${sig}`;
+  return `${MODERATE_LINK_BASE}?action=${action}&token=${token}`;
+}
+
+async function evaluateHoldHeuristics(
+  desc: string,
+  ipHash: string,
+  supabase: SupabaseClient,
+): Promise<{ hold: boolean; reasons: string[] }> {
+  const reasons: string[] = [];
+
+  if (desc.length < 12) reasons.push("short_description");
+
+  if (desc.length > 8) {
+    const letters = desc.replace(/[^a-zA-Z]/g, "");
+    if (letters.length > 0) {
+      const upperCount = (letters.match(/[A-Z]/g) || []).length;
+      if (upperCount / letters.length > 0.7) reasons.push("all_caps");
+    }
+  }
+
+  if (/https?:\/\//i.test(desc)) reasons.push("contains_url");
+
+  const lowered = desc.toLowerCase();
+  if (PROFANITY_WORDS.some((w) => lowered.includes(w))) reasons.push("profanity");
+
+  const since = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
+  const { count: heldCount } = await supabase
+    .from("sightings")
+    .select("*", { count: "exact", head: true })
+    .eq("submitter_ip_hash", ipHash)
+    .eq("status", "held")
+    .gte("created_at", since);
+  if ((heldCount ?? 0) >= 2) reasons.push("repeat_held_ip");
+
+  return { hold: reasons.length > 0, reasons };
+}
+
+function escapeHtml(s: string): string {
+  return s.replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!)
+  );
+}
+
+async function sendModeratorEmail(
+  sighting: {
+    id: string;
+    description: string;
+    cross_street: string;
+    reported_at: string;
+    animal_condition: string;
+  },
+  reasons: string[],
+  resendKey: string,
+  moderatorEmail: string,
+  signingSecret: string,
+): Promise<void> {
+  const approveUrl = await buildModerationLink(sighting.id, "approve", signingSecret);
+  const removeUrl = await buildModerationLink(sighting.id, "remove", signingSecret);
+  const reportedAtFmt = new Date(sighting.reported_at).toLocaleString("en-US", {
+    timeZone: "America/Los_Angeles",
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+
+  const html = `<!DOCTYPE html>
+<html><body style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:20px;color:#3d2e1e;">
+<h2 style="color:#C67A4B;">Coyote pin held for review</h2>
+<p>A new sighting tripped the auto-hold heuristics and is waiting for your decision.</p>
+<table style="background:#faf5f0;border-radius:12px;padding:16px;margin:16px 0;width:100%;border-collapse:separate;border-spacing:0 6px;">
+  <tr><td style="font-weight:600;padding-right:12px;">When:</td><td>${escapeHtml(reportedAtFmt)} PT</td></tr>
+  <tr><td style="font-weight:600;padding-right:12px;">Condition:</td><td>${escapeHtml(sighting.animal_condition)}</td></tr>
+  <tr><td style="font-weight:600;padding-right:12px;">Near:</td><td>${escapeHtml(sighting.cross_street)}</td></tr>
+  <tr><td style="font-weight:600;padding-right:12px;vertical-align:top;">Description:</td><td>${escapeHtml(sighting.description)}</td></tr>
+  <tr><td style="font-weight:600;padding-right:12px;vertical-align:top;">Flagged for:</td><td>${escapeHtml(reasons.join(", "))}</td></tr>
+</table>
+<p style="margin:24px 0;">
+  <a href="${approveUrl}" style="display:inline-block;background:#5a8c4a;color:#fff;text-decoration:none;padding:12px 24px;border-radius:8px;margin-right:8px;font-weight:600;">&#10003; Approve &amp; publish</a>
+  <a href="${removeUrl}" style="display:inline-block;background:#a44;color:#fff;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:600;">&#10005; Remove permanently</a>
+</p>
+<p style="font-size:0.85rem;color:#888;">Links expire in ${MODERATE_LINK_TTL_HOURS} hours. If you do nothing, the pin stays hidden from the public map.</p>
+</body></html>`;
+
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${resendKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: "Claremont Coyote Map <coyote-map@iloveclaremontca.com>",
+      to: [moderatorEmail],
+      subject: `Coyote pin held: ${reasons[0]} — near ${sighting.cross_street}`.slice(0, 120),
+      html,
+    }),
+  });
+
+  if (!res.ok) {
+    const detail = await res.text().catch(() => "");
+    console.error("Resend email failed", res.status, detail);
+  }
 }
 
 async function verifyTurnstile(token: string, secret: string, ip: string): Promise<boolean> {
@@ -200,6 +339,9 @@ serve(async (req) => {
   const snappedLat = snapToBlock(lat);
   const snappedLng = snapToBlock(lng);
 
+  const { hold, reasons } = await evaluateHoldHeuristics(cleanDesc, ipHash, supabase);
+  const status = hold ? "held" : "live";
+
   const { data, error } = await supabase
     .from("sightings")
     .insert({
@@ -211,12 +353,44 @@ serve(async (req) => {
       submitter_ip_hash: ipHash,
       cross_street: cleanCrossStreet,
       submitter_email: cleanEmail,
+      status,
     })
-    .select("id, lat, lng, reported_at, animal_condition, description, cross_street")
+    .select("id, lat, lng, reported_at, animal_condition, description, cross_street, status")
     .single();
 
   if (error) {
     return jsonResp(500, { error: "insert failed", detail: error.message });
+  }
+
+  if (hold) {
+    const resendKey = Deno.env.get("RESEND_API_KEY");
+    const moderatorEmail = Deno.env.get("MODERATOR_EMAIL");
+    const moderateSecret = Deno.env.get("MODERATE_LINK_SIGNING_SECRET");
+    if (resendKey && moderatorEmail && moderateSecret) {
+      try {
+        await sendModeratorEmail(
+          {
+            id: data.id,
+            description: data.description,
+            cross_street: data.cross_street,
+            reported_at: data.reported_at,
+            animal_condition: data.animal_condition,
+          },
+          reasons,
+          resendKey,
+          moderatorEmail,
+          moderateSecret,
+        );
+      } catch (err) {
+        console.error("moderator email error", err);
+      }
+    } else {
+      console.warn("held pin but moderation email env not configured", {
+        id: data.id,
+        reasons,
+      });
+    }
+    return jsonResp(200, { ok: true, held: true });
   }
 
   return jsonResp(200, { ok: true, sighting: data });
