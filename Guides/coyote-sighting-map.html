@@ -12,7 +12,6 @@
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Community-reported coyote sightings in Claremont, refreshed every 72 hours. Drop a pin if you spot a coyote, see what neighbors are reporting near you.">
-  <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#5a3d78">
   <title>Claremont Coyote Sighting Map | I Love Claremont</title>
   <link rel="canonical" href="https://iloveclaremontca.com/Guides/coyote-sighting-map.html">
@@ -141,6 +140,9 @@
     .form-error { color: #b03a2e; font-size: 0.9rem; margin-top: 10px; }
     .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #2c2416; color: #fff; padding: 14px 22px; border-radius: 50px; box-shadow: 0 8px 24px rgba(0,0,0,0.25); z-index: 1100; opacity: 0; transition: opacity 0.3s; pointer-events: none; font-size: 0.95rem; }
     .toast.show { opacity: 1; }
+
+    .flag-pin-link { color: #888; text-decoration: none; font-weight: 500; }
+    .flag-pin-link:hover { color: #b03a2e; text-decoration: underline; }
 
     .below-map { max-width: 720px; margin: 0 auto; padding: 24px 20px 40px; color: #3d2e1e; line-height: 1.7; }
     .below-map h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.4rem; color: #2c2416; margin: 24px 0 8px; }
@@ -286,6 +288,29 @@
     </div>
   </div>
 
+  <!-- Flag Modal — community report-this-pin -->
+  <div class="report-overlay" id="flagOverlay" aria-hidden="true">
+    <div class="report-card" role="dialog" aria-modal="true" aria-labelledby="flagTitle">
+      <button class="report-close" id="flagClose" aria-label="Close">&times;</button>
+      <h2 id="flagTitle">Report this pin</h2>
+      <p class="subtitle">Flag a sighting that looks fake, misleading, or inappropriate. Three reports auto-hide the pin for moderator review.</p>
+
+      <form id="flagForm" novalidate>
+        <input type="hidden" id="flagSightingId" value="">
+        <input type="text" class="honeypot" name="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+        <div class="field" id="flagTurnstileField">
+          <div id="flag-turnstile"></div>
+        </div>
+
+        <div class="submit-row">
+          <button type="submit" class="btn-report" id="flagSubmitBtn" disabled>Submit report</button>
+        </div>
+        <p class="form-error" id="flagFormError" hidden></p>
+      </form>
+    </div>
+  </div>
+
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   </main>
@@ -374,6 +399,8 @@
     let reportMapInitialized = false;
     let geolocationAsked = false;
     let lastSightingRows = [];
+    let flagTurnstileWidgetId = null;
+    let flagTurnstileToken = null;
 
     function $(id) { return document.getElementById(id); }
 
@@ -582,6 +609,9 @@
             nearLine +
             '<div style="font-size:0.9rem;color:#3d2e1e;line-height:1.5;margin-bottom:6px;">' + escapeHtml(row.description) + '</div>' +
             '<div style="font-size:0.78rem;color:#888;">' + relativeTime(row.reported_at) + '</div>' +
+            '<div style="margin-top:8px;font-size:0.78rem;text-align:right;">' +
+              '<a href="#" class="flag-pin-link" data-sighting-id="' + escapeHtml(row.id) + '">&#x1F6A9; Report this pin</a>' +
+            '</div>' +
           '</div>';
         marker.bindPopup(popupHtml);
         marker.addTo(sightingsLayer);
@@ -757,6 +787,110 @@
       updateSubmitState();
     };
 
+    // --- Flag modal: community report-this-pin ---
+    function openFlagModal(sightingId) {
+      $('flagSightingId').value = sightingId;
+      $('flagFormError').hidden = true;
+      $('flagSubmitBtn').textContent = 'Submit report';
+      flagTurnstileToken = null;
+      updateFlagSubmitState();
+      $('flagOverlay').classList.add('open');
+      $('flagOverlay').setAttribute('aria-hidden', 'false');
+      // Render or reset the Turnstile widget on each open so a stale token
+      // can't carry over from a previous flag.
+      requestAnimationFrame(ensureFlagTurnstile);
+    }
+
+    function closeFlagModal() {
+      $('flagOverlay').classList.remove('open');
+      $('flagOverlay').setAttribute('aria-hidden', 'true');
+      $('flagSightingId').value = '';
+      flagTurnstileToken = null;
+      if (typeof turnstile !== 'undefined' && flagTurnstileWidgetId !== null) {
+        try { turnstile.reset(flagTurnstileWidgetId); } catch (e) { /* noop */ }
+      }
+      updateFlagSubmitState();
+    }
+
+    function ensureFlagTurnstile() {
+      if (typeof turnstile === 'undefined') {
+        // Turnstile script not loaded yet; retry shortly.
+        setTimeout(ensureFlagTurnstile, 200);
+        return;
+      }
+      if (flagTurnstileWidgetId !== null) {
+        try { turnstile.reset(flagTurnstileWidgetId); } catch (e) { /* noop */ }
+        return;
+      }
+      flagTurnstileWidgetId = turnstile.render('#flag-turnstile', {
+        sitekey: '0x4AAAAAADkDtO11zvCgUZhG',
+        callback: function (token) { flagTurnstileToken = token; updateFlagSubmitState(); },
+        'error-callback': function () { flagTurnstileToken = null; updateFlagSubmitState(); },
+        'expired-callback': function () { flagTurnstileToken = null; updateFlagSubmitState(); }
+      });
+    }
+
+    function updateFlagSubmitState() {
+      $('flagSubmitBtn').disabled = !flagTurnstileToken;
+    }
+
+    function showFlagError(msg) {
+      const el = $('flagFormError');
+      el.textContent = msg;
+      el.hidden = false;
+    }
+
+    async function submitFlag(e) {
+      e.preventDefault();
+      $('flagFormError').hidden = true;
+      if (!flagTurnstileToken) { showFlagError('Please complete the verification widget.'); return; }
+      const sightingId = $('flagSightingId').value;
+      if (!sightingId) { showFlagError('No pin selected.'); return; }
+      const btn = $('flagSubmitBtn');
+      btn.disabled = true;
+      btn.textContent = 'Submitting…';
+      try {
+        const res = await fetch(SUPABASE_URL + '/functions/v1/flag-sighting', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sighting_id: sightingId,
+            turnstile_token: flagTurnstileToken,
+            honeypot: ''
+          })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          const msg = data.error || ('HTTP ' + res.status);
+          showFlagError("Couldn't submit report: " + msg);
+          if (typeof turnstile !== 'undefined' && flagTurnstileWidgetId !== null) {
+            try { turnstile.reset(flagTurnstileWidgetId); } catch (err) { /* noop */ }
+          }
+          flagTurnstileToken = null;
+          btn.textContent = 'Submit report';
+          updateFlagSubmitState();
+          return;
+        }
+        // Success — close modal + toast based on response shape
+        closeFlagModal();
+        btn.textContent = 'Submit report';
+        if (data.already_flagged) {
+          showToast("You've already flagged this pin. A moderator will review it.");
+        } else if (data.flagged && data.held) {
+          showToast('Thanks — this pin has been hidden pending review.');
+          loadSightings();
+        } else if (data.flagged) {
+          showToast("Thanks — we'll keep an eye on this pin.");
+        } else {
+          showToast('Thanks for the report.');
+        }
+      } catch (err) {
+        showFlagError('Network error: ' + err.message);
+        btn.textContent = 'Submit report';
+        updateFlagSubmitState();
+      }
+    }
+
     // Wire up DOM
     document.addEventListener('DOMContentLoaded', function () {
       $('openReportBtn').addEventListener('click', openReportModal);
@@ -775,7 +909,27 @@
       });
       $('crossStreet').addEventListener('input', updateSubmitState);
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && $('reportOverlay').classList.contains('open')) closeReportModal();
+        if (e.key === 'Escape') {
+          if ($('reportOverlay').classList.contains('open')) closeReportModal();
+          if ($('flagOverlay').classList.contains('open')) closeFlagModal();
+        }
+      });
+
+      // Flag modal wiring
+      $('flagClose').addEventListener('click', closeFlagModal);
+      $('flagOverlay').addEventListener('click', (e) => {
+        if (e.target.id === 'flagOverlay') closeFlagModal();
+      });
+      $('flagForm').addEventListener('submit', submitFlag);
+
+      // Delegated click for the "Report this pin" link inside Leaflet popups.
+      // Popups regenerate on each open so a direct binding wouldn't survive.
+      document.addEventListener('click', (e) => {
+        const a = e.target.closest && e.target.closest('.flag-pin-link');
+        if (!a) return;
+        e.preventDefault();
+        const id = a.getAttribute('data-sighting-id');
+        if (id) openFlagModal(id);
       });
     });
 
