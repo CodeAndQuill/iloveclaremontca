@@ -712,8 +712,12 @@
         btn.textContent = 'Submit sighting';
         closeReportModal();
         resetForm();
-        showToast('Thanks — your sighting is on the map.');
-        loadSightings();
+        if (data.held) {
+          showToast('Thanks — your report was submitted and is being reviewed before it appears on the map.');
+        } else {
+          showToast('Thanks — your sighting is on the map.');
+          loadSightings();
+        }
       } catch (err) {
         showError('Network error: ' + err.message);
         btn.textContent = 'Submit sighting';
