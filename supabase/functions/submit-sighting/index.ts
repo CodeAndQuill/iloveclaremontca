@@ -27,16 +27,28 @@ const MODERATE_LINK_BASE =
   "https://mfsovchlmxzyqrehvdik.supabase.co/functions/v1/moderate-sighting";
 const MODERATE_LINK_TTL_HOURS = 24;
 
-// Intentionally small, dumb wordlist — designed to catch obvious slurs and
-// the most common spam/suggestive patterns, not to be exhaustive. Repeat
-// offenders escalate via the repeat_held_ip heuristic.
+// Two-tier wordlist:
+//   HARD_REJECT_WORDS — slurs + explicit curses. Submission is 400'd outright
+//     and never lands in the DB. Word-boundary match (\bword) keeps name-like
+//     substrings (e.g. "Cunningham" vs "cunt") from false-positiving.
+//   PROFANITY_WORDS  — spam/suggestive terms. Substring match. Holds the pin
+//     for moderator review (might be a legitimate edge case).
+const HARD_REJECT_WORDS = [
+  "fuck", "shit", "bitch", "cunt", "asshole", "bastard", "whore", "slut",
+  "nigg", "fagg", "retard", "kike", "chink", "tranny", "pussy",
+];
+
 const PROFANITY_WORDS = [
-  "fuck", "shit", "bitch", "cunt", "dick", "cock", "pussy", "asshole",
-  "bastard", "whore", "slut", "nigg", "fagg", "retard", "kike", "spic",
-  "chink", "tranny", "viagra", "casino", "bitcoin", "crypto", "porn",
-  "xxx", "onlyfans", "telegram", "whatsapp", "click here",
+  "dick", "cock", "spic",
+  "viagra", "casino", "bitcoin", "crypto", "porn", "xxx", "onlyfans",
+  "telegram", "whatsapp", "click here",
   "sexy", "horny", "milf", "lottery", "loan",
 ];
+
+function containsHardRejectWord(text: string): boolean {
+  const lowered = text.toLowerCase();
+  return HARD_REJECT_WORDS.some((w) => new RegExp(`\\b${w}`, "i").test(lowered));
+}
 
 function corsHeaders() {
   return {
@@ -345,6 +357,10 @@ serve(async (req) => {
   const cleanDesc = description.replace(/<[^>]*>/g, "").trim().slice(0, 280);
   if (cleanDesc.length === 0) {
     return jsonResp(400, { error: "description empty after sanitization" });
+  }
+
+  if (containsHardRejectWord(cleanDesc) || containsHardRejectWord(cleanCrossStreet)) {
+    return jsonResp(400, { error: "Please remove inappropriate language and resubmit." });
   }
 
   const snappedLat = snapToBlock(lat);
