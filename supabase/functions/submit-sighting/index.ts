@@ -27,13 +27,15 @@ const MODERATE_LINK_BASE =
   "https://mfsovchlmxzyqrehvdik.supabase.co/functions/v1/moderate-sighting";
 const MODERATE_LINK_TTL_HOURS = 24;
 
-// Intentionally small, dumb wordlist — designed to catch obvious slurs/spam patterns,
-// not to be exhaustive. Repeat offenders escalate via the repeat_held_ip heuristic.
+// Intentionally small, dumb wordlist — designed to catch obvious slurs and
+// the most common spam/suggestive patterns, not to be exhaustive. Repeat
+// offenders escalate via the repeat_held_ip heuristic.
 const PROFANITY_WORDS = [
   "fuck", "shit", "bitch", "cunt", "dick", "cock", "pussy", "asshole",
   "bastard", "whore", "slut", "nigg", "fagg", "retard", "kike", "spic",
   "chink", "tranny", "viagra", "casino", "bitcoin", "crypto", "porn",
   "xxx", "onlyfans", "telegram", "whatsapp", "click here",
+  "sexy", "horny", "milf", "lottery", "loan",
 ];
 
 function corsHeaders() {
@@ -110,6 +112,15 @@ async function evaluateHoldHeuristics(
 
   const lowered = desc.toLowerCase();
   if (PROFANITY_WORDS.some((w) => lowered.includes(w))) reasons.push("profanity");
+
+  // Any single token repeating ≥4 times is a strong nonsense/spam signal
+  // (e.g. "yo yo yo yo yo"). 4 stays above what real reports naturally hit.
+  const tokens = lowered.split(/[^a-z0-9']+/).filter(Boolean);
+  const tokenCounts = new Map<string, number>();
+  for (const t of tokens) tokenCounts.set(t, (tokenCounts.get(t) ?? 0) + 1);
+  for (const count of tokenCounts.values()) {
+    if (count >= 4) { reasons.push("repeated_token"); break; }
+  }
 
   const since = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
   const { count: heldCount } = await supabase
