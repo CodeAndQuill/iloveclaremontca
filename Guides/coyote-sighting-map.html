@@ -242,9 +242,9 @@
         </div>
 
         <div class="field">
-          <label for="crossStreet">Nearest cross-street or landmark</label>
-          <input type="text" id="crossStreet" maxlength="80" required placeholder="e.g., Mountain & Eleventh, or near Sycamore Elementary">
-          <p class="hint">A real local can name a corner — bots can't. Helps neighbors place the pin.</p>
+          <label for="crossStreet">Nearest cross-street or landmark <span style="font-weight:400;color:#777;">(optional)</span></label>
+          <input type="text" id="crossStreet" maxlength="80" placeholder="e.g., Mountain & Eleventh">
+          <p class="hint">Helps neighbors and moderators recognize the location.</p>
         </div>
 
         <div class="field">
@@ -254,8 +254,8 @@
         </div>
 
         <div class="field">
-          <label for="description">What did you see? <span class="char-counter" id="charCounter">0 / 280</span></label>
-          <textarea id="description" maxlength="280" required placeholder="Single coyote crossing Indian Hill heading north. Healthy looking, paid no attention to me."></textarea>
+          <label for="description">Any details? <span style="font-weight:400;color:#777;">(optional)</span> <span class="char-counter" id="charCounter">0 / 280</span></label>
+          <textarea id="description" maxlength="280" placeholder="Optional — e.g. 'Single coyote heading north on Indian Hill, paid no attention to me.'"></textarea>
         </div>
 
         <div class="field">
@@ -471,7 +471,7 @@
         interactive: false
       }).addTo(map);
 
-      map.fitBounds(claremontLatLngBounds, { padding: [20, 20] });
+      map.setView(CLAREMONT_CENTER, 14);
 
       sightingsLayer = L.layerGroup().addTo(map);
       loadSightings();
@@ -489,7 +489,7 @@
       if (reportMapInitialized) return;
       reportMap = L.map('report-map', {
         center: CLAREMONT_CENTER,
-        zoom: 13,
+        zoom: 15,
         scrollWheelZoom: true,
         tap: true
       });
@@ -603,11 +603,14 @@
         const nearLine = row.cross_street
           ? '<div style="font-size:0.82rem;color:#605848;margin-bottom:4px;"><strong>Near:</strong> ' + escapeHtml(row.cross_street) + '</div>'
           : '';
+        const descLine = row.description
+          ? '<div style="font-size:0.9rem;color:#3d2e1e;line-height:1.5;margin-bottom:6px;">' + escapeHtml(row.description) + '</div>'
+          : '';
         const popupHtml =
           '<div style="font-family:Inter,system-ui,sans-serif;max-width:240px;">' +
             '<div style="font-weight:700;color:#2c2416;margin-bottom:4px;">' + CONDITION_LABELS[row.animal_condition] + '</div>' +
             nearLine +
-            '<div style="font-size:0.9rem;color:#3d2e1e;line-height:1.5;margin-bottom:6px;">' + escapeHtml(row.description) + '</div>' +
+            descLine +
             '<div style="font-size:0.78rem;color:#888;">' + relativeTime(row.reported_at) + '</div>' +
             '<div style="margin-top:8px;font-size:0.78rem;text-align:right;">' +
               '<a href="#" class="flag-pin-link" data-sighting-id="' + escapeHtml(row.id) + '">&#x1F6A9; Report this pin</a>' +
@@ -651,9 +654,7 @@
     }
 
     function updateSubmitState() {
-      const desc = $('description').value.trim();
-      const cross = $('crossStreet').value.trim();
-      const ready = selectedLatLng && desc.length > 0 && cross.length >= 3 && turnstileToken;
+      const ready = selectedLatLng && turnstileToken;
       $('submitBtn').disabled = !ready;
     }
 
@@ -697,9 +698,7 @@
       if (!selectedLatLng) { showError('Please pin a location on the map first.'); return; }
       if (!turnstileToken) { showError('Please complete the verification widget.'); return; }
       const desc = $('description').value.trim();
-      if (desc.length === 0) { showError('Please describe what you saw.'); return; }
       const cross = $('crossStreet').value.trim();
-      if (cross.length < 3) { showError('Please add a nearest cross-street or landmark.'); return; }
       const emailVal = $('submitterEmail').value.trim();
       const condition = document.querySelector('input[name="animal_condition"]:checked').value;
       const reportedAtRaw = $('reportedAt').value;

@@ -83,8 +83,8 @@ async function verifyTurnstile(token: string, secret: string, ip: string): Promi
 async function sendFlagModeratorEmail(
   sighting: {
     id: string;
-    description: string;
-    cross_street: string;
+    description: string | null;
+    cross_street: string | null;
     reported_at: string;
     animal_condition: string;
     flag_count: number;
@@ -101,6 +101,13 @@ async function sendFlagModeratorEmail(
     timeStyle: "short",
   });
 
+  const nearRow = sighting.cross_street && sighting.cross_street.length > 0
+    ? `<tr><td style="font-weight:600;padding-right:12px;">Near:</td><td>${escapeHtml(sighting.cross_street)}</td></tr>`
+    : "";
+  const descRow = sighting.description && sighting.description.length > 0
+    ? `<tr><td style="font-weight:600;padding-right:12px;vertical-align:top;">Description:</td><td>${escapeHtml(sighting.description)}</td></tr>`
+    : "";
+
   const html = `<!DOCTYPE html>
 <html><body style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:20px;color:#3d2e1e;">
 <h2 style="color:#C67A4B;">Pin flagged by the community</h2>
@@ -108,8 +115,8 @@ async function sendFlagModeratorEmail(
 <table style="background:#faf5f0;border-radius:12px;padding:16px;margin:16px 0;width:100%;border-collapse:separate;border-spacing:0 6px;">
   <tr><td style="font-weight:600;padding-right:12px;">When:</td><td>${escapeHtml(reportedAtFmt)} PT</td></tr>
   <tr><td style="font-weight:600;padding-right:12px;">Condition:</td><td>${escapeHtml(sighting.animal_condition)}</td></tr>
-  <tr><td style="font-weight:600;padding-right:12px;">Near:</td><td>${escapeHtml(sighting.cross_street)}</td></tr>
-  <tr><td style="font-weight:600;padding-right:12px;vertical-align:top;">Description:</td><td>${escapeHtml(sighting.description)}</td></tr>
+  ${nearRow}
+  ${descRow}
 </table>
 <p style="margin:24px 0;">
   <a href="${approveUrl}" style="display:inline-block;background:#5a8c4a;color:#fff;text-decoration:none;padding:12px 24px;border-radius:8px;margin-right:8px;font-weight:600;">&#10003; Approve &amp; restore</a>
@@ -127,7 +134,9 @@ async function sendFlagModeratorEmail(
     body: JSON.stringify({
       from: "Claremont Coyote Map <coyote-map@iloveclaremontca.com>",
       to: [moderatorEmail],
-      subject: `Coyote pin flagged by community — near ${sighting.cross_street}`.slice(0, 120),
+      subject: (sighting.cross_street && sighting.cross_street.length > 0
+        ? `Coyote pin flagged by community — near ${sighting.cross_street}`
+        : `Coyote pin flagged by community`).slice(0, 120),
       html,
     }),
   });

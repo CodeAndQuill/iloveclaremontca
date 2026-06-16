@@ -110,28 +110,32 @@ async function evaluateHoldHeuristics(
 ): Promise<{ hold: boolean; reasons: string[] }> {
   const reasons: string[] = [];
 
-  if (desc.length < 12) reasons.push("short_description");
+  // Description-based checks only apply when the user actually wrote something.
+  // Empty description is allowed (the field is optional) and must not auto-hold.
+  if (desc.length > 0) {
+    if (desc.length < 12) reasons.push("short_description");
 
-  if (desc.length > 8) {
-    const letters = desc.replace(/[^a-zA-Z]/g, "");
-    if (letters.length > 0) {
-      const upperCount = (letters.match(/[A-Z]/g) || []).length;
-      if (upperCount / letters.length > 0.7) reasons.push("all_caps");
+    if (desc.length > 8) {
+      const letters = desc.replace(/[^a-zA-Z]/g, "");
+      if (letters.length > 0) {
+        const upperCount = (letters.match(/[A-Z]/g) || []).length;
+        if (upperCount / letters.length > 0.7) reasons.push("all_caps");
+      }
     }
-  }
 
-  if (/https?:\/\//i.test(desc)) reasons.push("contains_url");
+    if (/https?:\/\//i.test(desc)) reasons.push("contains_url");
 
-  const lowered = desc.toLowerCase();
-  if (PROFANITY_WORDS.some((w) => lowered.includes(w))) reasons.push("profanity");
+    const lowered = desc.toLowerCase();
+    if (PROFANITY_WORDS.some((w) => lowered.includes(w))) reasons.push("profanity");
 
-  // Any single token repeating ≥4 times is a strong nonsense/spam signal
-  // (e.g. "yo yo yo yo yo"). 4 stays above what real reports naturally hit.
-  const tokens = lowered.split(/[^a-z0-9']+/).filter(Boolean);
-  const tokenCounts = new Map<string, number>();
-  for (const t of tokens) tokenCounts.set(t, (tokenCounts.get(t) ?? 0) + 1);
-  for (const count of tokenCounts.values()) {
-    if (count >= 4) { reasons.push("repeated_token"); break; }
+    // Any single token repeating ≥4 times is a strong nonsense/spam signal
+    // (e.g. "yo yo yo yo yo"). 4 stays above what real reports naturally hit.
+    const tokens = lowered.split(/[^a-z0-9']+/).filter(Boolean);
+    const tokenCounts = new Map<string, number>();
+    for (const t of tokens) tokenCounts.set(t, (tokenCounts.get(t) ?? 0) + 1);
+    for (const count of tokenCounts.values()) {
+      if (count >= 4) { reasons.push("repeated_token"); break; }
+    }
   }
 
   const since = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
@@ -155,8 +159,8 @@ function escapeHtml(s: string): string {
 async function sendModeratorEmail(
   sighting: {
     id: string;
-    description: string;
-    cross_street: string;
+    description: string | null;
+    cross_street: string | null;
     reported_at: string;
     animal_condition: string;
   },
@@ -173,6 +177,13 @@ async function sendModeratorEmail(
     timeStyle: "short",
   });
 
+  const nearRow = sighting.cross_street && sighting.cross_street.length > 0
+    ? `<tr><td style="font-weight:600;padding-right:12px;">Near:</td><td>${escapeHtml(sighting.cross_street)}</td></tr>`
+    : "";
+  const descRow = sighting.description && sighting.description.length > 0
+    ? `<tr><td style="font-weight:600;padding-right:12px;vertical-align:top;">Description:</td><td>${escapeHtml(sighting.description)}</td></tr>`
+    : "";
+
   const html = `<!DOCTYPE html>
 <html><body style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:20px;color:#3d2e1e;">
 <h2 style="color:#C67A4B;">Coyote pin held for review</h2>
@@ -180,8 +191,8 @@ async function sendModeratorEmail(
 <table style="background:#faf5f0;border-radius:12px;padding:16px;margin:16px 0;width:100%;border-collapse:separate;border-spacing:0 6px;">
   <tr><td style="font-weight:600;padding-right:12px;">When:</td><td>${escapeHtml(reportedAtFmt)} PT</td></tr>
   <tr><td style="font-weight:600;padding-right:12px;">Condition:</td><td>${escapeHtml(sighting.animal_condition)}</td></tr>
-  <tr><td style="font-weight:600;padding-right:12px;">Near:</td><td>${escapeHtml(sighting.cross_street)}</td></tr>
-  <tr><td style="font-weight:600;padding-right:12px;vertical-align:top;">Description:</td><td>${escapeHtml(sighting.description)}</td></tr>
+  ${nearRow}
+  ${descRow}
   <tr><td style="font-weight:600;padding-right:12px;vertical-align:top;">Flagged for:</td><td>${escapeHtml(reasons.join(", "))}</td></tr>
 </table>
 <p style="margin:24px 0;">
@@ -200,7 +211,9 @@ async function sendModeratorEmail(
     body: JSON.stringify({
       from: "Claremont Coyote Map <coyote-map@iloveclaremontca.com>",
       to: [moderatorEmail],
-      subject: `Coyote pin held: ${reasons[0]} — near ${sighting.cross_street}`.slice(0, 120),
+      subject: (sighting.cross_street && sighting.cross_street.length > 0
+        ? `Coyote pin held: ${reasons[0]} — near ${sighting.cross_street}`
+        : `Coyote pin held: ${reasons[0]}`).slice(0, 120),
       html,
     }),
   });
@@ -266,22 +279,22 @@ serve(async (req) => {
   if (
     typeof lat !== "number" ||
     typeof lng !== "number" ||
-    typeof description !== "string" ||
-    description.length < 1 ||
-    description.length > 280 ||
     typeof turnstile_token !== "string" ||
     turnstile_token.length === 0
   ) {
     return jsonResp(400, { error: "missing or invalid fields" });
   }
 
+  const rawDesc = typeof description === "string" ? description : "";
+  if (rawDesc.length > 280) {
+    return jsonResp(400, { error: "description too long" });
+  }
+
   const cleanCrossStreet =
     typeof cross_street === "string"
       ? cross_street.replace(/<[^>]*>/g, "").trim().slice(0, 80)
       : "";
-  if (cleanCrossStreet.length < 3) {
-    return jsonResp(400, { error: "cross_street required (3-80 chars)" });
-  }
+  const insertCrossStreet = cleanCrossStreet.length > 0 ? cleanCrossStreet : null;
 
   let cleanEmail: string | null = null;
   if (typeof submitter_email === "string" && submitter_email.trim().length > 0) {
@@ -354,10 +367,8 @@ serve(async (req) => {
       ? animal_condition
       : "unknown";
 
-  const cleanDesc = description.replace(/<[^>]*>/g, "").trim().slice(0, 280);
-  if (cleanDesc.length === 0) {
-    return jsonResp(400, { error: "description empty after sanitization" });
-  }
+  const cleanDesc = rawDesc.replace(/<[^>]*>/g, "").trim().slice(0, 280);
+  const insertDesc = cleanDesc.length > 0 ? cleanDesc : null;
 
   if (containsHardRejectWord(cleanDesc) || containsHardRejectWord(cleanCrossStreet)) {
     return jsonResp(400, { error: "Please remove inappropriate language and resubmit." });
@@ -374,11 +385,11 @@ serve(async (req) => {
     .insert({
       lat: snappedLat,
       lng: snappedLng,
-      description: cleanDesc,
+      description: insertDesc,
       animal_condition: condition,
       reported_at: reportedAt,
       submitter_ip_hash: ipHash,
-      cross_street: cleanCrossStreet,
+      cross_street: insertCrossStreet,
       submitter_email: cleanEmail,
       status,
     })
