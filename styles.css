@@ -169,7 +169,10 @@ img {
      0   -1.5px 0 #fff, 0     1.5px 0 #fff;
 }
 .heart-o-share {
-  color: #7B5EA7;
+  color: #fff;
+}
+.footer .heart-o {
+  color: #fff;
 }
 .sr-only {
   position: absolute;
@@ -524,7 +527,7 @@ a.feature-card:hover {
 
 .feature-highlight {
   grid-column: span 2;
-  background: #6B8F71;
+  background: #557562;
   color: #fff;
 }
 .feature-highlight h3 {
@@ -1577,7 +1580,7 @@ a.guide-card:hover {
 
 /* --- Spotlight: Featured Banner --- */
 .spotlight-banner {
-  background: #6B8F71;
+  background: #557562;
   border-radius: 8px;
   padding: 16px 24px;
   margin-bottom: 24px;
