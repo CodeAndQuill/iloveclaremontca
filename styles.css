@@ -530,10 +530,10 @@ a.feature-card:hover {
   background: #557562;
   color: #fff;
 }
-.feature-highlight h3 {
+.feature-card.feature-highlight h3 {
   color: #fff;
 }
-.feature-highlight p {
+.feature-card.feature-highlight p {
   color: rgba(255,255,255,0.95);
 }
 
