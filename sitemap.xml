@@ -264,6 +264,16 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://iloveclaremontca.com/Spotlights/claremont-freedom-5k-2026.html</loc>
+    <image:image>
+      <image:loc>https://iloveclaremontca.com/photos/claremont-freedom-5k.jpg</image:loc>
+      <image:caption>Claremont Freedom 5K starting-line banner over N. Yale Ave on the east side of Memorial Park</image:caption>
+    </image:image>
+    <lastmod>2026-07-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://iloveclaremontca.com/Spotlights/claremont-crime-map-2026.html</loc>
     <lastmod>2026-03-22</lastmod>
     <changefreq>monthly</changefreq>
