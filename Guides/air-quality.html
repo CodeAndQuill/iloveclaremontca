@@ -494,7 +494,7 @@
     </aside>
 
     <h2>Right now in 91711</h2>
-    <p class="category-intro">A live AQI reading for our ZIP code, pulled directly from the EPA's AirNow network.</p>
+    <p class="category-intro">A live AQI reading for the Claremont Colleges Area, pulled from the South Coast AQMD's neighborhood-scale monitoring grid.</p>
 
     <div class="aqi-now-card" id="aqi-now">
       <span class="aqi-label">Coming soon</span>
@@ -765,6 +765,15 @@
         const months = ['Jan','Feb','Mar','Apr','May','June','July','Aug','Sept','Oct','Nov','Dec'];
         return months[parseInt(parts[1], 10) - 1] + ' ' + parseInt(parts[2], 10);
       }
+      function formatEpochPT(ms) {
+        if (ms == null) return '';
+        const d = new Date(ms);
+        if (isNaN(d.getTime())) return '';
+        try {
+          const time = d.toLocaleString('en-US', { timeZone: 'America/Los_Angeles', hour: 'numeric', minute: '2-digit' });
+          return 'Updated ' + time + ' PT';
+        } catch (e) { return ''; }
+      }
       function renderForecastRow(label, day) {
         if (!day || !day.peak) return '';
         const cls = CATEGORY_CLASS[day.peak.category] || 'aqi-good';
@@ -786,10 +795,30 @@
 
         const c = data.current;
         const days = (data.forecast && data.forecast.days) || [];
+        const isScaqmd = c && c.source === 'scaqmd-gridmap';
         let currentHtml = '';
+        let labelText = 'Right now · Pomona/Walnut Valley';
         if (c) {
           const cls = CATEGORY_CLASS[c.category] || 'aqi-good';
-          const monitor = (c.monitorSite || '').replace(/\s*-\s*/g, ' – ');
+          let attribution = '';
+          if (isScaqmd) {
+            labelText = 'Right now · ' + (c.cellName || 'Claremont Colleges Area');
+            const measured = (c.pollutants || []).filter(function(p){ return p.measured; }).map(function(p){ return p.name; });
+            const measuredNote = measured.length
+              ? measured.join(', ') + ' measured; other pollutants modeled from nearby monitors'
+              : 'Pollutants modeled from nearby monitors';
+            const stamp = formatEpochPT(c.observedAt);
+            attribution = '<p class="aqi-now-attribution">'
+              + 'SCAQMD neighborhood cell · ' + escape(measuredNote)
+              + (stamp ? ' · ' + escape(stamp) : '')
+              + '</p>';
+          } else {
+            const monitor = (c.monitorSite || '').replace(/\s*-\s*/g, ' – ');
+            attribution = '<p class="aqi-now-attribution">'
+              + 'Nearest active monitor: <strong>' + escape(monitor) + '</strong> · '
+              + formatHour(c.observedHour, c.timeZone) + ', ' + formatDate(c.observedDate)
+              + '</p>';
+          }
           currentHtml =
             '<div class="aqi-now-primary">'
               + '<span class="aqi-now-number">' + escape(c.aqi) + '</span>'
@@ -798,10 +827,7 @@
                 + '<span class="aqi-now-pollutant">Driven by ' + escape(c.pollutant) + '</span>'
               + '</div>'
             + '</div>'
-            + '<p class="aqi-now-attribution">'
-              + 'Nearest active monitor: <strong>' + escape(monitor) + '</strong> · '
-              + formatHour(c.observedHour, c.timeZone) + ', ' + formatDate(c.observedDate)
-            + '</p>';
+            + attribution;
         }
 
         let forecastHtml = '';
@@ -812,14 +838,19 @@
             + '</div>';
         }
 
+        const sourceLine = isScaqmd
+          ? 'South Coast AQMD neighborhood grid · Forecast from EPA AirNow (SCAQMD) · '
+            + '<a href="https://experience.arcgis.com/experience/6a6a058a177440fdac6be881d41d4c2c/" target="_blank" rel="noopener noreferrer">SCAQMD dashboard</a> · '
+            + '<a href="https://www.airnow.gov/?city=Claremont&amp;state=CA&amp;country=USA" target="_blank" rel="noopener noreferrer">AirNow.gov</a>'
+          : 'EPA AirNow · Forecast issued by South Coast AQMD · '
+            + '<a href="https://www.airnow.gov/?city=Claremont&amp;state=CA&amp;country=USA" target="_blank" rel="noopener noreferrer">View on AirNow.gov</a>';
+
         container.classList.add('is-live');
         container.innerHTML =
-          '<span class="aqi-label">Right now · Pomona/Walnut Valley</span>'
+          '<span class="aqi-label">' + escape(labelText) + '</span>'
           + currentHtml
           + forecastHtml
-          + '<p class="aqi-now-source">EPA AirNow · Forecast issued by South Coast AQMD · '
-          + '<a href="https://www.airnow.gov/?city=Claremont&amp;state=CA&amp;country=USA" target="_blank" rel="noopener noreferrer">View on AirNow.gov</a>'
-          + '</p>';
+          + '<p class="aqi-now-source">' + sourceLine + '</p>';
       }
 
       fetch(WORKER_URL)
