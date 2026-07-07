@@ -424,12 +424,15 @@
   <section class="welcome" id="welcome">
     <div class="container">
       <!-- Spotlight Banners -->
-      <div class="alert-banner" id="alert-banner" hidden role="alert" aria-live="polite">
-        <!-- populated by inline script at end of body when an active NWS alert applies to Claremont -->
+      <div class="alert-banner" id="alert-banner-top" hidden role="alert" aria-live="polite">
+        <!-- populated by inline script when a HIGH-severity NWS alert (priority >= 70) applies -->
       </div>
       <div class="spotlight-banner">
         <span class="spotlight-new-badge">Spotlight</span>
         <a href="Guides/summer-concerts-guide-2026.html">Summer Concerts in the Park: this Monday is Queen of Hearts — the 2026 lineup, parking, and picnic playbook →</a>
+      </div>
+      <div class="alert-banner" id="alert-banner-below" hidden role="alert" aria-live="polite">
+        <!-- populated by inline script when a LOWER-severity NWS alert (priority < 70) applies -->
       </div>
       <a href="Guides/air-quality.html" class="aqi-strip" id="aqi-strip" hidden aria-label="Live Claremont air quality — view details">
         <!-- populated by inline script at end of body -->
@@ -826,25 +829,27 @@
       function categoryClass(cat) {
         return CATEGORY_CLASS[String(cat || '').toLowerCase()] || 'aqi-good';
       }
-      const banner = document.getElementById('alert-banner');
+      const bannerTop = document.getElementById('alert-banner-top');
+      const bannerBelow = document.getElementById('alert-banner-below');
+      const HIGH_SEVERITY_THRESHOLD = 70; // priority >= 70 renders above spotlight
       function renderAlertBanner(alerts) {
-        if (!banner || !alerts || !alerts.length) return;
+        if (!alerts || !alerts.length) return;
         const a = alerts[0];
+        const target = (a.priority || 0) >= HIGH_SEVERITY_THRESHOLD ? bannerTop : bannerBelow;
+        if (!target) return;
         const cat = a.category || 'other';
-        const cls = 'alert-banner-' + cat;
-        banner.className = 'alert-banner ' + cls;
+        target.className = 'alert-banner alert-banner-' + cat;
         const expires = formatAlertExpiry(a.expires);
         const bodyText = a.instruction || a.description || a.headline || '';
-        // Short body: first sentence or first ~180 chars
         const shortBody = bodyText.split(/\.\s+/)[0].slice(0, 200);
-        banner.innerHTML =
+        target.innerHTML =
           '<div class="alert-banner-head">'
             + '<span class="alert-banner-badge">' + escape(a.event) + '</span>'
             + (expires ? '<span class="alert-banner-expires">' + escape(expires) + '</span>' : '')
           + '</div>'
           + '<p class="alert-banner-body">' + escape(shortBody) + (bodyText.length > 200 ? '&hellip;' : '') + '</p>'
           + (a.senderName ? '<p class="alert-banner-source">Issued by ' + escape(a.senderName) + '</p>' : '');
-        banner.hidden = false;
+        target.hidden = false;
       }
       function formatAlertExpiry(iso) {
         if (!iso) return '';
