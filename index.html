@@ -251,12 +251,75 @@
     .heart-o { color:#7B5EA7; font-size:0.85em; line-height:1; display:inline-block; transform:translateY(0.05em); font-family:'Times New Roman',Times,Georgia,serif; }
     .heart-o-hero { font-size:0.75em; transform:translateY(-0.02em); }
     .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+    @media (max-width: 768px) {
+      .hero { min-height: 68vh; }
+      .hero-content { padding: 80px 24px 96px; }
+    }
   </style>
   <link rel="stylesheet" href="styles.css?v=20260321r">
 
   <!-- Homepage-only theme override: cream body background ("canvas tote" warmth) -->
   <style>
     body { background: #F5EFE0; }
+
+    /* Live AQI strip — under the spotlight banner in the welcome section */
+    .aqi-strip {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      margin-bottom: 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.95rem;
+      color: #2c2416;
+      background: #eef5ec;
+      border-left: 4px solid #5a8f4a;
+      transition: background 0.2s, transform 0.2s;
+      flex-wrap: wrap;
+      line-height: 1.5;
+    }
+    .aqi-strip:hover { background: #e4efdf; transform: translateY(-1px); }
+    .aqi-strip-badge {
+      display: inline-block;
+      background: #5a8f4a;
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      flex-shrink: 0;
+    }
+    .aqi-strip-value { font-weight: 700; color: #2c2416; }
+    .aqi-strip-value .aqi-num { font-family: 'Playfair Display', Georgia, serif; font-size: 1.2rem; margin-right: 4px; }
+    .aqi-strip-context { color: #605848; font-size: 0.9rem; flex: 1; min-width: 200px; }
+    .aqi-strip-arrow { color: #5a8f4a; font-weight: 800; margin-left: auto; flex-shrink: 0; font-size: 1.1rem; }
+    .aqi-strip.aqi-moderate { background: #fff8e6; border-left-color: #c68a1a; }
+    .aqi-strip.aqi-moderate:hover { background: #ffefcc; }
+    .aqi-strip.aqi-moderate .aqi-strip-badge { background: #c68a1a; }
+    .aqi-strip.aqi-moderate .aqi-strip-arrow { color: #c68a1a; }
+    .aqi-strip.aqi-usg { background: #fff0e0; border-left-color: #d4691a; }
+    .aqi-strip.aqi-usg:hover { background: #ffe4cc; }
+    .aqi-strip.aqi-usg .aqi-strip-badge { background: #d4691a; }
+    .aqi-strip.aqi-usg .aqi-strip-arrow { color: #d4691a; }
+    .aqi-strip.aqi-unhealthy { background: #ffecec; border-left-color: #c22c2c; }
+    .aqi-strip.aqi-unhealthy:hover { background: #ffdada; }
+    .aqi-strip.aqi-unhealthy .aqi-strip-badge { background: #c22c2c; }
+    .aqi-strip.aqi-unhealthy .aqi-strip-arrow { color: #c22c2c; }
+    .aqi-strip.aqi-very-unhealthy { background: #f3e6ff; border-left-color: #7B5EA7; }
+    .aqi-strip.aqi-very-unhealthy:hover { background: #ead6ff; }
+    .aqi-strip.aqi-very-unhealthy .aqi-strip-badge { background: #7B5EA7; }
+    .aqi-strip.aqi-very-unhealthy .aqi-strip-arrow { color: #7B5EA7; }
+    .aqi-strip.aqi-hazardous { background: #f0dede; border-left-color: #7a1f1f; }
+    .aqi-strip.aqi-hazardous:hover { background: #e6cccc; }
+    .aqi-strip.aqi-hazardous .aqi-strip-badge { background: #7a1f1f; }
+    .aqi-strip.aqi-hazardous .aqi-strip-arrow { color: #7a1f1f; }
+    @media (max-width: 480px) {
+      .aqi-strip { padding: 10px 16px; font-size: 0.9rem; }
+      .aqi-strip-context { min-width: 100%; font-size: 0.85rem; }
+    }
   </style>
 </head>
 <body>
@@ -327,10 +390,9 @@
         <span class="spotlight-new-badge">Spotlight</span>
         <a href="Guides/summer-concerts-guide-2026.html">Summer Concerts in the Park kick off tonight — the 2026 lineup, parking, and picnic playbook →</a>
       </div>
-      <div class="spotlight-banner">
-        <span class="spotlight-new-badge">Live</span>
-        <a href="Guides/coyote-sighting-map.html">Coyote Sighting Map: See what neighbors are reporting in your block, drop a pin if you spot one →</a>
-      </div>
+      <a href="Guides/air-quality.html" class="aqi-strip" id="aqi-strip" hidden aria-label="Live Claremont air quality — view details">
+        <!-- populated by inline script at end of body -->
+      </a>
       <div class="welcome-grid">
         <div class="welcome-text">
           <h2>Welcome to Claremont</h2>
@@ -700,5 +762,52 @@
   <button class="back-to-top" id="backToTop" aria-label="Back to top">&#8593;</button>
 
   <script src="script.js" defer></script>
+
+  <script>
+    (function() {
+      const WORKER_URL = 'https://airnow-proxy.amyleerosen.workers.dev/';
+      const CATEGORY_CLASS = {
+        'Good': 'aqi-good',
+        'Moderate': 'aqi-moderate',
+        'Unhealthy for Sensitive Groups': 'aqi-usg',
+        'Unhealthy': 'aqi-unhealthy',
+        'Very Unhealthy': 'aqi-very-unhealthy',
+        'Hazardous': 'aqi-hazardous',
+      };
+      const strip = document.getElementById('aqi-strip');
+      if (!strip) return;
+      function escape(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch]);
+      }
+      fetch(WORKER_URL)
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          if (!data || data.status !== 'ok' || !data.current) return;
+          const c = data.current;
+          const cls = CATEGORY_CLASS[c.category] || 'aqi-good';
+          const forecastPeak = data.forecast && data.forecast.days && data.forecast.days[0] && data.forecast.days[0].peak;
+          const currentAlerting = c.category && c.category !== 'Good';
+          const forecastAlerting = forecastPeak && forecastPeak.category && forecastPeak.category !== 'Good';
+          let context = '';
+          if (currentAlerting) {
+            context = 'Right now in the Claremont Colleges Area · driven by ' + escape(c.pollutant);
+          } else if (forecastAlerting) {
+            context = "Today's forecast peak: <strong>" + escape(forecastPeak.aqi) + ' ' + escape(forecastPeak.category) + '</strong> (' + escape(forecastPeak.pollutant) + ')';
+          } else {
+            context = 'Claremont Colleges Area · all pollutants Good';
+          }
+          strip.className = 'aqi-strip ' + cls;
+          strip.innerHTML =
+            '<span class="aqi-strip-badge">Air Quality</span>'
+            + '<span class="aqi-strip-value"><span class="aqi-num">' + escape(c.aqi) + '</span>' + escape(c.category) + '</span>'
+            + '<span class="aqi-strip-context">' + context + '</span>'
+            + '<span class="aqi-strip-arrow" aria-hidden="true">&rarr;</span>';
+          strip.hidden = false;
+        })
+        .catch(function(err) {
+          if (window.console) console.warn('AQI strip fetch failed:', err);
+        });
+    })();
+  </script>
 </body>
 </html>
