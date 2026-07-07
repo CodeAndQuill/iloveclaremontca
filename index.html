@@ -258,6 +258,48 @@
   <style>
     body { background: #F5EFE0; }
 
+    /* NWS active-alert banner — sits ABOVE spotlight when a Red Flag / heat / air / wind alert applies */
+    .alert-banner {
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      border-radius: 8px;
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+      animation: alertPulse 3s ease-in-out infinite;
+    }
+    @keyframes alertPulse {
+      0%, 100% { box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
+      50%      { box-shadow: 0 6px 24px rgba(0,0,0,0.28); }
+    }
+    .alert-banner-fire { background: linear-gradient(135deg, #7a1f1f 0%, #c22c2c 100%); }
+    .alert-banner-heat { background: linear-gradient(135deg, #a63d0d 0%, #d4691a 100%); }
+    .alert-banner-air  { background: linear-gradient(135deg, #5a3d78 0%, #7B5EA7 100%); }
+    .alert-banner-wind { background: linear-gradient(135deg, #8a6a1a 0%, #c68a1a 100%); }
+    .alert-banner-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+    .alert-banner-badge {
+      background: rgba(255,255,255,0.25);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #fff;
+    }
+    .alert-banner-expires { font-size: 0.85rem; font-style: italic; opacity: 0.95; }
+    .alert-banner-body { font-size: 1rem; line-height: 1.5; margin: 0; }
+    .alert-banner-source { font-size: 0.75rem; opacity: 0.8; margin-top: 6px; }
+    @media (max-width: 480px) {
+      .alert-banner { padding: 14px 16px; }
+      .alert-banner-body { font-size: 0.95rem; }
+    }
+
     /* Live AQI strip — under the spotlight banner in the welcome section */
     .aqi-strip {
       display: flex;
@@ -382,6 +424,9 @@
   <section class="welcome" id="welcome">
     <div class="container">
       <!-- Spotlight Banners -->
+      <div class="alert-banner" id="alert-banner" hidden role="alert" aria-live="polite">
+        <!-- populated by inline script at end of body when an active NWS alert applies to Claremont -->
+      </div>
       <div class="spotlight-banner">
         <span class="spotlight-new-badge">Spotlight</span>
         <a href="Guides/summer-concerts-guide-2026.html">Summer Concerts in the Park: this Monday is Queen of Hearts — the 2026 lineup, parking, and picnic playbook →</a>
@@ -781,10 +826,45 @@
       function categoryClass(cat) {
         return CATEGORY_CLASS[String(cat || '').toLowerCase()] || 'aqi-good';
       }
+      const banner = document.getElementById('alert-banner');
+      function renderAlertBanner(alerts) {
+        if (!banner || !alerts || !alerts.length) return;
+        const a = alerts[0];
+        const cat = a.category || 'other';
+        const cls = 'alert-banner-' + cat;
+        banner.className = 'alert-banner ' + cls;
+        const expires = formatAlertExpiry(a.expires);
+        const bodyText = a.instruction || a.description || a.headline || '';
+        // Short body: first sentence or first ~180 chars
+        const shortBody = bodyText.split(/\.\s+/)[0].slice(0, 200);
+        banner.innerHTML =
+          '<div class="alert-banner-head">'
+            + '<span class="alert-banner-badge">' + escape(a.event) + '</span>'
+            + (expires ? '<span class="alert-banner-expires">' + escape(expires) + '</span>' : '')
+          + '</div>'
+          + '<p class="alert-banner-body">' + escape(shortBody) + (bodyText.length > 200 ? '&hellip;' : '') + '</p>'
+          + (a.senderName ? '<p class="alert-banner-source">Issued by ' + escape(a.senderName) + '</p>' : '');
+        banner.hidden = false;
+      }
+      function formatAlertExpiry(iso) {
+        if (!iso) return '';
+        const d = new Date(iso);
+        if (isNaN(d.getTime())) return '';
+        const now = new Date();
+        const opts = { timeZone: 'America/Los_Angeles', hour: 'numeric', minute: '2-digit' };
+        const time = d.toLocaleString('en-US', opts);
+        const dayDiff = Math.floor((d.setHours(0,0,0,0) - new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()) / 86400000);
+        if (dayDiff <= 0) return 'until ' + time + ' PT tonight';
+        if (dayDiff === 1) return 'until ' + time + ' PT tomorrow';
+        const dateOpts = { timeZone: 'America/Los_Angeles', month: 'short', day: 'numeric' };
+        return 'until ' + new Date(iso).toLocaleString('en-US', dateOpts) + ' at ' + time + ' PT';
+      }
       fetch(WORKER_URL)
         .then(function(res) { return res.json(); })
         .then(function(data) {
-          if (!data || data.status !== 'ok' || !data.current) return;
+          if (!data || data.status !== 'ok') return;
+          renderAlertBanner(data.alerts);
+          if (!data.current) return;
           const c = data.current;
           const cat = normalizeCategory(c.category);
           const cls = categoryClass(c.category);

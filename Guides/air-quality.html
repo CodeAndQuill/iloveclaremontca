@@ -251,6 +251,25 @@
       flex-direction: column;
       gap: 6px;
     }
+    .aqi-now-pills {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .aqi-now-trend {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 14px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: #eee;
+      color: #605848;
+    }
+    .aqi-now-trend.aqi-trend-up { background: #fce6d4; color: #b34a1a; }
+    .aqi-now-trend.aqi-trend-down { background: #dcefd8; color: #4a7a3a; }
     .aqi-now-category {
       display: inline-block;
       padding: 4px 12px;
@@ -895,11 +914,20 @@
               + formatHour(c.observedHour, c.timeZone) + ', ' + formatDate(c.observedDate)
               + '</p>';
           }
+          let trendHtml = '';
+          if (c.previousAqi != null && c.aqi != null) {
+            const delta = c.aqi - c.previousAqi;
+            if (delta >= 1) trendHtml = '<span class="aqi-now-trend aqi-trend-up">&uarr; ' + delta + ' vs last hour</span>';
+            else if (delta <= -1) trendHtml = '<span class="aqi-now-trend aqi-trend-down">&darr; ' + Math.abs(delta) + ' vs last hour</span>';
+          }
           currentHtml =
             '<div class="aqi-now-primary">'
               + '<span class="aqi-now-number">' + escape(c.aqi) + '</span>'
               + '<div class="aqi-now-meta">'
-                + '<span class="aqi-now-category ' + cls + '">' + escape(normalizeCategory(c.category)) + '</span>'
+                + '<div class="aqi-now-pills">'
+                  + '<span class="aqi-now-category ' + cls + '">' + escape(normalizeCategory(c.category)) + '</span>'
+                  + trendHtml
+                + '</div>'
                 + '<span class="aqi-now-pollutant">Driven by ' + escape(c.pollutant) + '</span>'
               + '</div>'
             + '</div>'
