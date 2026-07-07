@@ -763,39 +763,46 @@
     (function() {
       const WORKER_URL = 'https://airnow-proxy.amyleerosen.workers.dev/';
       const CATEGORY_CLASS = {
-        'Good': 'aqi-good',
-        'Moderate': 'aqi-moderate',
-        'Unhealthy for Sensitive Groups': 'aqi-usg',
-        'Unhealthy': 'aqi-unhealthy',
-        'Very Unhealthy': 'aqi-very-unhealthy',
-        'Hazardous': 'aqi-hazardous',
+        'good': 'aqi-good',
+        'moderate': 'aqi-moderate',
+        'unhealthy for sensitive groups': 'aqi-usg',
+        'unhealthy': 'aqi-unhealthy',
+        'very unhealthy': 'aqi-very-unhealthy',
+        'hazardous': 'aqi-hazardous',
       };
       const strip = document.getElementById('aqi-strip');
       if (!strip) return;
       function escape(s) {
         return String(s == null ? '' : s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch]);
       }
+      function normalizeCategory(cat) {
+        return String(cat || '').replace(/\bFor\b/g, 'for');
+      }
+      function categoryClass(cat) {
+        return CATEGORY_CLASS[String(cat || '').toLowerCase()] || 'aqi-good';
+      }
       fetch(WORKER_URL)
         .then(function(res) { return res.json(); })
         .then(function(data) {
           if (!data || data.status !== 'ok' || !data.current) return;
           const c = data.current;
-          const cls = CATEGORY_CLASS[c.category] || 'aqi-good';
+          const cat = normalizeCategory(c.category);
+          const cls = categoryClass(c.category);
           const forecastPeak = data.forecast && data.forecast.days && data.forecast.days[0] && data.forecast.days[0].peak;
-          const currentAlerting = c.category && c.category !== 'Good';
-          const forecastAlerting = forecastPeak && forecastPeak.category && forecastPeak.category !== 'Good';
+          const currentAlerting = cat && cat !== 'Good';
+          const forecastAlerting = forecastPeak && forecastPeak.category && normalizeCategory(forecastPeak.category) !== 'Good';
           let context = '';
           if (currentAlerting) {
             context = 'Right now in the Claremont Colleges Area · driven by ' + escape(c.pollutant);
           } else if (forecastAlerting) {
-            context = "Today's forecast peak: <strong>" + escape(forecastPeak.aqi) + ' ' + escape(forecastPeak.category) + '</strong> (' + escape(forecastPeak.pollutant) + ')';
+            context = "Today's forecast peak: <strong>" + escape(forecastPeak.aqi) + ' ' + escape(normalizeCategory(forecastPeak.category)) + '</strong> (' + escape(forecastPeak.pollutant) + ')';
           } else {
             context = 'Claremont Colleges Area · all pollutants Good';
           }
           strip.className = 'aqi-strip ' + cls;
           strip.innerHTML =
             '<span class="aqi-strip-badge">Air Quality</span>'
-            + '<span class="aqi-strip-value"><span class="aqi-num">' + escape(c.aqi) + '</span>' + escape(c.category) + '</span>'
+            + '<span class="aqi-strip-value"><span class="aqi-num">' + escape(c.aqi) + '</span>' + escape(cat) + '</span>'
             + '<span class="aqi-strip-context">' + context + '</span>'
             + '<span class="aqi-strip-arrow" aria-hidden="true">&rarr;</span>';
           strip.hidden = false;

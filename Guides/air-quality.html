@@ -317,11 +317,65 @@
     }
     .aqi-now-source a:hover { text-decoration: underline; }
 
+    .aqi-purpleair-block {
+      margin-top: 20px;
+      padding: 16px 20px;
+      background: #f4eeff;
+      border-left: 4px solid #7B5EA7;
+      border-radius: 6px;
+    }
+    .aqi-purpleair-lead {
+      font-size: 0.95rem;
+      color: #2c2416;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+    .aqi-purpleair-stats {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .aqi-purpleair-num {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 2.6rem;
+      color: #2c2416;
+      line-height: 1;
+      font-weight: 700;
+    }
+    .aqi-purpleair-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+      min-width: 220px;
+    }
+    .aqi-purpleair-cat-pill {
+      display: inline-block;
+      align-self: flex-start;
+      padding: 3px 12px;
+      border-radius: 14px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .aqi-purpleair-detail {
+      font-size: 0.9rem;
+      color: #2c2416;
+    }
+    .aqi-purpleair-note {
+      font-size: 0.78rem;
+      color: #8a7c66;
+      line-height: 1.5;
+    }
+
     @media (max-width: 480px) {
       .aqi-now-card.is-live { padding: 20px 20px; }
       .aqi-now-primary { gap: 16px; }
       .aqi-now-number { font-size: 3.2rem; }
       .aqi-forecast-label { min-width: 100%; }
+      .aqi-purpleair-num { font-size: 2.2rem; }
     }
 
     .aqi-scale {
@@ -739,18 +793,25 @@
     (function() {
       const WORKER_URL = 'https://airnow-proxy.amyleerosen.workers.dev/';
       const CATEGORY_CLASS = {
-        'Good': 'aqi-good',
-        'Moderate': 'aqi-moderate',
-        'Unhealthy for Sensitive Groups': 'aqi-usg',
-        'Unhealthy': 'aqi-unhealthy',
-        'Very Unhealthy': 'aqi-very-unhealthy',
-        'Hazardous': 'aqi-hazardous',
+        'good': 'aqi-good',
+        'moderate': 'aqi-moderate',
+        'unhealthy for sensitive groups': 'aqi-usg',
+        'unhealthy': 'aqi-unhealthy',
+        'very unhealthy': 'aqi-very-unhealthy',
+        'hazardous': 'aqi-hazardous',
       };
       const container = document.getElementById('aqi-now');
       if (!container) return;
 
       function escape(str) {
         return String(str == null ? '' : str).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch]);
+      }
+      function normalizeCategory(cat) {
+        // SCAQMD returns "Unhealthy For Sensitive Groups" (capital For); canonicalize to lowercase "for"
+        return String(cat || '').replace(/\bFor\b/g, 'for');
+      }
+      function categoryClass(cat) {
+        return CATEGORY_CLASS[String(cat || '').toLowerCase()] || 'aqi-good';
       }
       function formatHour(hour, tz) {
         const h = parseInt(hour, 10);
@@ -776,12 +837,27 @@
       }
       function renderForecastRow(label, day) {
         if (!day || !day.peak) return '';
-        const cls = CATEGORY_CLASS[day.peak.category] || 'aqi-good';
+        const cls = categoryClass(day.peak.category);
         return '<div class="aqi-forecast-row">'
           + '<span class="aqi-forecast-label">' + escape(label) + '</span>'
-          + '<span class="aqi-forecast-badge ' + cls + '">' + escape(day.peak.aqi) + ' ' + escape(day.peak.category) + '</span>'
+          + '<span class="aqi-forecast-badge ' + cls + '">' + escape(day.peak.aqi) + ' ' + escape(normalizeCategory(day.peak.category)) + '</span>'
           + '<span class="aqi-forecast-pollutant">' + escape(day.peak.pollutant) + '</span>'
           + '</div>';
+      }
+      function renderPurpleAir(p) {
+        if (!p) return '';
+        const cls = categoryClass(p.category);
+        return '<div class="aqi-purpleair-block">'
+          + '<p class="aqi-purpleair-lead"><strong>Hyperlocal PM2.5</strong> from ' + escape(p.sensorCount) + ' outdoor community sensors inside Claremont</p>'
+          + '<div class="aqi-purpleair-stats">'
+            + '<span class="aqi-purpleair-num">' + escape(p.aqi) + '</span>'
+            + '<div class="aqi-purpleair-meta">'
+              + '<span class="aqi-purpleair-cat-pill ' + cls + '">' + escape(normalizeCategory(p.category)) + '</span>'
+              + '<p class="aqi-purpleair-detail">Mean PM2.5 <strong>' + escape(p.meanPm25Corrected) + ' &mu;g/m&sup3;</strong> across ' + escape(p.sensorCount) + ' sensors</p>'
+              + '<p class="aqi-purpleair-note">EPA US-wide correction applied &middot; Outdoor sensors only &middot; Reporting within the last hour</p>'
+            + '</div>'
+          + '</div>'
+        + '</div>';
       }
 
       function render(data) {
@@ -799,7 +875,7 @@
         let currentHtml = '';
         let labelText = 'Right now · Pomona/Walnut Valley';
         if (c) {
-          const cls = CATEGORY_CLASS[c.category] || 'aqi-good';
+          const cls = categoryClass(c.category);
           let attribution = '';
           if (isScaqmd) {
             labelText = 'Right now · ' + (c.cellName || 'Claremont Colleges Area');
@@ -823,12 +899,14 @@
             '<div class="aqi-now-primary">'
               + '<span class="aqi-now-number">' + escape(c.aqi) + '</span>'
               + '<div class="aqi-now-meta">'
-                + '<span class="aqi-now-category ' + cls + '">' + escape(c.category) + '</span>'
+                + '<span class="aqi-now-category ' + cls + '">' + escape(normalizeCategory(c.category)) + '</span>'
                 + '<span class="aqi-now-pollutant">Driven by ' + escape(c.pollutant) + '</span>'
               + '</div>'
             + '</div>'
             + attribution;
         }
+
+        const purpleAirHtml = renderPurpleAir(data.purpleair);
 
         let forecastHtml = '';
         if (days.length) {
@@ -839,9 +917,12 @@
         }
 
         const sourceLine = isScaqmd
-          ? 'South Coast AQMD neighborhood grid · Forecast from EPA AirNow (SCAQMD) · '
+          ? 'South Coast AQMD neighborhood grid · '
+            + (data.purpleair ? 'PurpleAir community sensors · ' : '')
+            + 'Forecast from EPA AirNow (SCAQMD) · '
             + '<a href="https://experience.arcgis.com/experience/6a6a058a177440fdac6be881d41d4c2c/" target="_blank" rel="noopener noreferrer">SCAQMD dashboard</a> · '
             + '<a href="https://www.airnow.gov/?city=Claremont&amp;state=CA&amp;country=USA" target="_blank" rel="noopener noreferrer">AirNow.gov</a>'
+            + (data.purpleair ? ' · <a href="https://map.purpleair.com/?opt=1/mAQI/a10/cC0#12/34.10/-117.71" target="_blank" rel="noopener noreferrer">PurpleAir map</a>' : '')
           : 'EPA AirNow · Forecast issued by South Coast AQMD · '
             + '<a href="https://www.airnow.gov/?city=Claremont&amp;state=CA&amp;country=USA" target="_blank" rel="noopener noreferrer">View on AirNow.gov</a>';
 
@@ -849,6 +930,7 @@
         container.innerHTML =
           '<span class="aqi-label">' + escape(labelText) + '</span>'
           + currentHtml
+          + purpleAirHtml
           + forecastHtml
           + '<p class="aqi-now-source">' + sourceLine + '</p>';
       }
