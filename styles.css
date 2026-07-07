@@ -1342,8 +1342,11 @@ a.guide-card:hover {
     color: #2c2416;
   }
 
+  .hero {
+    min-height: 0;
+  }
   .hero-content {
-    padding: 100px 20px 140px;
+    padding: 56px 20px 110px;
   }
 
   .section {
