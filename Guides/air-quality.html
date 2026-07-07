@@ -223,6 +223,107 @@
       margin-bottom: 14px;
     }
 
+    .aqi-now-card.is-live {
+      border: 1px solid #e8ddd0;
+      background: #faf5f0;
+      text-align: left;
+      padding: 24px 28px;
+    }
+    .aqi-now-card.is-live .aqi-label {
+      background: #7B5EA7;
+      margin-bottom: 18px;
+    }
+    .aqi-now-primary {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 14px;
+    }
+    .aqi-now-number {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 4rem;
+      font-weight: 800;
+      color: #3d2e1e;
+      line-height: 1;
+    }
+    .aqi-now-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .aqi-now-category {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      align-self: flex-start;
+    }
+    .aqi-now-pollutant {
+      font-size: 0.9rem;
+      color: #605848;
+    }
+    .aqi-now-attribution {
+      font-size: 0.88rem;
+      color: #605848;
+      line-height: 1.55;
+      margin: 0 0 18px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid #e8ddd0;
+    }
+    .aqi-forecast-block {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .aqi-forecast-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 0.95rem;
+      color: #3d2e1e;
+    }
+    .aqi-forecast-label {
+      font-weight: 700;
+      min-width: 140px;
+      color: #605848;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .aqi-forecast-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.88rem;
+    }
+    .aqi-forecast-pollutant {
+      color: #605848;
+      font-size: 0.9rem;
+    }
+    .aqi-now-source {
+      font-size: 0.78rem;
+      color: #8a7c66;
+      margin: 0;
+      padding-top: 14px;
+      border-top: 1px solid #e8ddd0;
+      line-height: 1.5;
+    }
+    .aqi-now-source a {
+      color: #7B5EA7;
+      text-decoration: none;
+    }
+    .aqi-now-source a:hover { text-decoration: underline; }
+
+    @media (max-width: 480px) {
+      .aqi-now-card.is-live { padding: 20px 20px; }
+      .aqi-now-primary { gap: 16px; }
+      .aqi-now-number { font-size: 3.2rem; }
+      .aqi-forecast-label { min-width: 100%; }
+    }
+
     .aqi-scale {
       display: grid;
       grid-template-columns: 1fr;
@@ -633,5 +734,102 @@
   </div>
 
   <script src="../script.js" defer></script>
+
+  <script>
+    (function() {
+      const WORKER_URL = 'https://airnow-proxy.amyleerosen.workers.dev/';
+      const CATEGORY_CLASS = {
+        'Good': 'aqi-good',
+        'Moderate': 'aqi-moderate',
+        'Unhealthy for Sensitive Groups': 'aqi-usg',
+        'Unhealthy': 'aqi-unhealthy',
+        'Very Unhealthy': 'aqi-very-unhealthy',
+        'Hazardous': 'aqi-hazardous',
+      };
+      const container = document.getElementById('aqi-now');
+      if (!container) return;
+
+      function escape(str) {
+        return String(str == null ? '' : str).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch]);
+      }
+      function formatHour(hour, tz) {
+        const h = parseInt(hour, 10);
+        if (isNaN(h)) return escape(hour) + ' ' + escape(tz);
+        const meridiem = h >= 12 ? 'PM' : 'AM';
+        const display = h === 0 ? 12 : (h > 12 ? h - 12 : h);
+        return display + ' ' + meridiem + ' ' + escape(tz);
+      }
+      function formatDate(dateStr) {
+        const parts = (dateStr || '').split('-');
+        if (parts.length !== 3) return escape(dateStr);
+        const months = ['Jan','Feb','Mar','Apr','May','June','July','Aug','Sept','Oct','Nov','Dec'];
+        return months[parseInt(parts[1], 10) - 1] + ' ' + parseInt(parts[2], 10);
+      }
+      function renderForecastRow(label, day) {
+        if (!day || !day.peak) return '';
+        const cls = CATEGORY_CLASS[day.peak.category] || 'aqi-good';
+        return '<div class="aqi-forecast-row">'
+          + '<span class="aqi-forecast-label">' + escape(label) + '</span>'
+          + '<span class="aqi-forecast-badge ' + cls + '">' + escape(day.peak.aqi) + ' ' + escape(day.peak.category) + '</span>'
+          + '<span class="aqi-forecast-pollutant">' + escape(day.peak.pollutant) + '</span>'
+          + '</div>';
+      }
+
+      function render(data) {
+        if (!data || data.status !== 'ok' || (!data.current && !data.forecast)) {
+          container.innerHTML =
+            '<span class="aqi-label">Temporarily unavailable</span>'
+            + '<p class="aqi-status">The AirNow feed for Claremont is refreshing.</p>'
+            + '<p class="aqi-note">Check <a href="https://www.airnow.gov/?city=Claremont&amp;state=CA&amp;country=USA" target="_blank" rel="noopener noreferrer">AirNow.gov\'s Claremont page</a> for the current reading.</p>';
+          return;
+        }
+
+        const c = data.current;
+        const days = (data.forecast && data.forecast.days) || [];
+        let currentHtml = '';
+        if (c) {
+          const cls = CATEGORY_CLASS[c.category] || 'aqi-good';
+          const monitor = (c.monitorSite || '').replace(/\s*-\s*/g, ' – ');
+          currentHtml =
+            '<div class="aqi-now-primary">'
+              + '<span class="aqi-now-number">' + escape(c.aqi) + '</span>'
+              + '<div class="aqi-now-meta">'
+                + '<span class="aqi-now-category ' + cls + '">' + escape(c.category) + '</span>'
+                + '<span class="aqi-now-pollutant">Driven by ' + escape(c.pollutant) + '</span>'
+              + '</div>'
+            + '</div>'
+            + '<p class="aqi-now-attribution">'
+              + 'Nearest active monitor: <strong>' + escape(monitor) + '</strong> · '
+              + formatHour(c.observedHour, c.timeZone) + ', ' + formatDate(c.observedDate)
+            + '</p>';
+        }
+
+        let forecastHtml = '';
+        if (days.length) {
+          forecastHtml = '<div class="aqi-forecast-block">'
+            + renderForecastRow("Today's peak", days[0])
+            + renderForecastRow("Tomorrow's peak", days[1])
+            + '</div>';
+        }
+
+        container.classList.add('is-live');
+        container.innerHTML =
+          '<span class="aqi-label">Right now · Pomona/Walnut Valley</span>'
+          + currentHtml
+          + forecastHtml
+          + '<p class="aqi-now-source">EPA AirNow · Forecast issued by South Coast AQMD · '
+          + '<a href="https://www.airnow.gov/?city=Claremont&amp;state=CA&amp;country=USA" target="_blank" rel="noopener noreferrer">View on AirNow.gov</a>'
+          + '</p>';
+      }
+
+      fetch(WORKER_URL)
+        .then(function(res) { return res.json(); })
+        .then(render)
+        .catch(function(err) {
+          // Leaves the "Coming soon" placeholder in place — no need to overwrite.
+          if (window.console) console.warn('AQI fetch failed:', err);
+        });
+    })();
+  </script>
 </body>
 </html>
