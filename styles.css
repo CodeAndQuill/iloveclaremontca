@@ -1487,6 +1487,18 @@ a.guide-card:hover {
     letter-spacing: 0;
   }
 
+  /* Heart looks visually oversized at small font sizes because the Times
+     New Roman glyph runs taller than surrounding DM Serif letters, and the
+     white stroke stays a fixed pixel width. Shrink both on small screens. */
+  .hero h1 .heart-o-hero {
+    font-size: 0.62em;
+    text-shadow:
+      -0.8px -0.8px 0 #fff, 0.8px -0.8px 0 #fff,
+      -0.8px  0.8px 0 #fff, 0.8px  0.8px 0 #fff,
+      -0.8px  0    0 #fff, 0.8px  0    0 #fff,
+       0    -0.8px 0 #fff, 0     0.8px 0 #fff;
+  }
+
   .hero-tagline {
     font-size: 0.85rem;
   }
