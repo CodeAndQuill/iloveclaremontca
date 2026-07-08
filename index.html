@@ -252,7 +252,7 @@
     .heart-o-hero { font-size:0.75em; transform:translateY(-0.02em); }
     .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
   </style>
-  <link rel="stylesheet" href="styles.css?v=20260708p">
+  <link rel="stylesheet" href="styles.css?v=20260708q">
 
   <!-- Homepage-only theme override: cream body background ("canvas tote" warmth) -->
   <style>
@@ -359,8 +359,16 @@
     .aqi-strip.aqi-hazardous .aqi-strip-badge { background: #7a1f1f; }
     .aqi-strip.aqi-hazardous .aqi-strip-arrow { color: #7a1f1f; }
     @media (max-width: 480px) {
-      .aqi-strip { padding: 10px 16px; font-size: 0.9rem; }
-      .aqi-strip-context { min-width: 100%; font-size: 0.85rem; }
+      .aqi-strip { padding: 8px 14px; margin-bottom: 14px; font-size: 0.88rem; gap: 8px; }
+      .aqi-strip-badge { padding: 3px 10px; font-size: 0.65rem; letter-spacing: 1.2px; }
+      .aqi-strip-value .aqi-num { font-size: 1.05rem; }
+      .aqi-strip-context { min-width: 100%; font-size: 0.8rem; line-height: 1.35; }
+    }
+
+    /* Mobile: tighten hero further so AQI pill + spotlight peek above the fold on phone frames */
+    @media (max-width: 480px) {
+      .hero { min-height: 0; }
+      .hero-content { padding: 44px 14px 48px; }
     }
   </style>
 </head>
