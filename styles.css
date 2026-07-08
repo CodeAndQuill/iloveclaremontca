@@ -163,7 +163,7 @@ img {
    taller than surrounding DM Serif Display letters; shrink it a notch
    and lift it so it sits on the same optical baseline as the letters. */
 .nav-logo .heart-o {
-  font-size: 0.74em;
+  font-size: 0.72em;
   transform: translateY(-0.04em);
 }
 .heart-o-hero {
