@@ -258,6 +258,10 @@
   <style>
     body { background: #F5EFE0; }
 
+    /* Shrink hero on desktop so AQI pill + spotlight peek above the fold */
+    .hero { min-height: 72vh; }
+    .hero-content { padding: 80px 24px 115px; }
+
     /* NWS active-alert banner — sits ABOVE spotlight when a Red Flag / heat / air / wind alert applies */
     .alert-banner {
       padding: 16px 20px;
@@ -427,6 +431,9 @@
       <div class="alert-banner" id="alert-banner-top" hidden role="alert" aria-live="polite">
         <!-- populated by inline script when a HIGH-severity NWS alert (priority >= 70) applies -->
       </div>
+      <a href="Guides/air-quality.html" class="aqi-strip" id="aqi-strip" hidden aria-label="Live Claremont air quality — view details">
+        <!-- populated by inline script at end of body -->
+      </a>
       <div class="spotlight-banner">
         <span class="spotlight-new-badge">Spotlight</span>
         <a href="Guides/summer-concerts-guide-2026.html">Summer Concerts in the Park: this Monday is Queen of Hearts — the 2026 lineup, parking, and picnic playbook →</a>
@@ -434,9 +441,6 @@
       <div class="alert-banner" id="alert-banner-below" hidden role="alert" aria-live="polite">
         <!-- populated by inline script when a LOWER-severity NWS alert (priority < 70) applies -->
       </div>
-      <a href="Guides/air-quality.html" class="aqi-strip" id="aqi-strip" hidden aria-label="Live Claremont air quality — view details">
-        <!-- populated by inline script at end of body -->
-      </a>
       <div class="welcome-grid">
         <div class="welcome-text">
           <h2>Welcome to Claremont</h2>
