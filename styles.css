@@ -164,7 +164,7 @@ img {
    and lift it so it sits on the same optical baseline as the letters. */
 .nav-logo .heart-o {
   font-size: 0.70em;
-  transform: translateY(0.05em);
+  transform: translateY(0.045em);
 }
 .heart-o-hero {
   color: #7B5EA7;
