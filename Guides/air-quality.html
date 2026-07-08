@@ -427,6 +427,28 @@
     .aqi-very-unhealthy { background: #8f3f97; }
     .aqi-hazardous { background: #7e0023; }
 
+    /* Compact tool list for "Where to check yourself" */
+    .external-links {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .external-links li {
+      background: #fff;
+      border-left: 4px solid #7B5EA7;
+      border-radius: 8px;
+      padding: 14px 18px;
+      line-height: 1.55;
+      color: #4a3e2e;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .external-links li a { color: #5a3d78; text-decoration: none; }
+    .external-links li a:hover { text-decoration: underline; }
+    .external-links li strong { color: #2c2416; }
+
     .action-steps {
       counter-reset: step;
       list-style: none;
@@ -555,17 +577,6 @@
 
   <!-- Article Body -->
   <div class="article-body">
-    <p class="intro">Claremont sits in a very particular slice of the South Coast Air Basin: the <strong>inland smog belt</strong>, tucked right up against the Angeles National Forest. That geography drives two air-quality stories our coastal neighbors never see. Summer ozone regularly climbs into "Unhealthy for Sensitive Groups" territory in July, August, and September as pollution drifts inland from LA and cooks in the afternoon sun. And when the Angeles NF burns &mdash; Bobcat 2020, Ranch2 2020, and the smaller Line Fire scares since &mdash; smoke reaches us hours before it reaches Long Beach. This page is the local reference: a live AQI reading for 91711, the practical playbook for bad-air days, and links to the tools worth trusting.</p>
-
-    <aside class="subscribe-inline">
-      <p class="subscribe-inline-pitch">Air-quality flare-ups, Red Flag Warnings, and evacuation-relevant updates &mdash; one email, only when there's something Claremont residents need to know today.</p>
-      <form class="subscribe-inline-form" action="https://buttondown.com/api/emails/embed-subscribe/iloveclaremontca" method="POST" target="_blank">
-        <input type="email" name="email" placeholder="Your email" required aria-label="Email address">
-        <input type="hidden" name="tag" value="inline-air-quality">
-        <button type="submit" class="btn">Subscribe</button>
-      </form>
-    </aside>
-
     <h2>Right now in 91711</h2>
     <p class="category-intro">A live AQI reading for the Claremont Colleges Area, pulled from the South Coast AQMD's neighborhood-scale monitoring grid.</p>
 
@@ -573,29 +584,6 @@
       <span class="aqi-label">Coming soon</span>
       <p class="aqi-status">Live AQI reading is on the way.</p>
       <p class="aqi-note">We're wiring this page into the EPA's AirNow feed for 91711, protected through a Cloudflare Worker so the API key stays safe. In the meantime, check <a href="https://www.airnow.gov/?city=Claremont&amp;state=CA&amp;country=USA" target="_blank" rel="noopener noreferrer">AirNow.gov's Claremont page</a> for the current number.</p>
-    </div>
-
-    <h2>Why Claremont's air is different</h2>
-    <p class="category-intro">The same trees that make our streets beautiful also trap the pollution that arrives on the sea breeze. Understanding the local pattern is half the battle.</p>
-
-    <div class="shop-card">
-      <h3>The inland smog belt</h3>
-      <p>Pollution generated across the LA Basin gets pushed east by the ocean breeze every afternoon. It piles up against the San Gabriel foothills &mdash; and Claremont, Upland, and Rancho Cucamonga sit right where it collects. That's why our summertime ozone regularly runs higher than Pasadena, higher than downtown LA, and dramatically higher than the coast.</p>
-    </div>
-
-    <div class="shop-card">
-      <h3>Summer ozone (July &ndash; September)</h3>
-      <p>Ozone peaks between roughly <strong>3&ndash;7 PM</strong>, after a full day of sunlight has cooked the incoming pollution. This is the wrong window for heavy outdoor exercise at Thompson Creek Trail or the Wilderness Park loops. Mornings and late evenings are typically fine even on bad-ozone days.</p>
-    </div>
-
-    <div class="shop-card">
-      <h3>Wildfire smoke and PM2.5</h3>
-      <p>When the Angeles NF or a foothill fire ignites, fine-particle smoke can hit Claremont within an hour or two. PM2.5 is the dominant risk here &mdash; the microscopic particles that lodge in your lungs. During active fire events, watch the AQI hourly, not daily.</p>
-    </div>
-
-    <div class="shop-card">
-      <h3>Santa Ana winds</h3>
-      <p>Dry offshore winds from the desert flip our normal pattern. On Santa Ana days the smog blows out to sea &mdash; visibility is spectacular &mdash; but fire danger spikes dramatically. Almost every catastrophic Southern California fire has happened during a Santa Ana event.</p>
     </div>
 
     <h2>Understanding the AQI scale</h2>
@@ -628,24 +616,6 @@
       </div>
     </div>
 
-    <h2>Fire season for Claremont</h2>
-    <p class="category-intro">Claremont's proximity to the Angeles National Forest means a Red Flag Warning is worth paying attention to. Here's what the terminology actually means, and the fires that reset the neighborhood's memory.</p>
-
-    <div class="shop-card">
-      <h3>What is a Red Flag Warning?</h3>
-      <p>The National Weather Service issues Red Flag Warnings when a combination of low humidity, dry fuels, and strong winds means any spark can become a rapidly-spreading fire. It's not a prediction that a fire will happen &mdash; it's a warning that if one starts, conditions favor it running fast. During a warning: avoid outdoor burning, don't park hot cars on dry grass, and know your evacuation route.</p>
-    </div>
-
-    <div class="shop-card">
-      <h3>Fire Weather Watch</h3>
-      <p>The precursor to a Red Flag Warning &mdash; conditions are expected to develop within 12 to 72 hours. Treat it as a two-day heads-up to review your family's go-bag, check that important documents are gathered, and top off gas tanks.</p>
-    </div>
-
-    <div class="shop-card">
-      <h3>Recent local memory</h3>
-      <p>The <strong>Bobcat Fire</strong> (September 2020) burned 116,000 acres in the Angeles NF and blanketed the whole San Gabriel Valley in smoke for weeks &mdash; Claremont AQI stayed in the "Unhealthy" and "Very Unhealthy" range for the better part of a month. The <strong>Ranch2 Fire</strong> (August 2020) hit Azusa Canyon just west of us. Every summer since has had at least one smoke-drift day worth staying inside for.</p>
-    </div>
-
     <h2>What to do when the air is bad</h2>
     <p class="category-intro">A practical, do-this-first playbook for smoke days and high-ozone afternoons.</p>
 
@@ -660,52 +630,30 @@
     <h2>Where to check yourself</h2>
     <p class="category-intro">The tools that actually work for our part of the map &mdash; bookmarked in the order you'll use them.</p>
 
-    <div class="shop-card">
-      <h3><a href="https://www.airnow.gov/?city=Claremont&amp;state=CA&amp;country=USA" target="_blank" rel="noopener noreferrer">AirNow.gov &mdash; Claremont</a></h3>
-      <p>The EPA's official AQI reading, pulled from regulatory-grade monitors in the San Gabriel Valley (Glendora, Pomona, Azusa). Updates hourly. This is the number to trust when the neighborhood argues about it.</p>
-    </div>
-
-    <div class="shop-card">
-      <h3><a href="https://www.watchduty.org/" target="_blank" rel="noopener noreferrer">Watch Duty</a></h3>
-      <p>The gold-standard wildfire tracker for California foothills. Run by a nonprofit staffed by fire reporters and radio scanners &mdash; you get near-real-time incident maps, evacuation orders, and confirmed sightings before mainstream news. Free iOS and Android app. If you keep only one fire-safety tool on your phone, make it this one.</p>
-    </div>
-
-    <div class="shop-card">
-      <h3><a href="https://forecast.weather.gov/MapClick.php?lat=34.0967&amp;lon=-117.7198" target="_blank" rel="noopener noreferrer">NWS Los Angeles/Oxnard Forecast</a></h3>
-      <p>Federal weather forecast pinned to Claremont's coordinates &mdash; the source of Red Flag Warnings, Fire Weather Watches, and wind advisories. If a warning is active for our county, it lights up at the top of the page.</p>
-    </div>
-
-    <div class="shop-card">
-      <h3><a href="https://www.aqmd.gov/" target="_blank" rel="noopener noreferrer">South Coast AQMD</a></h3>
-      <p>Our regional air quality regulator. Sign up for their alert system to get email or text notifications when air quality advisories are issued for the San Gabriel Valley. Their smoke-advisory alerts arrive faster than the national feeds.</p>
-    </div>
-
-    <div class="shop-card">
-      <h3><a href="https://www.claremontca.gov/City-Services/Public-Safety/Emergency-Preparedness" target="_blank" rel="noopener noreferrer">City of Claremont Emergency Preparedness</a></h3>
-      <p>The city's official emergency-alerts page &mdash; sign up for local mass-notification alerts for evacuation orders, shelter openings, and closures.</p>
-    </div>
-
-    <h2>Sensitive populations in Claremont</h2>
-    <p class="category-intro">A quick mental map of who feels the air first, and where they are in town.</p>
-
-    <div class="shop-card">
-      <h3>5C students new to Southern California</h3>
-      <p>Every fall the 5Cs bring in students from cleaner climates &mdash; the Pacific Northwest, New England, international. Their lungs aren't calibrated to our summer ozone or fire smoke. A moderate AQI day feels worse to a first-year from Portland than to a lifelong resident. If you know an incoming freshman, share the AirNow app.</p>
-    </div>
-
-    <div class="shop-card">
-      <h3>Pilgrim Place &amp; Mt. San Antonio Gardens</h3>
-      <p>Two of Claremont's older-adult communities. Both maintain their own indoor air handling, but on very bad smoke days it's worth a phone check to a neighbor to make sure they're staying inside and comfortable.</p>
-    </div>
-
-    <div class="shop-card">
-      <h3>CUSD schools</h3>
-      <p>Claremont Unified follows the state's outdoor-activity-restriction guidelines based on AQI. During Red Flag Warnings or heavy smoke, expect recess and PE to move indoors. Check the district's parent portal for the day's status.</p>
-    </div>
+    <ul class="external-links">
+      <li>
+        <a href="https://experience.arcgis.com/experience/6a6a058a177440fdac6be881d41d4c2c/" target="_blank" rel="noopener noreferrer"><strong>SCAQMD Interactive Dashboard</strong></a> &mdash; the neighborhood-scale grid our live card pulls from. Look for the "Claremont Colleges Area" cell for the same reading you see here.
+      </li>
+      <li>
+        <a href="https://map.purpleair.com/?opt=1/mAQI/a10/cC0#12/34.10/-117.71" target="_blank" rel="noopener noreferrer"><strong>PurpleAir Map &mdash; Claremont</strong></a> &mdash; the community sensor network. Zoom in to see every outdoor PurpleAir inside Claremont; useful for hyperlocal PM2.5 during fire events.
+      </li>
+      <li>
+        <a href="https://www.watchduty.org/" target="_blank" rel="noopener noreferrer"><strong>Watch Duty</strong></a> &mdash; nonprofit-run wildfire tracker with near-real-time incident maps and evacuation orders. Free iOS &amp; Android.
+      </li>
+      <li>
+        <a href="https://forecast.weather.gov/MapClick.php?lat=34.0967&amp;lon=-117.7198" target="_blank" rel="noopener noreferrer"><strong>NWS Los Angeles/Oxnard Forecast</strong></a> &mdash; source of Red Flag Warnings and wind advisories for Claremont's coordinates.
+      </li>
+      <li>
+        <a href="https://www.aqmd.gov/" target="_blank" rel="noopener noreferrer"><strong>South Coast AQMD</strong></a> &mdash; regional regulator; sign up for their alert system for smoke advisories.
+      </li>
+      <li>
+        <a href="https://www.claremontca.gov/City-Services/Public-Safety/Emergency-Preparedness" target="_blank" rel="noopener noreferrer"><strong>City of Claremont Emergency Preparedness</strong></a> &mdash; local mass-notification alerts.
+      </li>
+    </ul>
 
     <div class="pro-tip">
       <strong>The quick-check cheat sheet</strong>
-      <p><strong>Right now:</strong> <a href="https://www.airnow.gov/?city=Claremont&amp;state=CA&amp;country=USA" target="_blank" rel="noopener noreferrer" style="color:#2c2416; text-decoration:underline;">AirNow &mdash; Claremont</a> for the AQI number. <a href="https://www.watchduty.org/" target="_blank" rel="noopener noreferrer" style="color:#2c2416; text-decoration:underline;">Watch Duty</a> for active fires.</p>
+      <p><strong>Right now:</strong> scroll up to the live card, or <a href="https://experience.arcgis.com/experience/6a6a058a177440fdac6be881d41d4c2c/" target="_blank" rel="noopener noreferrer" style="color:#2c2416; text-decoration:underline;">SCAQMD dashboard</a> for the Claremont Colleges Area cell. <a href="https://www.watchduty.org/" target="_blank" rel="noopener noreferrer" style="color:#2c2416; text-decoration:underline;">Watch Duty</a> for active fires.</p>
       <p><strong>Red Flag Warning active?</strong> Skip outdoor burning, know your evacuation route, keep your phone charged.</p>
       <p><strong>Smoke rolling in?</strong> Close windows, AC on recirculate, kids and elders inside, purifier on in the bedroom.</p>
       <p><strong>Summer afternoon ozone spike?</strong> Move the trail run to sunrise, not sunset.</p>
