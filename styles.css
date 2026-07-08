@@ -160,10 +160,11 @@ img {
 }
 
 /* Nav logo heart runs visually oversized because Times' heart glyph is
-   taller than surrounding DM Serif Display letters; shrink it a notch. */
+   taller than surrounding DM Serif Display letters; shrink it a notch
+   and lift it so it sits on the same optical baseline as the letters. */
 .nav-logo .heart-o {
   font-size: 0.76em;
-  transform: translateY(0.06em);
+  transform: translateY(-0.04em);
 }
 .heart-o-hero {
   color: #7B5EA7;
