@@ -252,7 +252,7 @@
     .heart-o-hero { font-size:0.75em; transform:translateY(-0.02em); }
     .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
   </style>
-  <link rel="stylesheet" href="styles.css?v=20260708q">
+  <link rel="stylesheet" href="styles.css?v=20260708r">
 
   <!-- Homepage-only theme override: cream body background ("canvas tote" warmth) -->
   <style>
@@ -365,6 +365,38 @@
       .aqi-strip-context { min-width: 100%; font-size: 0.8rem; line-height: 1.35; }
     }
 
+    /* Neighbor callout — coyote map nudge inside the welcome section */
+    .neighbor-callout {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: #f9ede0;
+      border-left: 4px solid #a05a3c;
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-top: 14px;
+      color: #4a3e2e;
+      line-height: 1.55;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .neighbor-callout-icon {
+      color: #a05a3c;
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+    .neighbor-callout p { margin: 0; font-size: 0.98rem; }
+    .neighbor-callout a {
+      color: #7B5EA7;
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .neighbor-callout a:hover { color: #5a3d78; }
+    @media (max-width: 480px) {
+      .neighbor-callout { padding: 12px 14px; gap: 10px; }
+      .neighbor-callout p { font-size: 0.92rem; }
+    }
+
     /* Mobile: tighten hero further so AQI pill + spotlight peek above the fold on phone frames */
     @media (max-width: 480px) {
       .hero { min-height: 0; }
@@ -392,6 +424,7 @@
         <li><a href="Guides/shopping-guide.html">Shopping</a></li>
         <li><a href="Guides/free-guide.html">Things to Do</a></li>
         <li><a href="Guides/neighborhood-guide.html">Neighborhoods</a></li>
+        <li><a href="Guides/coyote-sighting-map.html">Coyote Map</a></li>
         <li><a href="Guides/index.html">All Guides</a></li>
       </ul>
     </div>
@@ -454,6 +487,16 @@
           <h2>Welcome to Claremont</h2>
           <p class="welcome-lead">Nestled at the base of the San Gabriel Mountains, Claremont, California is a rare gem — a walkable, tree-canopied college town just 30 miles east of Los Angeles with a personality all its own.</p>
           <p>Looking for things to do in Claremont? From jacaranda-purple springs to golden-hour hikes above the foothills, from locally roasted coffee in <a href="#village">the Village</a> to world-class art at <a href="#colleges">the colleges</a> — Claremont feels like a small town that somehow has everything. Whether you're planning a visit, exploring as a student, or considering a move, this is your local guide to the best of Claremont CA.</p>
+          <aside class="neighbor-callout">
+            <svg class="neighbor-callout-icon" viewBox="0 0 24 24" aria-hidden="true" width="24" height="24" fill="currentColor">
+              <ellipse cx="5.5" cy="9" rx="1.9" ry="2.6"/>
+              <ellipse cx="9.5" cy="5.5" rx="1.9" ry="2.6"/>
+              <ellipse cx="14.5" cy="5.5" rx="1.9" ry="2.6"/>
+              <ellipse cx="18.5" cy="9" rx="1.9" ry="2.6"/>
+              <path d="M12 11c-3.2 0-5.5 2.6-5.5 5.5 0 2.2 1.4 4 3.5 4.7 1.3 0.4 2.7 0.4 4 0 2.1-0.7 3.5-2.5 3.5-4.7 0-2.9-2.3-5.5-5.5-5.5z"/>
+            </svg>
+            <p>Living here? Help your neighbors stay aware on the <a href="Guides/coyote-sighting-map.html">community coyote sightings map</a> — pin what you've seen so everyone knows when to keep pets closer.</p>
+          </aside>
         </div>
         <div class="welcome-stats">
           <a href="#colleges" class="stat-card stat-card-link">
