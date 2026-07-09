@@ -252,7 +252,7 @@
     .heart-o-hero { font-size:0.75em; transform:translateY(-0.02em); }
     .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
   </style>
-  <link rel="stylesheet" href="styles.css?v=20260708r">
+  <link rel="stylesheet" href="styles.css?v=20260709a">
 
   <!-- Homepage-only theme override: cream body background ("canvas tote" warmth) -->
   <style>
@@ -395,6 +395,40 @@
     @media (max-width: 480px) {
       .neighbor-callout { padding: 12px 14px; gap: 10px; }
       .neighbor-callout p { font-size: 0.92rem; }
+    }
+
+    /* Coyote Map FAB — mobile-only one-tap access for urgent sightings */
+    .coyote-fab {
+      display: none;
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      z-index: 100;
+      align-items: center;
+      gap: 8px;
+      background: #a05a3c;
+      color: #fff;
+      padding: 12px 18px 12px 14px;
+      border-radius: 30px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .coyote-fab:hover, .coyote-fab:focus {
+      background: #874a30;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+      transform: translateY(-1px);
+    }
+    .coyote-fab:active { transform: scale(0.97); }
+    .coyote-fab svg { flex-shrink: 0; }
+    @media (max-width: 768px) {
+      .coyote-fab { display: inline-flex; }
+    }
+    @media (max-width: 380px) {
+      .coyote-fab { padding: 10px 14px 10px 12px; font-size: 0.88rem; gap: 6px; }
     }
 
     /* Mobile: tighten hero further so AQI pill + spotlight peek above the fold on phone frames */
@@ -952,5 +986,17 @@
         });
     })();
   </script>
+
+  <!-- Mobile-only floating action button: one-tap access to the coyote sightings map -->
+  <a href="Guides/coyote-sighting-map.html" class="coyote-fab" aria-label="Open community coyote sightings map">
+    <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20" fill="currentColor">
+      <ellipse cx="5.5" cy="9" rx="1.9" ry="2.6"/>
+      <ellipse cx="9.5" cy="5.5" rx="1.9" ry="2.6"/>
+      <ellipse cx="14.5" cy="5.5" rx="1.9" ry="2.6"/>
+      <ellipse cx="18.5" cy="9" rx="1.9" ry="2.6"/>
+      <path d="M12 11c-3.2 0-5.5 2.6-5.5 5.5 0 2.2 1.4 4 3.5 4.7 1.3 0.4 2.7 0.4 4 0 2.1-0.7 3.5-2.5 3.5-4.7 0-2.9-2.3-5.5-5.5-5.5z"/>
+    </svg>
+    <span>Coyote Map</span>
+  </a>
 </body>
 </html>
