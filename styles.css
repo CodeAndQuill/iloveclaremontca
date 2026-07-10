@@ -170,7 +170,7 @@ img {
    Mobile stays at 0.70em from the base rule above. */
 @media (min-width: 769px) {
   .nav-logo .heart-o {
-    font-size: 0.78em;
+    font-size: 0.80em;
   }
 }
 .heart-o-hero {
