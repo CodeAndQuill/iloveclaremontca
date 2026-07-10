@@ -166,6 +166,13 @@ img {
   font-size: 0.70em;
   transform: translateY(-0.01em);
 }
+/* Desktop: nudge the top-left nav-logo heart a touch bigger for presence.
+   Mobile stays at 0.70em from the base rule above. */
+@media (min-width: 769px) {
+  .nav-logo .heart-o {
+    font-size: 0.78em;
+  }
+}
 .heart-o-hero {
   color: #7B5EA7;
   font-size: 0.75em;
