@@ -54,11 +54,50 @@
   }
   </script>
 
+  <!-- Structured Data: Guide collection -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Claremont Local Guides",
+    "url": "https://iloveclaremontca.com/Guides/index.html",
+    "description": "Local knowledge, honest recommendations, and insider tips — your complete collection of guides to Claremont CA.",
+    "inLanguage": "en-US",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "I Love Claremont CA",
+      "url": "https://iloveclaremontca.com/"
+    },
+    "mainEntity": {
+      "@type": "ItemList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Claremont Summer Concerts 2026", "url": "https://iloveclaremontca.com/Guides/summer-concerts-guide-2026.html" },
+        { "@type": "ListItem", "position": 2, "name": "Free Summer Movies in the Park 2026", "url": "https://iloveclaremontca.com/Guides/summer-movies-guide-2026.html" },
+        { "@type": "ListItem", "position": 3, "name": "Claremont Coyote Sighting Map", "url": "https://iloveclaremontca.com/Guides/coyote-sighting-map.html" },
+        { "@type": "ListItem", "position": 4, "name": "The Claremont Summer Splash Guide", "url": "https://iloveclaremontca.com/Guides/summer-splash-guide-2026.html" },
+        { "@type": "ListItem", "position": 5, "name": "Jacaranda Season in Claremont", "url": "https://iloveclaremontca.com/jacaranda-guide.html" },
+        { "@type": "ListItem", "position": 6, "name": "The Parental Credit Card Tour", "url": "https://iloveclaremontca.com/Guides/dining-guide.html" },
+        { "@type": "ListItem", "position": 7, "name": "The Claremont Dining Guide", "url": "https://iloveclaremontca.com/Guides/restaurant-guide.html" },
+        { "@type": "ListItem", "position": 8, "name": "Free Things to Do in Claremont", "url": "https://iloveclaremontca.com/Guides/free-guide.html" },
+        { "@type": "ListItem", "position": 9, "name": "The Claremont Caffeine Circuit", "url": "https://iloveclaremontca.com/Guides/coffee-guide.html" },
+        { "@type": "ListItem", "position": 10, "name": "Claremont Neighborhoods: Mapping Your Vibe", "url": "https://iloveclaremontca.com/Guides/neighborhood-guide.html" },
+        { "@type": "ListItem", "position": 11, "name": "Best Playgrounds in Claremont", "url": "https://iloveclaremontca.com/Guides/playground-guide.html" },
+        { "@type": "ListItem", "position": 12, "name": "Urban Coyote Encounters", "url": "https://iloveclaremontca.com/Guides/coyote-encounter-guide.html" },
+        { "@type": "ListItem", "position": 13, "name": "Claremont Air Quality & Fire Watch", "url": "https://iloveclaremontca.com/Guides/air-quality.html" },
+        { "@type": "ListItem", "position": 14, "name": "Pilgrim Place First Saturday Sales", "url": "https://iloveclaremontca.com/Guides/pilgrim-place-sales-guide.html" },
+        { "@type": "ListItem", "position": 15, "name": "Claremont Retail Therapy", "url": "https://iloveclaremontca.com/Guides/shopping-guide.html" },
+        { "@type": "ListItem", "position": 16, "name": "The Ultimate Claremont Hiking Guide", "url": "https://iloveclaremontca.com/Guides/hiking-guide.html" },
+        { "@type": "ListItem", "position": 17, "name": "2026 Native Plant Festival", "url": "https://iloveclaremontca.com/Spotlights/native-plant-festival-2026.html" }
+      ]
+    }
+  }
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Playfair+Display:wght@400;700;800&family=Inter:wght@400;500;600;700&display=swap">
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Playfair+Display:wght@400;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../styles.css?v=20260710a">
   <style>
     .article-hero {
       position: relative;
@@ -131,7 +170,7 @@
       <a href="../index.html" class="nav-logo">
         I L<span class="heart-o" aria-hidden="true">&hearts;&#xFE0E;</span><span class="sr-only">o</span>ve Claremont
       </a>
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
       <ul class="nav-links" id="navLinks">
@@ -140,6 +179,7 @@
         <li><a href="shopping-guide.html">Shopping</a></li>
         <li><a href="free-guide.html">Things to Do</a></li>
         <li><a href="neighborhood-guide.html">Neighborhoods</a></li>
+        <li><a href="coyote-sighting-map.html">Coyote Map</a></li>
         <li><a href="index.html">All Guides</a></li>
       </ul>
     </div>

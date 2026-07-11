@@ -4,6 +4,5 @@ Disallow: /old-design/
 Disallow: /index-old.html
 Disallow: /index2.html
 Disallow: /index3.html
-Disallow: /teaser.html
 
 Sitemap: https://iloveclaremontca.com/sitemap.xml

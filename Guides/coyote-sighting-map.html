@@ -33,10 +33,71 @@
   <meta name="twitter:description" content="Community-reported coyote sightings in Claremont, refreshed every 72 hours. Drop a pin or see what neighbors are reporting.">
   <meta name="twitter:image" content="https://iloveclaremontca.com/photos/coyote.jpg">
 
+  <!-- Structured Data: Breadcrumbs -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://iloveclaremontca.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Guides",
+        "item": "https://iloveclaremontca.com/Guides/index.html"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Claremont Coyote Sighting Map"
+      }
+    ]
+  }
+  </script>
+
+  <!-- Structured Data: WebPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Claremont Coyote Sighting Map",
+    "url": "https://iloveclaremontca.com/Guides/coyote-sighting-map.html",
+    "description": "Community-reported coyote sightings in Claremont, refreshed every 72 hours. Drop a pin if you spot a coyote, see what neighbors are reporting near you.",
+    "inLanguage": "en-US",
+    "datePublished": "2026-06-16",
+    "image": "https://iloveclaremontca.com/photos/coyote.jpg",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "I Love Claremont CA",
+      "url": "https://iloveclaremontca.com/"
+    },
+    "about": {
+      "@type": "Place",
+      "name": "Claremont, California",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Claremont",
+        "addressRegion": "CA",
+        "addressCountry": "US"
+      }
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "I Love Claremont CA",
+      "url": "https://iloveclaremontca.com/"
+    }
+  }
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Playfair+Display:wght@400;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../styles.css?v=20260710a">
 
   <!-- Leaflet (cdnjs is more consistently reachable than unpkg) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
@@ -157,7 +218,7 @@
       <a href="../index.html" class="nav-logo">
         I L<span class="heart-o" aria-hidden="true">&hearts;&#xFE0E;</span><span class="sr-only">o</span>ve Claremont
       </a>
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
       <ul class="nav-links" id="navLinks">
@@ -166,6 +227,7 @@
         <li><a href="shopping-guide.html">Shopping</a></li>
         <li><a href="free-guide.html">Things to Do</a></li>
         <li><a href="neighborhood-guide.html">Neighborhoods</a></li>
+        <li><a href="coyote-sighting-map.html">Coyote Map</a></li>
         <li><a href="index.html">All Guides</a></li>
       </ul>
     </div>
@@ -174,7 +236,7 @@
   <main>
 
   <header class="article-hero">
-    <img class="article-hero-bg" src="../photos/coyote.jpg" alt="" width="1200" height="900" fetchpriority="high">
+    <img class="article-hero-bg" src="../photos/coyote.jpg" alt="A coyote walking across a residential lawn in Claremont, CA in daylight" width="1200" height="900" fetchpriority="high">
     <div class="article-hero-overlay"></div>
     <div class="article-hero-content">
       <a href="coyote-encounter-guide.html" class="article-back">&larr; Back to the Coyote Encounter Guide</a>

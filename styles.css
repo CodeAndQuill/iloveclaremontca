@@ -112,6 +112,17 @@ img {
   color: #fff;
 }
 
+/* Keyboard focus visibility (mouse clicks unaffected) */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #7B5EA7;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 /* --- Navbar --- */
 .navbar {
   position: fixed;
@@ -1166,7 +1177,7 @@ a.guide-card:hover {
 }
 .modal-form .modal-note {
   font-size: 0.78rem;
-  color: #aaa;
+  color: #767676;
   text-align: center;
   margin-top: 12px;
 }

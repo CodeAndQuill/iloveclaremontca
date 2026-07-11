@@ -52,7 +52,13 @@
     "name": "I Love Claremont CA",
     "url": "https://iloveclaremontca.com/",
     "description": "Your local guide to Claremont, California — the City of Trees and PhDs.",
-    "inLanguage": "en-US"
+    "inLanguage": "en-US",
+    "publisher": {
+      "@type": "Organization",
+      "name": "I Love Claremont CA",
+      "url": "https://iloveclaremontca.com/",
+      "logo": "https://iloveclaremontca.com/apple-touch-icon.png"
+    }
   }
   </script>
 
@@ -225,7 +231,19 @@
     "@type": "Organization",
     "name": "I Love Claremont CA",
     "url": "https://iloveclaremontca.com/",
-    "description": "Your local guide to Claremont, California — the City of Trees and PhDs."
+    "logo": "https://iloveclaremontca.com/apple-touch-icon.png",
+    "image": "https://iloveclaremontca.com/og-image.jpg",
+    "description": "Your local guide to Claremont, California — the City of Trees and PhDs.",
+    "areaServed": {
+      "@type": "City",
+      "name": "Claremont",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Claremont",
+        "addressRegion": "CA",
+        "addressCountry": "US"
+      }
+    }
   }
   </script>
 
@@ -252,7 +270,7 @@
     .heart-o-hero { font-size:0.75em; transform:translateY(-0.02em); }
     .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
   </style>
-  <link rel="stylesheet" href="styles.css?v=20260709d">
+  <link rel="stylesheet" href="styles.css?v=20260710a">
 
   <!-- Homepage-only theme override: cream body background ("canvas tote" warmth) -->
   <style>
@@ -449,7 +467,7 @@
       <a href="/" class="nav-logo">
         I L<span class="heart-o" aria-hidden="true">&hearts;&#xFE0E;</span><span class="sr-only">o</span>ve Claremont
       </a>
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
       <ul class="nav-links" id="navLinks">

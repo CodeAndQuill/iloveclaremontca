@@ -84,12 +84,14 @@ onScroll();
 // Mobile nav toggle
 if (navToggle && navLinks) {
   navToggle.addEventListener('click', function() {
-    navLinks.classList.toggle('active');
+    var isOpen = navLinks.classList.toggle('active');
+    navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
   });
 
   navLinks.querySelectorAll('a').forEach(function(link) {
     link.addEventListener('click', function() {
       navLinks.classList.remove('active');
+      navToggle.setAttribute('aria-expanded', 'false');
     });
   });
 }
