@@ -255,6 +255,9 @@
       border-color: #7B5EA7;
       background: #f3eef8;
     }
+    .calendar-item.is-past { opacity: 0.55; }
+    .calendar-item.is-past .calendar-month,
+    .calendar-item.is-past .calendar-date { color: #8a7c66; text-decoration: line-through; }
     .calendar-month {
       font-family: 'Playfair Display', Georgia, serif;
       font-size: 1.1rem;
@@ -465,7 +468,7 @@
 
       <p class="intro">If you've lived in Claremont for more than five minutes, you know the annual Pilgrim Place Festival in November is legendary. What many locals don't realize: you don't have to wait until autumn to experience the magic. On the first Saturday of the month from April through September, this storied retirement community opens its historic campus gates for a fast-paced, highly curated neighborhood market &mdash; and because the residents here include retired professors, clergy, and professionals, the items are frequently of a caliber you won't find at a standard yard sale.</p>
 
-      <div class="info-banner"><strong>Next sale: Saturday, July 11, 2026 &mdash; 9:00 to 11:00 AM.</strong> Rescheduled from July 4 because of the holiday weekend &mdash; arrive at 9 to beat the heat.</div>
+      <div class="info-banner"><strong>Next sale: Saturday, August 1, 2026 &mdash; 9:00 to 11:00 AM.</strong> College move-in season &mdash; great time to find dorm furniture and apartment finds.</div>
 
       <aside class="subscribe-inline">
         <p class="subscribe-inline-pitch">First-Saturday sale reminders and Claremont event picks &mdash; one email, only when there's something worth showing up for.</p>
@@ -481,17 +484,17 @@
       <p>Mark your planners! These sales are strictly held on the first Saturday of the month from 9:00 AM to 11:00 AM.</p>
 
       <div class="calendar-grid">
-        <div class="calendar-item">
+        <div class="calendar-item is-past">
           <span class="calendar-month">June</span>
           <span class="calendar-date">June 6</span>
           <span class="calendar-note">Summer kickoff &mdash; outdoor patio items and beach reads</span>
         </div>
-        <div class="calendar-item next-up">
+        <div class="calendar-item is-past">
           <span class="calendar-month">July</span>
           <span class="calendar-date">July 11</span>
           <span class="calendar-note">Rescheduled to the 2nd Saturday for the July 4th holiday &mdash; arrive at 9 to beat the heat</span>
         </div>
-        <div class="calendar-item">
+        <div class="calendar-item next-up">
           <span class="calendar-month">August</span>
           <span class="calendar-date">August 1</span>
           <span class="calendar-note">College move-in season &mdash; dorm furniture and apartment finds</span>
