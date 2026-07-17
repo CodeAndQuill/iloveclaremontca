@@ -432,7 +432,7 @@
       font-weight: 700;
       text-decoration: none;
       box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s, padding 0.2s ease, border-radius 0.2s ease, width 0.2s ease;
       -webkit-tap-highlight-color: transparent;
     }
     .coyote-fab:hover, .coyote-fab:focus {
@@ -454,6 +454,13 @@
       .hero { min-height: 0; }
       .hero-content { padding: 44px 14px 48px; }
     }
+
+    /* Hide global back-to-top — FAB fills this role on homepage */
+    #backToTop { display: none !important; }
+
+    /* Mini state: collapses to a circle showing only the pawprint on scroll */
+    .coyote-fab--mini { padding: 12px; border-radius: 50%; gap: 0; }
+    .coyote-fab--mini span { display: none; }
   </style>
 </head>
 <body>
@@ -1021,5 +1028,13 @@
     </svg>
     <span>Coyote Map</span>
   </a>
+  <script>
+  (function () {
+    var fab = document.querySelector('.coyote-fab');
+    if (!fab) return;
+    function update() { fab.classList.toggle('coyote-fab--mini', window.scrollY > 400); }
+    window.addEventListener('scroll', update, { passive: true });
+  })();
+  </script>
 </body>
 </html>
