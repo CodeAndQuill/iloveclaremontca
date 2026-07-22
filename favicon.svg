@@ -1,3 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <path fill="#7B5EA7" d="M50 82 C30 70 8 58 8 32 C8 16 26 8 50 28 C74 8 92 16 92 32 C92 58 70 70 50 82Z"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><metadata><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"><rdf:Description><dc:creator>RealFaviconGenerator</dc:creator><dc:source>https://realfavicongenerator.net</dc:source></rdf:Description></rdf:RDF></metadata><rect width="100" height="100" rx="18" fill="#5a3d78"></rect><path fill="#F5EFE0" d="M50 82 C27 61 15 50 15 37 C15 26 24 18 34 18 C40 18 47 26 50 32 C53 26 60 18 66 18 C77 18 85 26 85 37 C85 50 73 61 50 82Z"></path></svg>
