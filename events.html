@@ -315,6 +315,7 @@
           <p>Tree lighting ceremony, carolers, hot cocoa, and a stroll through the decorated Village streets. Usually the first Friday in December. Small-town holiday magic at its finest.</p>
         </div>
       </div>
+      <p id="heritage-credit" style="display:none;text-align:center;font-size:0.8em;color:#8a7c66;margin-top:20px;">Some events from the <a href="https://claremontevents.com" target="_blank" rel="noopener noreferrer" style="color:#557562;font-weight:600;">Claremont Calendar</a>, curated by Claremont Heritage.</p>
     </div>
   </section>
 
@@ -406,12 +407,6 @@
       .then(function (r) { return r.json(); })
       .then(function (events) {
         if (!events.length) return;
-        var divider = '<p style="grid-column:1/-1;width:100%;text-align:center;font-size:0.8em;'
-          + 'color:#8a7c66;margin:24px 0 8px;padding-top:24px;'
-          + 'border-top:1px solid #e8e0d0;">'
-          + 'More upcoming &middot; <a href="https://claremontevents.com" target="_blank" '
-          + 'rel="noopener noreferrer" style="color:#557562;font-weight:600;">'
-          + 'Claremont Calendar</a></p>';
         var cards = events.map(function (e) {
           var d = new Date(e.startMs);
           var pill = d.toLocaleString('en-US', { month: 'short', day: 'numeric', timeZone: 'America/Los_Angeles' });
@@ -421,7 +416,9 @@
             + (e.location ? '<p>' + e.location + '</p>' : '')
             + '</div>';
         }).join('');
-        grid.insertAdjacentHTML('beforeend', divider + cards);
+        grid.insertAdjacentHTML('beforeend', cards);
+        var credit = document.getElementById('heritage-credit');
+        if (credit) credit.style.display = 'block';
       })
       .catch(function () { /* silent — static cards still show */ });
   })();
