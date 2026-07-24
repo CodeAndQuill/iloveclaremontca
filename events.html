@@ -300,6 +300,19 @@
     </div>
   </section>
 
+  <!-- Heritage Events Strip -->
+  <section class="section section-cream" id="heritage-events">
+    <div class="container">
+      <div class="section-header">
+        <h2>More Around Claremont</h2>
+        <p>Upcoming events from the <a href="https://claremontevents.com" target="_blank" rel="noopener noreferrer">Claremont Calendar</a>, curated by Claremont Heritage.</p>
+      </div>
+      <div class="events-grid" id="heritage-grid">
+        <p style="color:#8a7c66;">Loading upcoming events&hellip;</p>
+      </div>
+    </div>
+  </section>
+
   </main>
 
   <!-- Footer -->
@@ -381,5 +394,29 @@
   </div>
 
   <script src="script.js" defer></script>
+  <script>
+  (function () {
+    var grid = document.getElementById('heritage-grid');
+    fetch('https://heritage-events.amyleerosen.workers.dev')
+      .then(function (r) { return r.json(); })
+      .then(function (events) {
+        if (!events.length) {
+          grid.innerHTML = '<p>Check back soon for upcoming events.</p>';
+          return;
+        }
+        grid.innerHTML = events.map(function (e) {
+          return '<div class="event-card">'
+            + '<div class="event-month">' + e.month + '</div>'
+            + '<h3>' + e.title + '</h3>'
+            + (e.location ? '<p>' + e.location + '</p>' : '')
+            + '<p style="font-size:0.85em;color:#8a7c66;">' + e.dateLabel + '</p>'
+            + '</div>';
+        }).join('');
+      })
+      .catch(function () {
+        grid.innerHTML = '<p>Couldn\'t load events right now. <a href="https://claremontevents.com" target="_blank" rel="noopener noreferrer">See the full Claremont Calendar →</a></p>';
+      });
+  })();
+  </script>
 </body>
 </html>
