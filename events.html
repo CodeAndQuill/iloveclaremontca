@@ -225,6 +225,17 @@
     }
     .article-back:hover { color: #fff; }
 
+    .event-guide-link {
+      display: inline-block;
+      margin-top: 10px;
+      font-size: 0.85em;
+      font-weight: 600;
+      color: #5a3d78;
+      text-decoration: none;
+      letter-spacing: 0.01em;
+    }
+    .event-guide-link:hover { text-decoration: underline; }
+
     @media (max-width: 768px) {
       .article-hero { min-height: 280px; }
       .article-hero-content { padding: 100px 20px 48px; }
@@ -270,16 +281,18 @@
   <!-- Events Grid -->
   <section class="section section-white">
     <div class="container">
-      <div class="events-grid">
+      <div class="events-grid" id="events-grid">
         <div class="event-card">
           <div class="event-month">Mon Nights</div>
-          <h3><a href="Guides/summer-concerts-guide-2026.html">Concerts in the Park</a></h3>
+          <h3>Concerts in the Park</h3>
           <p>Free live music every Monday night at the Memorial Park bandshell, July through August. Bring a blanket, pack a picnic, and enjoy warm evenings under the trees.</p>
+          <a href="Guides/summer-concerts-guide-2026.html" class="event-guide-link">Our full guide →</a>
         </div>
         <div class="event-card">
           <div class="event-month">Summer</div>
-          <h3><a href="Guides/summer-movies-guide-2026.html">Movies in the Park</a></h3>
+          <h3>Movies in the Park</h3>
           <p>Free outdoor screenings across all five Claremont districts — Matilda, The Wild Robot, How to Train Your Dragon, and Zootopia 2. Bring a blanket and show up early for a good spot.</p>
+          <a href="Guides/summer-movies-guide-2026.html" class="event-guide-link">Our full guide →</a>
         </div>
         <div class="event-card">
           <div class="event-month">August</div>
@@ -301,19 +314,6 @@
           <h3><a href="https://www.claremontca.gov/Activities-Recreation/Special-Events/Holiday-Promenade-Tree-Lighting-Ceremony" target="_blank" rel="noopener noreferrer">Holiday Promenade &amp; Tree Lighting</a></h3>
           <p>Tree lighting ceremony, carolers, hot cocoa, and a stroll through the decorated Village streets. Usually the first Friday in December. Small-town holiday magic at its finest.</p>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Heritage Events Strip -->
-  <section class="section section-cream" id="heritage-events">
-    <div class="container">
-      <div class="section-header">
-        <h2>More Around Claremont</h2>
-        <p>Upcoming events from the <a href="https://claremontevents.com" target="_blank" rel="noopener noreferrer">Claremont Calendar</a>, curated by Claremont Heritage.</p>
-      </div>
-      <div class="events-grid" id="heritage-grid">
-        <p style="color:#8a7c66;">Loading upcoming events&hellip;</p>
       </div>
     </div>
   </section>
@@ -401,26 +401,29 @@
   <script src="script.js" defer></script>
   <script>
   (function () {
-    var grid = document.getElementById('heritage-grid');
+    var grid = document.getElementById('events-grid');
     fetch('https://heritage-events.amyleerosen.workers.dev')
       .then(function (r) { return r.json(); })
       .then(function (events) {
-        if (!events.length) {
-          grid.innerHTML = '<p>Check back soon for upcoming events.</p>';
-          return;
-        }
-        grid.innerHTML = events.map(function (e) {
+        if (!events.length) return;
+        var divider = '<p style="grid-column:1/-1;width:100%;text-align:center;font-size:0.8em;'
+          + 'color:#8a7c66;margin:24px 0 8px;padding-top:24px;'
+          + 'border-top:1px solid #e8e0d0;">'
+          + 'More upcoming &middot; <a href="https://claremontevents.com" target="_blank" '
+          + 'rel="noopener noreferrer" style="color:#557562;font-weight:600;">'
+          + 'Claremont Calendar</a></p>';
+        var cards = events.map(function (e) {
+          var d = new Date(e.startMs);
+          var pill = d.toLocaleString('en-US', { month: 'short', day: 'numeric', timeZone: 'America/Los_Angeles' });
           return '<div class="event-card">'
-            + '<div class="event-month">' + e.month + '</div>'
+            + '<div class="event-month">' + pill + '</div>'
             + '<h3>' + e.title + '</h3>'
             + (e.location ? '<p>' + e.location + '</p>' : '')
-            + '<p style="font-size:0.85em;color:#8a7c66;">' + e.dateLabel + '</p>'
             + '</div>';
         }).join('');
+        grid.insertAdjacentHTML('beforeend', divider + cards);
       })
-      .catch(function () {
-        grid.innerHTML = '<p>Couldn\'t load events right now. <a href="https://claremontevents.com" target="_blank" rel="noopener noreferrer">See the full Claremont Calendar →</a></p>';
-      });
+      .catch(function () { /* silent — static cards still show */ });
   })();
   </script>
 </body>
