@@ -278,22 +278,27 @@
     </div>
   </header>
 
-  <!-- Events Grid -->
+  <!-- Happening Soon -->
   <section class="section section-white">
     <div class="container">
+      <div class="section-header">
+        <h2>Happening Soon</h2>
+        <p>Free concerts every Monday through Aug 24 and outdoor movies across all five districts &mdash; <a href="Guides/summer-concerts-guide-2026.html" style="color:#5a3d78;font-weight:600;">concert guide</a> &amp; <a href="Guides/summer-movies-guide-2026.html" style="color:#5a3d78;font-weight:600;">movie guide</a>.</p>
+      </div>
       <div class="events-grid" id="events-grid">
-        <div class="event-card">
-          <div class="event-month">Mon Nights</div>
-          <h3>Concerts in the Park</h3>
-          <p>Free live music every Monday night at the Memorial Park bandshell, July through August. Bring a blanket, pack a picnic, and enjoy warm evenings under the trees.</p>
-          <a href="Guides/summer-concerts-guide-2026.html" class="event-guide-link">Our full guide →</a>
-        </div>
-        <div class="event-card">
-          <div class="event-month">Summer</div>
-          <h3>Movies in the Park</h3>
-          <p>Free outdoor screenings across all five Claremont districts — Matilda, The Wild Robot, How to Train Your Dragon, and Zootopia 2. Bring a blanket and show up early for a good spot.</p>
-          <a href="Guides/summer-movies-guide-2026.html" class="event-guide-link">Our full guide →</a>
-        </div>
+        <p style="color:#8a7c66;grid-column:1/-1;">Loading upcoming events&hellip;</p>
+      </div>
+      <p id="heritage-credit" style="display:none;text-align:center;font-size:0.8em;color:#8a7c66;margin-top:20px;">Events sourced from the <a href="https://claremontevents.com" target="_blank" rel="noopener noreferrer" style="color:#557562;font-weight:600;">Claremont Calendar</a>, curated by Claremont Heritage.</p>
+    </div>
+  </section>
+
+  <!-- Later This Year -->
+  <section class="section section-cream">
+    <div class="container">
+      <div class="section-header">
+        <h2>Later This Year</h2>
+      </div>
+      <div class="events-grid">
         <div class="event-card">
           <div class="event-month">August</div>
           <h3><a href="https://www.claremontca.gov/Activities-Recreation/Special-Events/National-Night-Out" target="_blank" rel="noopener noreferrer">National Night Out</a></h3>
@@ -315,7 +320,6 @@
           <p>Tree lighting ceremony, carolers, hot cocoa, and a stroll through the decorated Village streets. Usually the first Friday in December. Small-town holiday magic at its finest.</p>
         </div>
       </div>
-      <p id="heritage-credit" style="display:none;text-align:center;font-size:0.8em;color:#8a7c66;margin-top:20px;">Some events from the <a href="https://claremontevents.com" target="_blank" rel="noopener noreferrer" style="color:#557562;font-weight:600;">Claremont Calendar</a>, curated by Claremont Heritage.</p>
     </div>
   </section>
 
@@ -403,11 +407,14 @@
   <script>
   (function () {
     var grid = document.getElementById('events-grid');
+    var fallback = '<p style="color:#8a7c66;grid-column:1/-1;">Check the <a href="https://claremontevents.com" '
+      + 'target="_blank" rel="noopener noreferrer" style="color:#557562;font-weight:600;">'
+      + 'Claremont Calendar</a> for upcoming events.</p>';
     fetch('https://heritage-events.amyleerosen.workers.dev')
       .then(function (r) { return r.json(); })
       .then(function (events) {
-        if (!events.length) return;
-        var cards = events.map(function (e) {
+        if (!events.length) { grid.innerHTML = fallback; return; }
+        grid.innerHTML = events.map(function (e) {
           var d = new Date(e.startMs);
           var pill = d.toLocaleString('en-US', { month: 'short', day: 'numeric', timeZone: 'America/Los_Angeles' });
           return '<div class="event-card">'
@@ -416,11 +423,10 @@
             + (e.location ? '<p>' + e.location + '</p>' : '')
             + '</div>';
         }).join('');
-        grid.insertAdjacentHTML('beforeend', cards);
         var credit = document.getElementById('heritage-credit');
         if (credit) credit.style.display = 'block';
       })
-      .catch(function () { /* silent — static cards still show */ });
+      .catch(function () { grid.innerHTML = fallback; });
   })();
   </script>
 </body>
