@@ -586,7 +586,8 @@ a.feature-card:hover {
   background: #faf8f5;
   border-radius: 16px;
   padding: 28px 24px;
-  border-top: 3px solid #C67A4B;
+  border: 1px solid rgba(198,122,75,0.2);
+  box-shadow: 0 2px 8px rgba(42,28,10,0.06);
   transition: transform 0.2s;
 }
 .college-card:hover {
@@ -1018,7 +1019,7 @@ a.guide-card:hover {
 
 /* --- Featured College Cards (5C undergrads) --- */
 .college-card-featured {
-  border-top-width: 4px;
+  border-color: rgba(198,122,75,0.28);
 }
 
 /* --- Live Guide Tags (links to published guides) --- */

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MOCKUP — Heart variants comparison | I Love Claremont</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Inter', Arial, sans-serif;
+      background: #F5EFE0;
+      color: #2c2416;
+      padding: 80px 24px 60px;
+      line-height: 1.6;
+    }
+
+    /* Mockup banner */
+    .mockup-flag {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: #5a3d78; color: #fff; text-align: center;
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 1px;
+      text-transform: uppercase; padding: 6px 12px;
+    }
+
+    .container { max-width: 1100px; margin: 0 auto; }
+    h1.page-title {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 2.2rem; color: #5a3d78; margin-bottom: 8px;
+    }
+    .intro {
+      color: #605848; margin-bottom: 48px; font-size: 1.05rem;
+    }
+
+    /* Each option block */
+    .option {
+      margin-bottom: 56px;
+      padding-bottom: 56px;
+      border-bottom: 1px solid rgba(90,61,120,0.15);
+    }
+    .option:last-child { border-bottom: none; }
+    .option h2 {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 1.6rem; color: #5a3d78; margin-bottom: 8px;
+    }
+    .option .desc {
+      color: #605848; margin-bottom: 24px; max-width: 720px;
+    }
+    .option .code {
+      display: inline-block; background: rgba(90,61,120,0.08);
+      color: #5a3d78; font-family: 'Courier New', monospace;
+      font-size: 0.82rem; padding: 4px 10px; border-radius: 4px;
+      margin-bottom: 24px;
+    }
+
+    /* Side-by-side preview panels */
+    .previews {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    }
+    .preview {
+      min-height: 200px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      padding: 32px;
+    }
+    .preview-dark {
+      background:
+        linear-gradient(135deg, rgba(55,36,70,0.85), rgba(80,55,110,0.85)),
+        linear-gradient(45deg, #7B5EA7, #b794d6);
+      background-blend-mode: overlay;
+    }
+    .preview-cream {
+      background: #F5EFE0;
+      border: 1px solid rgba(90,61,120,0.15);
+    }
+    .preview-label {
+      position: absolute;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 1.5px;
+      text-transform: uppercase; opacity: 0.7;
+      margin-top: -160px; margin-left: -100px;
+    }
+    .preview-dark .preview-label { color: rgba(255,255,255,0.8); }
+    .preview-cream .preview-label { color: #605848; }
+
+    /* The wordmark — mirrors the live site's H1 markup */
+    .wordmark {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: clamp(2.4rem, 5.5vw, 3.6rem);
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: 0.5px;
+    }
+    .preview-dark .wordmark {
+      color: #fff;
+      text-shadow:
+        0 1px 2px rgba(0,0,0,0.95),
+        0 2px 8px rgba(0,0,0,0.75),
+        0 4px 18px rgba(0,0,0,0.55);
+    }
+    .preview-cream .wordmark { color: #2c2416; }
+
+    /* Heart base styling — matches live site */
+    .heart {
+      color: #7B5EA7;
+      font-size: 0.75em;
+      line-height: 1;
+      display: inline-block;
+      transform: translateY(-0.02em);
+      font-family: 'Times New Roman', Times, Georgia, serif;
+    }
+
+    /* ====================
+       OPTION 1: White outline (sticker)
+       8-direction text-shadow creates a tight white outline.
+       ==================== */
+    .heart-opt1 {
+      color: #7B5EA7;
+      text-shadow:
+        -1.5px -1.5px 0 #fff, 1.5px -1.5px 0 #fff,
+        -1.5px  1.5px 0 #fff, 1.5px  1.5px 0 #fff,
+        -1.5px  0    0 #fff, 1.5px  0    0 #fff,
+         0   -1.5px 0 #fff, 0     1.5px 0 #fff;
+    }
+
+    /* ====================
+       OPTION 2: Hollow heart with glow
+       Character switches from ♥ (U+2665 filled) to ♡ (U+2661 hollow),
+       plus a soft white glow behind it.
+       Note: hollow heart rendering varies a bit across fonts —
+       Times New Roman renders it cleanest.
+       ==================== */
+    .heart-opt2 {
+      color: #7B5EA7;
+      text-shadow: 0 0 8px rgba(255,255,255,0.9);
+    }
+    /* On cream, white glow disappears — use a deeper purple glow instead */
+    .preview-cream .heart-opt2 {
+      text-shadow: 0 0 6px rgba(123,94,167,0.4);
+    }
+
+    /* ====================
+       OPTION 4: Soft purple glow only
+       Same character, purple aura via text-shadow.
+       ==================== */
+    .heart-opt4 {
+      color: #7B5EA7;
+      text-shadow: 0 0 14px rgba(123,94,167,0.85);
+    }
+
+    /* ====================
+       REFERENCE: current heart (no changes)
+       Same as the live site for baseline comparison.
+       ==================== */
+    .heart-ref {
+      color: #7B5EA7;
+    }
+
+    /* The "o" hidden but accessible — same as live site */
+    .sr-only {
+      position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+      overflow:hidden; clip:rect(0,0,0,0); border:0;
+    }
+
+    @media (max-width: 700px) {
+      .previews { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="mockup-flag">Mockup &mdash; heart variants comparison &mdash; not live</div>
+
+  <div class="container">
+    <h1 class="page-title">Heart-o variants for the I Love Claremont wordmark</h1>
+    <p class="intro">Each variant shown at hero size against two contexts: a dark/purple gradient (simulating the hero overlay over the jacaranda video) and the cream page background from v2. The heart needs to read well in both.</p>
+
+    <!-- REFERENCE: current -->
+    <div class="option">
+      <h2>Reference &mdash; current (no changes)</h2>
+      <p class="desc">This is what's on the live site today. Purple filled heart, no outline, no glow. Shown for direct comparison with each variant below.</p>
+      <span class="code">color: #7B5EA7;</span>
+      <div class="previews">
+        <div class="preview preview-dark">
+          <span class="wordmark">I L<span class="heart heart-ref">&hearts;&#xFE0E;</span><span class="sr-only">o</span>ve Claremont</span>
+        </div>
+        <div class="preview preview-cream">
+          <span class="wordmark">I L<span class="heart heart-ref">&hearts;&#xFE0E;</span><span class="sr-only">o</span>ve Claremont</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPTION 1 -->
+    <div class="option">
+      <h2>Option 1 &mdash; White outline (sticker)</h2>
+      <p class="desc">Tight 1.5px white outline via 8-direction text-shadow. Biggest pop, most "sticker"-like. Reads instantly against any background. Best on the dark hero where the white outline glows out; on cream the white outline is invisible against the cream itself, so the heart just looks normal there.</p>
+      <span class="code">text-shadow: -1.5px -1.5px 0 #fff, 1.5px -1.5px 0 #fff, ... (8 directions)</span>
+      <div class="previews">
+        <div class="preview preview-dark">
+          <span class="wordmark">I L<span class="heart heart-opt1">&hearts;&#xFE0E;</span><span class="sr-only">o</span>ve Claremont</span>
+        </div>
+        <div class="preview preview-cream">
+          <span class="wordmark">I L<span class="heart heart-opt1">&hearts;&#xFE0E;</span><span class="sr-only">o</span>ve Claremont</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPTION 2 -->
+    <div class="option">
+      <h2>Option 2 &mdash; Hollow heart with glow</h2>
+      <p class="desc">Character switches from <code>&hearts;</code> (filled) to <code>&#x2661;</code> (hollow), and we add a soft white glow on dark backgrounds / a purple glow on cream. Most refined and "editorial." Reads as line-art. Hollow heart rendering varies slightly across fonts &mdash; Times New Roman renders it cleanest, which is why the existing heart already uses that family.</p>
+      <span class="code">character: &#x2661; (U+2661) &middot; text-shadow: glow</span>
+      <div class="previews">
+        <div class="preview preview-dark">
+          <span class="wordmark">I L<span class="heart heart-opt2">&#x2661;</span><span class="sr-only">o</span>ve Claremont</span>
+        </div>
+        <div class="preview preview-cream">
+          <span class="wordmark">I L<span class="heart heart-opt2">&#x2661;</span><span class="sr-only">o</span>ve Claremont</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPTION 4 -->
+    <div class="option">
+      <h2>Option 4 &mdash; Soft purple glow only</h2>
+      <p class="desc">Keep the existing filled heart, add a purple halo (14px blur, 85% opacity). Like a tiny neon sign. Luminous against the dark hero; gentle and warm against cream. Quietest option of the three &mdash; no shape change, no outline, just presence.</p>
+      <span class="code">text-shadow: 0 0 14px rgba(123,94,167,0.85);</span>
+      <div class="previews">
+        <div class="preview preview-dark">
+          <span class="wordmark">I L<span class="heart heart-opt4">&hearts;&#xFE0E;</span><span class="sr-only">o</span>ve Claremont</span>
+        </div>
+        <div class="preview preview-cream">
+          <span class="wordmark">I L<span class="heart heart-opt4">&hearts;&#xFE0E;</span><span class="sr-only">o</span>ve Claremont</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div style="margin-top: 32px; padding: 24px 28px; background: rgba(123,94,167,0.06); border: 1px solid rgba(123,94,167,0.22); border-radius: 4px;">
+      <h3 style="font-family:'DM Serif Display',Georgia,serif; color:#5a3d78; margin-bottom:12px; font-size:1.2rem;">Quick guide</h3>
+      <ul style="padding-left:20px; line-height:1.9; color:#2c2416;">
+        <li><strong>Want playful and bold?</strong> Option 1 (sticker).</li>
+        <li><strong>Want refined and modern?</strong> Option 2 (hollow heart).</li>
+        <li><strong>Want subtle warmth and luminance?</strong> Option 4 (purple glow).</li>
+      </ul>
+      <p style="margin-top:16px; color:#605848; font-style:italic;">Combinable: e.g., hollow heart + purple glow can be stacked for a "neon line-art" feel. Let me know if you want to see a hybrid.</p>
+    </div>
+  </div>
+
+</body>
+</html>
