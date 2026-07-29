@@ -461,8 +461,8 @@ textarea:focus-visible {
   border-radius: 16px;
   padding: 28px;
   text-align: center;
-  box-shadow: none;
-  border-left: 4px solid #C67A4B;
+  border: 1px solid rgba(198,122,75,0.2);
+  box-shadow: 0 2px 8px rgba(42,28,10,0.06);
 }
 
 .stat-number {
@@ -519,11 +519,12 @@ textarea:focus-visible {
 .info-banner {
   margin-top: 32px;
   background: #fff;
-  border-left: 4px solid #6B8F71;
+  border: 1px solid rgba(107,143,113,0.22);
   padding: 16px 24px;
   border-radius: 8px;
   font-size: 0.95rem;
   color: #555;
+  box-shadow: 0 2px 6px rgba(42,28,10,0.04);
 }
 
 /* --- Feature Grid (Hiking) --- */
@@ -746,7 +747,8 @@ a.college-card:hover {
   background: #faf8f5;
   border-radius: 16px;
   padding: 36px 32px;
-  border-left: 4px solid #C67A4B;
+  border: 1px solid rgba(198,122,75,0.2);
+  box-shadow: 0 2px 8px rgba(42,28,10,0.06), 0 1px 2px rgba(42,28,10,0.04);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 a.guide-card {
@@ -1021,7 +1023,7 @@ a.guide-card:hover {
 
 /* --- Live Guide Tags (links to published guides) --- */
 .guide-card-live {
-  border-left-color: #C67A4B;
+  border-color: rgba(198,122,75,0.2);
 }
 
 .guide-tag-live {
@@ -1030,7 +1032,7 @@ a.guide-card:hover {
 
 /* --- Coming Soon Guide Tags --- */
 .guide-card-soon {
-  border-left-color: #C67A4B;
+  border-color: rgba(198,122,75,0.2);
 }
 
 .guide-tag-soon {
@@ -1477,7 +1479,7 @@ a.guide-card:hover {
   }
 
   .guide-card.guide-card-new-spotlight {
-    border-left: 4px solid #7B5EA7;
+    border: 1px solid rgba(123,94,167,0.22);
     background: #f5f0fa;
   }
 
@@ -1590,7 +1592,7 @@ a.guide-card:hover {
   }
 
   .guide-card.guide-card-new-spotlight {
-    border-left: 4px solid #7B5EA7;
+    border: 1px solid rgba(123,94,167,0.22);
     background: #f5f0fa;
   }
 
@@ -1698,7 +1700,7 @@ a.guide-card:hover {
 
 /* --- Spotlight Guide Card --- */
 .guide-card-spotlight {
-  border-left-color: #6B8F71;
+  border-color: rgba(107,143,113,0.22);
   background: #f0f5f1;
 }
 .guide-tag-spotlight {
@@ -1713,9 +1715,8 @@ a.guide-card:hover {
 
 /* --- New Spotlight Guide Card --- */
 .guide-card.guide-card-new-spotlight {
-  border-left-color: #7B5EA7;
   background: #f5f0fa;
-  border-left: 4px solid #7B5EA7;
+  border: 1px solid rgba(123,94,167,0.22);
   position: relative;
   overflow: hidden;
   animation: newSpotlightPulse 2.5s ease-in-out infinite;
@@ -1838,8 +1839,7 @@ a.guide-card:hover {
 /* --- Subscribe Inline (per-guide CTA after intro) --- */
 .subscribe-inline {
   background: #F5EFE0;
-  border: 1px solid rgba(123,94,167,0.15);
-  border-left: 4px solid #7B5EA7;
+  border: 1px solid rgba(123,94,167,0.22);
   border-radius: 16px;
   padding: 22px 28px;
   margin: 32px auto;
@@ -1915,8 +1915,7 @@ a.guide-card:hover {
 .related-guide-card {
   display: block;
   background: #FAF5EA;
-  border: 1px solid rgba(123,94,167,0.12);
-  border-left: 4px solid #7B5EA7;
+  border: 1px solid rgba(123,94,167,0.2);
   border-radius: 12px;
   padding: 20px 22px;
   text-decoration: none;
