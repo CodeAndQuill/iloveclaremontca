@@ -320,6 +320,32 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://iloveclaremontca.com/Guides/social-scene-guide.html</loc>
+    <lastmod>2026-08-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://iloveclaremontca.com/Guides/claremont-colleges-move-in-2026.html</loc>
+    <image:image>
+      <image:loc>https://iloveclaremontca.com/photos/pomona-marston-quad.jpg</image:loc>
+      <image:caption>Marston Quad at Pomona College — the iconic heart of the Claremont Colleges campus</image:caption>
+    </image:image>
+    <lastmod>2026-08-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://iloveclaremontca.com/Guides/village-venture-guide-2026.html</loc>
+    <image:image>
+      <image:loc>https://iloveclaremontca.com/photos/claremont-village-sign.jpg</image:loc>
+      <image:caption>Claremont Village wooden welcome sign — the heart of Village Venture every October</image:caption>
+    </image:image>
+    <lastmod>2026-08-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://iloveclaremontca.com/Guides/claremont-student-guide.html</loc>
     <image:image>
       <image:loc>https://iloveclaremontca.com/photos/depot-blossoms.jpg</image:loc>
