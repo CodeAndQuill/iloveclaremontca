@@ -338,6 +338,38 @@
     }
     .article-footer a:hover { background: #5a4080; }
 
+    /* Campus events strip */
+    .campus-events-grid { display: flex; flex-direction: column; gap: 4px; margin-top: 4px; }
+    .campus-event-card {
+      background: #faf5f0;
+      border-radius: 14px;
+      padding: 18px 22px 16px;
+    }
+    .campus-event-card .event-host {
+      font-size: 0.76rem;
+      color: #7B5EA7;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 4px;
+    }
+    .campus-event-card h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.05rem;
+      color: #3d2e1e;
+      margin-bottom: 4px;
+    }
+    .campus-event-card h3 a { color: #7B5EA7; text-decoration: none; }
+    .campus-event-card h3 a:hover { text-decoration: underline; }
+    .campus-event-card .event-when { font-size: 0.88rem; color: #605848; margin: 0; }
+    .campus-events-source {
+      font-size: 0.8rem;
+      color: #8a7560;
+      margin-top: 12px;
+      text-align: center;
+    }
+    .campus-events-source a { color: #7B5EA7; }
+
     @media (max-width: 768px) {
       .article-hero { min-height: 340px; }
       .article-hero-content { padding: 100px 20px 48px; }
@@ -345,6 +377,7 @@
       .info-card { padding: 16px 18px 14px; }
       .band { padding: 14px 16px; }
       .class-pass-callout, .heat-callout { padding: 18px 20px; }
+      .campus-event-card { padding: 16px 18px 14px; }
     }
   </style>
 </head>
@@ -551,6 +584,16 @@
 
     </div>
 
+    <h2>Happening at the Colleges This Week</h2>
+    <p class="section-intro">Events from the 7C campus calendar at <a href="https://claremont.campuslabs.com/Engage/events" target="_blank" rel="noopener noreferrer">Campus Labs Engage</a>. Updates every hour.</p>
+
+    <div class="campus-events-grid" id="campus-events-grid">
+      <div class="info-card" style="text-align:center;color:#8a7560;">Loading upcoming events&hellip;</div>
+    </div>
+    <p class="campus-events-source" id="campus-events-source" hidden>
+      Source: <a href="https://claremont.campuslabs.com/Engage/events" target="_blank" rel="noopener noreferrer">The Claremont Colleges Campus Calendar</a>
+    </p>
+
   </div>
 
   <div class="article-footer">
@@ -623,5 +666,40 @@
   </div>
 
   <script src="../script.js" defer></script>
+  <script>
+  (function () {
+    var WORKER = 'https://campus-events.amyleerosen.workers.dev';
+    var grid = document.getElementById('campus-events-grid');
+    var src  = document.getElementById('campus-events-source');
+    if (!grid) return;
+
+    function esc(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+      });
+    }
+
+    fetch(WORKER)
+      .then(function (r) { return r.json(); })
+      .then(function (events) {
+        if (!events || !events.length) {
+          grid.innerHTML = '<div class="info-card"><p>No events in the next two weeks. <a href="https://claremont.campuslabs.com/Engage/events" target="_blank" rel="noopener noreferrer">See the full campus calendar &rarr;</a></p></div>';
+          return;
+        }
+        grid.innerHTML = events.map(function (e) {
+          var loc = e.location ? ' &middot; ' + esc(e.location) : '';
+          return '<div class="campus-event-card">'
+            + '<div class="event-host">' + esc(e.host) + '</div>'
+            + '<h3><a href="' + esc(e.link) + '" target="_blank" rel="noopener noreferrer">' + esc(e.title) + '</a></h3>'
+            + '<p class="event-when">' + esc(e.dateLabel) + loc + '</p>'
+            + '</div>';
+        }).join('');
+        if (src) src.hidden = false;
+      })
+      .catch(function () {
+        grid.innerHTML = '<div class="info-card"><p>Couldn\'t load events right now. <a href="https://claremont.campuslabs.com/Engage/events" target="_blank" rel="noopener noreferrer">See the full campus calendar &rarr;</a></p></div>';
+      });
+  })();
+  </script>
 </body>
 </html>
