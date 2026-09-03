@@ -19,7 +19,7 @@
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Things to do in Claremont, California — best restaurants, coffee shops, free activities, hiking trails, the Claremont Colleges, boutiques, and local events.">
-  <meta name="robots" content="index, follow">
+  <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#C67A4B">
   <title>I Love Claremont CA | Things to Do, Village, Hiking & Colleges</title>
   <link rel="canonical" href="https://iloveclaremontca.com/">
@@ -52,7 +52,13 @@
     "name": "I Love Claremont CA",
     "url": "https://iloveclaremontca.com/",
     "description": "Your local guide to Claremont, California — the City of Trees and PhDs.",
-    "inLanguage": "en-US"
+    "inLanguage": "en-US",
+    "publisher": {
+      "@type": "Organization",
+      "name": "I Love Claremont CA",
+      "url": "https://iloveclaremontca.com/",
+      "logo": "https://iloveclaremontca.com/apple-touch-icon.png"
+    }
   }
   </script>
 
@@ -225,34 +231,46 @@
     "@type": "Organization",
     "name": "I Love Claremont CA",
     "url": "https://iloveclaremontca.com/",
-    "description": "Your local guide to Claremont, California — the City of Trees and PhDs."
+    "logo": "https://iloveclaremontca.com/apple-touch-icon.png",
+    "image": "https://iloveclaremontca.com/og-image.jpg",
+    "description": "Your local guide to Claremont, California — the City of Trees and PhDs.",
+    "areaServed": {
+      "@type": "City",
+      "name": "Claremont",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Claremont",
+        "addressRegion": "CA",
+        "addressCountry": "US"
+      }
+    }
   }
   </script>
 
   <link rel="preload" as="image" href="photos/hero-poster.webp" type="image/webp" fetchpriority="high">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Playfair+Display:wght@700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-  <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Playfair+Display:wght@700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"></noscript>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Playfair+Display:wght@700;800&family=Big+Shoulders+Display:wght@800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Playfair+Display:wght@700;800&family=Big+Shoulders+Display:wght@800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"></noscript>
   <style>
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
     html { scroll-behavior:smooth; scroll-padding-top:70px; }
     body { font-family:'Inter',Arial,sans-serif; color:#2c2416; background:#fff; line-height:1.7; font-size:17px; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
     .navbar { position:fixed; top:0; left:0; right:0; z-index:1000; background:rgba(245,239,224,0.97); backdrop-filter:blur(12px); padding:0 24px; border-bottom:1px solid rgba(90,61,120,0.08); }
     .nav-container { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; height:64px; }
-    .nav-logo { font-size:1.3rem; font-weight:800; color:#2c2416; font-family:'DM Serif Display',Georgia,serif; letter-spacing:0.5px; text-decoration:none; }
+    .nav-logo { font-size:1.3rem; font-weight:800; color:#2c2416; font-family:'Big Shoulders Display','DM Serif Display',Georgia,serif; letter-spacing:1px; text-decoration:none; text-transform:uppercase; }
     .nav-links { list-style:none; display:flex; gap:6px; }
     .nav-links a { color:#5a3d78; font-size:0.85rem; font-weight:600; padding:8px 14px; border-radius:6px; text-decoration:none; }
     .nav-toggle { display:none; }
     .hero { position:relative; min-height:100vh; display:flex; align-items:center; justify-content:center; text-align:center; background:#372446; overflow:clip; overflow-x:visible; }
     .hero-bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 40%; z-index:0; background:#372446; }
     .hero-content { position:relative; z-index:2; padding:120px 24px 160px; max-width:800px; }
-    .hero h1 { font-family:'DM Serif Display',Georgia,serif; font-size:clamp(3rem,7.5vw,5.2rem); font-weight:400; color:#fff; line-height:1.1; margin-bottom:32px; text-shadow:0 3px 12px rgba(0,0,0,0.7); }
+    .hero h1 { font-family:'Big Shoulders Display','DM Serif Display',Georgia,serif; font-size:clamp(3.5rem,8.5vw,6rem); font-weight:800; color:#fff; line-height:1.0; margin-bottom:32px; text-shadow:0 3px 12px rgba(0,0,0,0.7); letter-spacing:2px; text-transform:uppercase; }
     .hero-tagline { font-size:0.95rem; font-weight:600; color:#fff; text-transform:uppercase; letter-spacing:3px; margin-bottom:16px; text-shadow:0 1px 2px rgba(0,0,0,0.95), 0 2px 8px rgba(0,0,0,0.75), 0 4px 18px rgba(0,0,0,0.55); }
     .hero-sub { font-size:1.2rem; color:#fff; margin-bottom:32px; font-style:italic; text-shadow:0 1px 2px rgba(0,0,0,0.95), 0 2px 8px rgba(0,0,0,0.75), 0 4px 18px rgba(0,0,0,0.55); }
     .heart-o { color:#7B5EA7; font-size:0.85em; line-height:1; display:inline-block; transform:translateY(0.05em); font-family:'Times New Roman',Times,Georgia,serif; }
     .heart-o-hero { font-size:0.75em; transform:translateY(-0.02em); }
     .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
   </style>
-  <link rel="stylesheet" href="styles.css?v=20260708q">
+  <link rel="stylesheet" href="styles.css?v=20260710a">
 
   <!-- Homepage-only theme override: cream body background ("canvas tote" warmth) -->
   <style>
@@ -316,7 +334,8 @@
       font-size: 0.95rem;
       color: #2c2416;
       background: #eef5ec;
-      border-left: 4px solid #5a8f4a;
+      border: 1px solid rgba(90,143,74,0.22);
+      box-shadow: 0 2px 8px rgba(42,28,10,0.05);
       transition: background 0.2s, transform 0.2s;
       flex-wrap: wrap;
       line-height: 1.5;
@@ -338,31 +357,31 @@
     .aqi-strip-value .aqi-num { font-family: 'Playfair Display', Georgia, serif; font-size: 1.2rem; margin-right: 4px; }
     .aqi-strip-context { color: #605848; font-size: 0.9rem; flex: 1; min-width: 200px; }
     .aqi-strip-arrow { color: #5a8f4a; font-weight: 800; margin-left: auto; flex-shrink: 0; font-size: 1.1rem; }
-    .aqi-strip.aqi-moderate { background: #fff8e6; border-left-color: #c68a1a; }
+    .aqi-strip.aqi-moderate { background: #fff8e6; border-color: rgba(198,138,26,0.28); }
     .aqi-strip.aqi-moderate:hover { background: #ffefcc; }
     .aqi-strip.aqi-moderate .aqi-strip-badge { background: #c68a1a; }
     .aqi-strip.aqi-moderate .aqi-strip-arrow { color: #c68a1a; }
-    .aqi-strip.aqi-usg { background: #fff0e0; border-left-color: #d4691a; }
+    .aqi-strip.aqi-usg { background: #fff0e0; border-color: rgba(212,105,26,0.28); }
     .aqi-strip.aqi-usg:hover { background: #ffe4cc; }
     .aqi-strip.aqi-usg .aqi-strip-badge { background: #d4691a; }
     .aqi-strip.aqi-usg .aqi-strip-arrow { color: #d4691a; }
-    .aqi-strip.aqi-unhealthy { background: #ffecec; border-left-color: #c22c2c; }
+    .aqi-strip.aqi-unhealthy { background: #ffecec; border-color: rgba(194,44,44,0.28); }
     .aqi-strip.aqi-unhealthy:hover { background: #ffdada; }
     .aqi-strip.aqi-unhealthy .aqi-strip-badge { background: #c22c2c; }
     .aqi-strip.aqi-unhealthy .aqi-strip-arrow { color: #c22c2c; }
-    .aqi-strip.aqi-very-unhealthy { background: #f3e6ff; border-left-color: #7B5EA7; }
+    .aqi-strip.aqi-very-unhealthy { background: #f3e6ff; border-color: rgba(123,94,167,0.28); }
     .aqi-strip.aqi-very-unhealthy:hover { background: #ead6ff; }
     .aqi-strip.aqi-very-unhealthy .aqi-strip-badge { background: #7B5EA7; }
     .aqi-strip.aqi-very-unhealthy .aqi-strip-arrow { color: #7B5EA7; }
-    .aqi-strip.aqi-hazardous { background: #f0dede; border-left-color: #7a1f1f; }
+    .aqi-strip.aqi-hazardous { background: #f0dede; border-color: rgba(122,31,31,0.28); }
     .aqi-strip.aqi-hazardous:hover { background: #e6cccc; }
     .aqi-strip.aqi-hazardous .aqi-strip-badge { background: #7a1f1f; }
     .aqi-strip.aqi-hazardous .aqi-strip-arrow { color: #7a1f1f; }
     @media (max-width: 480px) {
-      .aqi-strip { padding: 8px 14px; margin-bottom: 14px; font-size: 0.88rem; gap: 8px; }
-      .aqi-strip-badge { padding: 3px 10px; font-size: 0.65rem; letter-spacing: 1.2px; }
-      .aqi-strip-value .aqi-num { font-size: 1.05rem; }
-      .aqi-strip-context { min-width: 100%; font-size: 0.8rem; line-height: 1.35; }
+      .aqi-strip { padding: 7px 12px; margin-bottom: 10px; font-size: 0.85rem; gap: 8px; flex-wrap: nowrap; }
+      .aqi-strip-badge { padding: 3px 9px; font-size: 0.62rem; letter-spacing: 1.2px; }
+      .aqi-strip-value .aqi-num { font-size: 1rem; }
+      .aqi-strip-context { display: none; }
     }
 
     /* Neighbor callout — coyote map nudge inside the welcome section */
@@ -377,7 +396,7 @@
       margin-top: 14px;
       color: #4a3e2e;
       line-height: 1.55;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      box-shadow: 0 2px 8px rgba(42,28,10,0.06);
     }
     .neighbor-callout-icon {
       color: #a05a3c;
@@ -414,7 +433,7 @@
       font-weight: 700;
       text-decoration: none;
       box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s, padding 0.2s ease, border-radius 0.2s ease, width 0.2s ease;
       -webkit-tap-highlight-color: transparent;
     }
     .coyote-fab:hover, .coyote-fab:focus {
@@ -436,6 +455,13 @@
       .hero { min-height: 0; }
       .hero-content { padding: 44px 14px 48px; }
     }
+
+    /* Hide global back-to-top — FAB fills this role on homepage */
+    #backToTop { display: none !important; }
+
+    /* Mini state: collapses to a circle showing only the pawprint on scroll */
+    .coyote-fab--mini { padding: 12px; border-radius: 50%; gap: 0; }
+    .coyote-fab--mini span { display: none; }
   </style>
 </head>
 <body>
@@ -449,7 +475,7 @@
       <a href="/" class="nav-logo">
         I L<span class="heart-o" aria-hidden="true">&hearts;&#xFE0E;</span><span class="sr-only">o</span>ve Claremont
       </a>
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
       <ul class="nav-links" id="navLinks">
@@ -510,8 +536,12 @@
         <!-- populated by inline script at end of body -->
       </a>
       <div class="spotlight-banner">
-        <span class="spotlight-new-badge">Spotlight</span>
-        <a href="Guides/summer-concerts-guide-2026.html">Summer Concerts in the Park: this Monday is Queen of Hearts — the 2026 lineup, parking, and picnic playbook →</a>
+        <span class="spotlight-new-badge">New</span>
+        <a href="Guides/friday-nights-live-2026.html">Friday Nights Live — free music across three Village stages every Friday, 6&ndash;9 PM →</a>
+      </div>
+      <div class="spotlight-banner">
+        <span class="spotlight-new-badge">Guide</span>
+        <a href="Guides/claremont-student-guide.html">New Student&rsquo;s Guide to Claremont — everything a 5C student needs to know →</a>
       </div>
       <div class="alert-banner" id="alert-banner-below" hidden role="alert" aria-live="polite">
         <!-- populated by inline script when a LOWER-severity NWS alert (priority < 70) applies -->
@@ -718,14 +748,14 @@
           <p>Year-round under the sycamores on Second Street — local produce, fresh bread, prepared food, and crafts every Sunday morning. The weekly heartbeat of the Village.</p>
         </div>
         <div class="event-card">
-          <div class="event-month">July</div>
-          <h3><a href="https://www.claremontca.gov/Activities-Recreation/Special-Events/4th-of-July-Celebration" target="_blank" rel="noopener noreferrer">4th of July Celebration</a></h3>
-          <p>Claremont's Independence Day celebration — live entertainment, food, family activities, and community spirit. A festive small-town Fourth you won't forget.</p>
+          <div class="event-month">August</div>
+          <h3><a href="https://www.claremontca.gov/Activities-Recreation/Special-Events/National-Night-Out" target="_blank" rel="noopener noreferrer">National Night Out</a></h3>
+          <p>Neighborhoods across Claremont come together the first Tuesday of August for block parties, food, games, and community building — a chance to meet your neighbors and celebrate the city's tight-knit spirit.</p>
         </div>
         <div class="event-card">
-          <div class="event-month">Summer</div>
-          <h3><a href="Guides/summer-concerts-guide-2026.html">Concerts</a> &amp; <a href="https://www.claremontca.gov/Activities-Recreation/Special-Events/Summer-Movies-in-the-Park" target="_blank" rel="noopener noreferrer">Movies in the Park</a></h3>
-          <p>Free Monday night concerts and outdoor movies all summer long. Bring a blanket, pack a picnic, and enjoy warm evenings under the trees. A Claremont summer staple.</p>
+          <div class="event-month">Mon Aug 24</div>
+          <h3><a href="Guides/summer-concerts-guide-2026.html">Concerts in the Park — Season Finale</a></h3>
+          <p>Next up (Mon Aug 24): The Answer (Classic Rock) at the Memorial Park bandshell, free at 7 PM. The last concert of the 2026 season.</p>
         </div>
       </div>
       <div style="text-align:center; margin-top:32px;">
@@ -742,10 +772,25 @@
         <p>Local knowledge, honest recommendations, and insider tips</p>
       </div>
       <div class="guides-grid">
+        <a href="Guides/friday-nights-live-2026.html" class="guide-card guide-card-new-spotlight">
+          <div class="guide-tag guide-tag-new-spotlight"><span class="new-shimmer-badge">Next Up</span> Friday Nights Live</div>
+          <h3>Friday Nights Live 2026</h3>
+          <p>Free live music every Friday evening across three Claremont Village stages, 6&ndash;9 PM through October. September lineup now posted.</p>
+        </a>
+        <a href="Spotlights/claremont-heritage-house-history.html" class="guide-card guide-card-new-spotlight">
+          <div class="guide-tag guide-tag-new-spotlight"><span class="new-shimmer-badge">New</span> Community Spotlight</div>
+          <h3>The Secret History of Your Claremont House</h3>
+          <p>How to use Claremont Heritage's 50-year archive — vintage maps, city directories, and photo vaults — to uncover who lived in your house before you.</p>
+        </a>
         <a href="Guides/summer-concerts-guide-2026.html" class="guide-card guide-card-new-spotlight">
-          <div class="guide-tag guide-tag-new-spotlight"><span class="new-shimmer-badge">Starts Tonight</span> Concerts in the Park</div>
+          <div class="guide-tag guide-tag-new-spotlight"><span class="new-shimmer-badge">Season Finale</span> Concerts in the Park</div>
           <h3>Claremont Summer Concerts 2026</h3>
-          <p>Free Monday-night concerts at Memorial Park bandshell, July 6 – Aug 24. The full 2026 lineup with Cold Duck, Queen of Hearts, Acoustical Mystery Tour, The Answer and more — plus parking and picnic tips.</p>
+          <p>Season finale Mon Aug 24: The Answer (Classic Rock) at Memorial Park bandshell. Free, 7 PM. Last concert of the summer.</p>
+        </a>
+        <a href="Guides/summer-movies-guide-2026.html" class="guide-card guide-card-live">
+          <div class="guide-tag guide-tag-live">Movies in the Park 2026</div>
+          <h3>Free Summer Movies in the Park 2026</h3>
+          <p>Free outdoor family movies across all five Claremont districts, July 16 – Aug 4. Matilda, The Wild Robot, How to Train Your Dragon, and Zootopia 2 (with National Night Out) — showtimes, locations, and the picnic playbook.</p>
         </a>
         <a href="Guides/coyote-sighting-map.html" class="guide-card guide-card-new-spotlight">
           <div class="guide-tag guide-tag-new-spotlight"><span class="new-shimmer-badge">Live Map</span> Coyote Sightings</div>
@@ -805,7 +850,7 @@
         <a href="Guides/pilgrim-place-sales-guide.html" class="guide-card guide-card-live">
           <div class="guide-tag guide-tag-live">Sale Guide</div>
           <h3>Pilgrim Place First Saturday Sales</h3>
-          <p>Next sale: Saturday, July 11. The "Big Four" stops worth racing to, parking and wagon tips, how to donate, and the full 2026 calendar through September — Claremont's vintage-treasure secret.</p>
+          <p>Next sale: Saturday, August 1. The "Big Four" stops worth racing to, parking and wagon tips, how to donate, and the full 2026 calendar through September — Claremont's vintage-treasure secret.</p>
         </a>
         <a href="Spotlights/native-plant-festival-2026.html" class="guide-card guide-card-live">
           <div class="guide-tag guide-tag-live">Spotlight</div>
@@ -998,5 +1043,13 @@
     </svg>
     <span>Coyote Map</span>
   </a>
+  <script>
+  (function () {
+    var fab = document.querySelector('.coyote-fab');
+    if (!fab) return;
+    function update() { fab.classList.toggle('coyote-fab--mini', window.scrollY > 400); }
+    window.addEventListener('scroll', update, { passive: true });
+  })();
+  </script>
 </body>
 </html>
