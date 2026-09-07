@@ -89,18 +89,26 @@
       position: relative;
       overflow: hidden;
     }
-    /* Subtle grain texture overlay */
+    .cookbook-hero-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 55%;
+      z-index: 0;
+    }
     .cookbook-hero::before {
       content: '';
       position: absolute;
       inset: 0;
-      background-image:
-        radial-gradient(ellipse at 30% 50%, rgba(90,61,120,0.12) 0%, transparent 60%),
-        radial-gradient(ellipse at 75% 40%, rgba(198,122,75,0.08) 0%, transparent 55%);
+      background: linear-gradient(to bottom, rgba(15,10,5,0.58) 0%, rgba(15,10,5,0.75) 100%);
+      z-index: 1;
       pointer-events: none;
     }
     .cookbook-hero-inner {
       position: relative;
+      z-index: 2;
       max-width: 680px;
       margin: 0 auto;
     }
@@ -307,6 +315,7 @@
 
     <!-- Hero -->
     <header class="cookbook-hero">
+      <img class="cookbook-hero-img" src="photos/tacos.jpg" alt="Home-cooked tacos on a plate — exactly the kind of recipe we want in the book" width="1280" height="960" fetchpriority="high">
       <div class="cookbook-hero-inner">
         <p class="cookbook-eyebrow">I Love Claremont CA &middot; Community Project</p>
         <h1 class="cookbook-title">Claremont<br>Community<br>Cookbook</h1>
