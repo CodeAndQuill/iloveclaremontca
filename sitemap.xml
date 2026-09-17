@@ -320,6 +320,16 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://iloveclaremontca.com/Guides/museums-guide.html</loc>
+    <image:image>
+      <image:loc>https://iloveclaremontca.com/photos/lewis-museum.jpg</image:loc>
+      <image:caption>The Claremont Lewis Museum of Art, housed in the historic 1927 Claremont Depot</image:caption>
+    </image:image>
+    <lastmod>2026-09-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://iloveclaremontca.com/Guides/social-scene-guide.html</loc>
     <lastmod>2026-08-04</lastmod>
     <changefreq>monthly</changefreq>
